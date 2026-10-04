@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turan Tech | Think. Build. Secure.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Temel Ayarlar ve Renk Paleti */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #0b0f19; /* Antrasit/Siber Uzay Siyahı */
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* Navigasyon (Menü) - Sol Üstte Logo */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #1e293b;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+        .logo img {
+            height: 45px; /* Logonun Boyutu */
+            border-radius: 6px;
+        }
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #38bdf8; /* Teknoloji Mavisi Vurgu */ }
+        
+        /* Karşılama Ekranı (Hero) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0b0f19 50%);
+        }
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #64748b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 650px;
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+        }
+        .btn-group { display: flex; gap: 1rem; }
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .btn-primary:hover { background: #ffffff; transform: translateY(-2px); }
+        .btn-secondary {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+        .btn-secondary:hover { border-color: #e2e8f0; transform: translateY(-2px); }
+
+        /* Bölümler (Sections) */
+        section { padding: 6rem 5%; }
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex-grow: 1;
+            background: #1e293b;
+        }
+
+        /* Hakkımda (Felsefe) */
+        .about-text {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            max-width: 800px;
+        }
+        .highlight { color: #38bdf8; font-weight: 600; }
+
+        /* Projeler Kartları */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            padding: 2.5rem;
+            border-radius: 8px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+        .card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #ffffff; }
+        .card p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 1rem;}
+        .tag {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Alt Bilgi (Footer) */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid #1e293b;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <!-- Logonun eklendiği yer -->
+            <img src="watermarked_img_14926327025407123271.jpg" alt="Turan Tech Logo">
+            Turan Tech
+        </div>
+        <div class="nav-links">
+            <a href="#about">Felsefe</a>
+            <a href="#projects">Laboratuvar</a>
+            <a href="#contact">Ağ</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Think.<br>Build.<br>Secure.</h1>
+        <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek.</p>
+        <div class="btn-group">
+            <a href="#projects" class="btn btn-primary">Projeleri İncele</a>
+            <a href="https://github.com/KENDI_GITHUB_KULLANICI_ADIN" target="_blank" class="btn btn-secondary">GitHub'da Keşfet</a>
+        </div>
+    </div>
+
+    <section id="about">
+        <h2 class="section-title">Merakla başlar, mühendislikle biter.</h2>
+        <div class="about-text">
+            <p>Gazi Üniversitesi'nde Bilgisayar Mühendisliği öğrencisiyim. Düşük seviyeli sistem programlama (C/C++, Assembly) dünyasına duyduğum tutku, beni karmaşık sistemlerin temeline inmeye ve onları güvenli hale getirmeye yöneltti.</p>
+            <br>
+            <p>Misyonum: <span class="highlight">Güvenli, açık ve öğretici yazılım araçları geliştirmek.</span> Gelecekte yapay zeka ve kuantum teknolojilerinin güvenliği üzerine odaklanarak, kontrolün her zaman insanda kaldığı sağlam mimariler inşa etmeyi hedefliyorum.</p>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title">Laboratuvar</h2>
+        <div class="projects-grid">
+            <div class="card">
+                <h3>Şef (Chief-Sef)</h3>
+                <p>Zararlı yazılım analizi ve PE (Portable Executable) dosya güvenliği üzerine tasarlanmış, C++ tabanlı gelişmiş statik analiz aracı.</p>
+                <div>
+                    <span class="tag">C++</span>
+                    <span class="tag">Reverse Engineering</span>
+                    <span class="tag">Cyber Security</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Unreal Engine AI</h3>
+                <p>C++ ile geliştirilmiş, performans odaklı yapay zeka davranış ağaçları ve gelişmiş strateji mekaniklerini barındıran simülasyon projesi.</p>
+                <div>
+                    <span class="tag">Unreal Engine</span>
+                    <span class="tag">C++</span>
+                    <span class="tag">Game Dev</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">Ağ & İletişim</h2>
+        <div class="about-text">
+            <p>Güvenli sistemler inşa etmek, siber güvenlik veya yapay zeka mimarileri üzerine tartışmak için bana her zaman ulaşabilirsin.</p>
+            <br><br>
+            <a href="mailto:senin@epostan.com" class="btn btn-primary">İletişime Geç</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Turan Tech. Tüm hakları saklıdır.</p>
+    </footer>
+
+</body>
+</html>
