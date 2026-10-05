@@ -143,6 +143,32 @@
             color: #94a3b8;
             margin-bottom: 2.5rem;
         }
+        .tech-transition {
+            position: relative;
+            height: 210px;
+            overflow: hidden;
+            border-top: 1px solid #1e293b;
+            border-bottom: 1px solid #1e293b;
+            background: #0d1117;
+        }
+        #techTransition {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .tech-transition-label {
+            position: absolute;
+            inset: 50% auto auto 50%;
+            z-index: 1;
+            width: min(90%, 620px);
+            transform: translate(-50%, -50%);
+            color: #cbd5e1;
+            font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+            letter-spacing: 0.18em;
+            text-align: center;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
         .btn-group { display: flex; flex-wrap: wrap; gap: 1rem; }
         .btn {
             padding: 0.8rem 1.8rem;
@@ -572,6 +598,7 @@
             .hero p {
                 font-size: 1rem;
             }
+            .tech-transition { height: 155px; }
             .btn-group {
                 flex-direction: column;
                 align-items: stretch;
@@ -663,6 +690,11 @@
             <a href="https://github.com/ahmtrntsdln" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub'da Keşfet</a>
             <a href="https://www.linkedin.com/in/ahmet-turan-ta%C5%9Fdelen-a6b96a383" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">LinkedIn'de Keşfet</a>
         </div>
+    </div>
+
+    <div class="tech-transition" aria-label="Sistem mimarisi ve yapay zeka geçiş animasyonu">
+        <canvas id="techTransition"></canvas>
+        <span class="tech-transition-label">System architecture · data · intelligence</span>
     </div>
 
     <section id="projects">
@@ -869,6 +901,92 @@
             });
         }, { threshold: 0.12 });
         revealItems.forEach((item) => revealObserver.observe(item));
+
+        const transitionCanvas = document.getElementById('techTransition');
+        const transitionContext = transitionCanvas.getContext('2d');
+        const transitionMotionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const transitionParticles = [];
+        const transitionSparks = [];
+        let transitionWidth = 0;
+        let transitionHeight = 0;
+
+        function resizeTechTransition() {
+            const scale = window.devicePixelRatio || 1;
+            const bounds = transitionCanvas.getBoundingClientRect();
+            transitionWidth = bounds.width;
+            transitionHeight = bounds.height;
+            transitionCanvas.width = Math.floor(transitionWidth * scale);
+            transitionCanvas.height = Math.floor(transitionHeight * scale);
+            transitionContext.setTransform(scale, 0, 0, scale, 0, 0);
+        }
+
+        function seedTechTransition() {
+            transitionParticles.length = 0;
+            transitionSparks.length = 0;
+            const particleCount = transitionWidth < 600 ? 35 : 70;
+            const sparkCount = transitionWidth < 600 ? 45 : 90;
+            for (let i = 0; i < particleCount; i += 1) {
+                transitionParticles.push({
+                    x: Math.random() * transitionWidth,
+                    y: transitionHeight - Math.random() * Math.min(150, transitionHeight),
+                    vx: (Math.random() - 0.5) * 0.7,
+                    vy: (Math.random() - 0.5) * 0.7
+                });
+            }
+            for (let i = 0; i < sparkCount; i += 1) {
+                transitionSparks.push({
+                    x: Math.random() * transitionWidth,
+                    y: Math.random() * -transitionHeight,
+                    speed: Math.random() * 2.5 + 1,
+                    value: Math.random() > 0.5 ? '1' : '0'
+                });
+            }
+        }
+
+        function animateTechTransition() {
+            transitionContext.fillStyle = 'rgba(13, 17, 23, 0.22)';
+            transitionContext.fillRect(0, 0, transitionWidth, transitionHeight);
+            transitionContext.fillStyle = 'rgba(88, 166, 255, 0.9)';
+            transitionContext.strokeStyle = 'rgba(88, 166, 255, 0.22)';
+            transitionParticles.forEach((particle, index) => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                if (particle.x < 0 || particle.x > transitionWidth) particle.vx *= -1;
+                if (particle.y < transitionHeight - Math.min(150, transitionHeight) || particle.y > transitionHeight) particle.vy *= -1;
+                transitionContext.beginPath();
+                transitionContext.arc(particle.x, particle.y, 1.5, 0, Math.PI * 2);
+                transitionContext.fill();
+                for (let next = index + 1; next < transitionParticles.length; next += 1) {
+                    const other = transitionParticles[next];
+                    if (Math.hypot(particle.x - other.x, particle.y - other.y) < 65) {
+                        transitionContext.beginPath();
+                        transitionContext.moveTo(particle.x, particle.y);
+                        transitionContext.lineTo(other.x, other.y);
+                        transitionContext.stroke();
+                    }
+                }
+            });
+            transitionContext.fillStyle = 'rgba(126, 231, 135, 0.85)';
+            transitionContext.font = '12px Courier New';
+            transitionSparks.forEach((spark) => {
+                transitionContext.fillText(spark.value, spark.x, spark.y);
+                spark.y += spark.speed;
+                if (spark.y > transitionHeight) {
+                    spark.y = 0;
+                    spark.x = Math.random() * transitionWidth;
+                    spark.value = Math.random() > 0.5 ? '1' : '0';
+                }
+            });
+            if (!transitionMotionReduced) requestAnimationFrame(animateTechTransition);
+        }
+
+        resizeTechTransition();
+        seedTechTransition();
+        animateTechTransition();
+        window.addEventListener('resize', () => {
+            resizeTechTransition();
+            seedTechTransition();
+        });
 
         const contactModal = document.getElementById('contact-modal');
         const contactOpen = document.getElementById('contact-open');
