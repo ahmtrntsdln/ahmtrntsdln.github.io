@@ -154,6 +154,18 @@
             background: radial-gradient(circle at center, #1d3345 0, #0d1117 42%, #0d1117 75%);
         }
         #techTransition { display: block; width: 100%; height: 100%; }
+        .tech-transition-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 2;
+            width: clamp(64px, 10vw, 100px);
+            height: clamp(64px, 10vw, 100px);
+            object-fit: contain;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 0 18px #ffffff55);
+            pointer-events: none;
+        }
         .tech-transition-label {
             position: absolute;
             right: 0;
@@ -880,6 +892,7 @@
     </div>
     <div class="tech-transition" aria-label="Sistem mimarisi ve yapay zeka animasyonu">
         <canvas id="techTransition"></canvas>
+        <img class="tech-transition-logo" src="assets/ttech-logo.png" alt="TT logo">
         <span class="tech-transition-label">System Architecture · Data · Intelligence</span>
     </div>
 
