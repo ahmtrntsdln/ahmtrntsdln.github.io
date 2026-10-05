@@ -179,15 +179,31 @@
             text-transform: uppercase;
             pointer-events: none;
         }
-        .signature-band {
-            display: grid;
-            place-items: center;
-            min-height: 120px;
-            padding: 1.5rem 1rem 0.5rem;
-            background: linear-gradient(180deg, #0b0f19, #111827);
+        .tech-transition-copyright {
+            position: absolute;
+            top: calc(50% + 3.5rem);
+            right: 0;
+            left: 0;
+            z-index: 3;
+            color: #e2e8f0;
+            font-size: clamp(0.72rem, 1.5vw, 0.9rem);
+            text-align: center;
         }
-        .signature-band img {
-            width: min(330px, 78vw);
+        .tech-transition-version {
+            position: absolute;
+            bottom: 0.85rem;
+            left: 1.2rem;
+            z-index: 3;
+            color: #475569;
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+        }
+        .tech-transition-signature {
+            position: absolute;
+            right: 1.2rem;
+            bottom: 0.65rem;
+            z-index: 3;
+            width: min(220px, 34vw);
             height: auto;
             filter: drop-shadow(0 0 9px #ffffff33);
         }
@@ -379,6 +395,12 @@
             padding: 3rem;
             border-top: 1px solid #1e293b;
             color: #64748b;
+        }
+        footer.tech-transition {
+            padding: 0;
+            border-top: 1px solid #1e293b;
+            color: inherit;
+            text-align: initial;
         }
         /* İletişim penceresi */
         .contact-modal {
@@ -620,6 +642,8 @@
                 font-size: 1rem;
             }
             .tech-transition { height: 165px; }
+            .tech-transition-signature { width: min(180px, 42vw); }
+            .tech-transition-version { left: 0.75rem; font-size: 0.65rem; }
             .btn-group {
                 flex-direction: column;
                 align-items: stretch;
@@ -887,18 +911,13 @@
         </div>
     </div>
 
-    <div class="signature-band">
-        <img src="assets/ataturk-signature.png" alt="Mustafa Kemal Atatürk imzası">
-    </div>
-    <div class="tech-transition" aria-label="Sistem mimarisi ve yapay zeka animasyonu">
+    <footer class="tech-transition" aria-label="Site alt bilgisi ve sistem mimarisi animasyonu">
         <canvas id="techTransition"></canvas>
         <img class="tech-transition-logo" src="assets/ttech-logo.png" alt="TT logo">
         <span class="tech-transition-label">System Architecture · Data · Intelligence</span>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 Turan Tech. Tüm hakları saklıdır.</p>
-        <p class="site-version">Site sürümü v1.4.0 · 5 Ekim 2026</p>
+        <p class="tech-transition-copyright">© 2026 Turan Tech. Tüm hakları saklıdır.</p>
+        <p class="tech-transition-version">Site sürümü v1.4.0 · 5 Ekim 2026</p>
+        <img class="tech-transition-signature" src="assets/ataturk-signature.png" alt="Mustafa Kemal Atatürk imzası">
     </footer>
 
     <script>
