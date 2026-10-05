@@ -18,6 +18,7 @@
             color: #e2e8f0;
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
         }
 
         /* Navigasyon (Menü) - Sol Üstte Logo */
@@ -59,12 +60,51 @@
 
         /* Karşılama Ekranı (Hero) */
         .hero {
+            position: relative;
+            isolation: isolate;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 0 5%;
             background: radial-gradient(circle at top right, #1e293b 0%, #0b0f19 50%);
+        }
+        .hero::after {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            right: 0;
+            width: min(58vw, 760px);
+            height: 100%;
+            content: "";
+            background-image: linear-gradient(90deg, #0b0f19 0%, #0b0f1900 48%), linear-gradient(0deg, #0b0f19 0%, #0b0f1900 52%), url("assets/turk-bayragi.jpg");
+            background-position: center, center, center;
+            background-size: cover, cover, cover;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 82%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 82%, transparent 100%);
+        }
+        .purpose-section {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .purpose-section::after {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            right: 0;
+            width: min(58vw, 760px);
+            height: 100%;
+            content: "";
+            background-image: linear-gradient(90deg, #0b0f19 0%, #0b0f1900 48%), linear-gradient(0deg, #0b0f19 0%, #0b0f1900 52%), url("assets/ataturk-amac.webp");
+            background-position: center, center, center top;
+            background-size: cover, cover, cover;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 82%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 82%, transparent 100%);
         }
         .hero h1 {
             font-size: 5rem;
@@ -81,7 +121,7 @@
             color: #94a3b8;
             margin-bottom: 2.5rem;
         }
-        .btn-group { display: flex; gap: 1rem; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 1rem; }
         .btn {
             padding: 0.8rem 1.8rem;
             border-radius: 4px;
@@ -172,6 +212,30 @@
         }
         .card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #ffffff; }
         .card p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 1rem;}
+        .project-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        }
+        .project-button {
+            padding: 0.65rem 1rem;
+            color: #e2e8f0;
+            background: transparent;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.9rem;
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .project-button:hover,
+        .project-button:focus-visible {
+            color: #0f172a;
+            background: #38bdf8;
+            border-color: #38bdf8;
+            outline: none;
+        }
         .game-card {
             grid-column: 1 / -1;
             padding: 1.25rem;
@@ -265,6 +329,8 @@
             position: absolute;
             top: 0.75rem;
             right: 0.9rem;
+            width: 2.75rem;
+            height: 2.75rem;
             border: 0;
             background: transparent;
             color: #94a3b8;
@@ -273,6 +339,126 @@
             cursor: pointer;
         }
         .modal-close:hover { color: #ffffff; }
+        .chief-modal {
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 6rem 1.5rem 2rem;
+        }
+        .chief-card {
+            width: min(100%, 760px);
+            max-height: none;
+        }
+        .chief-card h3 { margin-bottom: 0.35rem; }
+        .chief-kicker {
+            color: #38bdf8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .chief-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.25rem;
+            margin: 1rem 0 1.5rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .chief-progress-item {
+            margin-top: 0.9rem;
+        }
+        .chief-progress-item:first-child { margin-top: 0; }
+        .chief-progress-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+        .chief-progress {
+            height: 10px;
+            margin: 0.45rem 0 0.3rem;
+            overflow: hidden;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 999px;
+        }
+        .chief-progress span {
+            display: block;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #64748b);
+            border-radius: inherit;
+            transition: width 0.6s ease;
+        }
+        .chief-progress-status {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+        .chief-section {
+            padding-top: 1.25rem;
+            margin-top: 1.25rem;
+            border-top: 1px solid #1e293b;
+        }
+        .chief-section h4 {
+            margin-bottom: 0.55rem;
+            color: #ffffff;
+            font-size: 1.05rem;
+        }
+        .chief-section p,
+        .chief-section li {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        .chief-section ul { padding-left: 1.2rem; }
+        .chief-link {
+            display: inline-block;
+            margin-top: 1.25rem;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        .chief-link:hover { text-decoration: underline; }
+        .identity-modal {
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 6rem 1.5rem 2rem;
+        }
+        .identity-card { width: min(100%, 700px); }
+        .identity-card,
+        .chief-card,
+        .contact-card {
+            max-width: 100%;
+            min-width: 0;
+        }
+        .identity-content {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .identity-photo {
+            width: 110px;
+            height: 110px;
+            display: grid;
+            place-items: center;
+            color: #64748b;
+            background: #0b0f19;
+            border: 1px dashed #475569;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+        .identity-content p { color: #94a3b8; }
+        .identity-university {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-top: 1.25rem;
+            color: #cbd5e1;
+        }
+        .identity-university img { width: 52px; height: 52px; object-fit: contain; }
+        .identity-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+        .identity-tags span { padding: 0.45rem 0.7rem; color: #cbd5e1; background: #1e293b; border-radius: 4px; font-size: 0.8rem; }
         @media (max-width: 700px) {
             nav {
                 align-items: flex-start;
@@ -344,6 +530,32 @@
             .contact-card {
                 padding: 1.5rem;
             }
+            .purpose-section::after {
+                width: 100%;
+                opacity: 0.2;
+            }
+            .hero::after {
+                width: 100%;
+                opacity: 0.2;
+            }
+            .identity-modal { padding: 5rem 0.75rem 1rem; }
+            .identity-card { padding: 1.5rem; }
+            .identity-content { grid-template-columns: 1fr; }
+            .identity-photo { margin: 0 auto; }
+            .chief-modal { padding: 5rem 0.75rem 1rem; }
+            .chief-card { padding: 1.5rem; }
+        }
+        @media (max-width: 420px) {
+            nav { padding-left: 6%; padding-right: 6%; }
+            .hero { padding-left: 8%; padding-right: 8%; }
+            section { padding-left: 8%; padding-right: 8%; }
+            .hero h1 { font-size: clamp(2.8rem, 15vw, 4rem); }
+            .game-frame {
+                height: 620px;
+                min-height: 620px;
+            }
+            .chief-progress-title { font-size: 0.78rem; }
+            .identity-university { align-items: flex-start; }
         }
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -362,8 +574,9 @@
             <img src="logo.svg" alt="Turan Tech logo">
         </div>
         <div class="nav-links">
-            <a href="#about">Hakkımızda</a>
+            <a href="#about">Amaç</a>
             <a href="#projects">Laboratuvar</a>
+            <a href="#identity">Ben Kimim</a>
             <a href="#contact">Ağ</a>
         </div>
     </nav>
@@ -378,11 +591,11 @@
         </div>
     </div>
 
-    <section id="about">
-        <h2 class="section-title">Hakkımızda</h2>
+    <section id="about" class="purpose-section">
+        <h2 class="section-title">Amaç</h2>
         <div class="about-text">
             <h3>Vizyon</h3>
-            <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek; karmaşık sistemleri sade, güvenli ve anlaşılır kılan, Türkiye'den doğan global bir teknoloji markası olmak.</p>
+            <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek; karmaşık sistemleri sade, güvenli ve anlaşılır kılan, Türkiye'den doğan global bir teknoloji markası olmak. Hayallerimin peşinden koşarak çevreme ve bilhassa vatanıma faydalı olmak.</p>
 
             <h3>Misyon</h3>
             <p>Merakı mühendisliğe, mühendisliği güvene dönüştürmek. Bunu üç ilkeyle yapıyoruz:</p>
@@ -393,7 +606,7 @@
             </ul>
 
             <h3>Bizi yönlendiren inanç</h3>
-            <p>Matematik her şeyin dilidir ve sürekli inşa edilen bir yapıdır. İnsan yapımı hiçbir sistem kusursuz değildir. Bu yüzden kusursuzluk iddia etmek yerine kusuru öngören, katmanlı ve şeffaf sistemler tasarlarız.</p>
+            <p>Matematik her şeyin dilidir ve akılla sürekli inşa edilen bir yapıdır; “Hayatta en hakiki mürşit ilimdir, fendir.” diyerek merakı fenle birleştirmek ana inancımdır. İnsan yapımı hiçbir sistem kusursuz değildir. Bu yüzden dogmatik bir kusursuzluk iddia etmek yerine; kusuru öngören, veriye dayalı, katmanlı ve şeffaf sistemler tasarlarız.</p>
         </div>
     </section>
 
@@ -407,6 +620,9 @@
                     <span class="tag">C++</span>
                     <span class="tag">Reverse Engineering</span>
                     <span class="tag">Cyber Security</span>
+                </div>
+                <div class="project-actions">
+                    <button type="button" class="project-button" id="chief-open">İlerleme ve teknik özet</button>
                 </div>
             </div>
             <div class="card game-card">
@@ -423,6 +639,38 @@
         </div>
     </section>
 
+    <section id="identity">
+        <h2 class="section-title">Ben Kimim</h2>
+        <div class="about-text">
+            <p>20 yaşında; fiziğe ve bilgisayar bilimlerine tutkuyla bağlı, öğrendiklerini geliştirmeye çalışan ve daima yeni fikirlere açık bir Gazi Üniversitesi öğrencisiyim.</p>
+            <button type="button" class="project-button" id="identity-open">Profilimi incele</button>
+        </div>
+    </section>
+
+    <div class="contact-modal identity-modal" id="identity-modal" role="dialog" aria-modal="true" aria-labelledby="identity-title">
+        <div class="contact-card identity-card">
+            <button type="button" class="modal-close" id="identity-close" aria-label="Ben Kimim panelini kapat">&times;</button>
+            <div class="identity-content">
+                <div class="identity-photo">Fotoğraf<br>alanı</div>
+                <div>
+                    <span class="chief-kicker">Kişisel profil</span>
+                    <h3 id="identity-title">Ben Kimim?</h3>
+                    <p>20 yaşında; fiziğe ve bilgisayar bilimlerine tutkuyla bağlı, öğrenmeyi bir süreç olarak gören, öğrendiklerini sürekli geliştiren ve yeniliklere açık bir Gazi Üniversitesi 1. sınıf öğrencisiyim.</p>
+                    <div class="identity-university">
+                        <img src="assets/gazi-universitesi-logo.png" alt="Gazi Üniversitesi logosu">
+                        <span>Gazi Üniversitesi<br><small>Bilgisayar Mühendisliği · 1. sınıf</small></span>
+                    </div>
+                    <div class="identity-tags">
+                        <span>Bilgisayar bilimleri</span>
+                        <span>Fizik merakı</span>
+                        <span>Siber güvenlik</span>
+                        <span>Sürekli öğrenme</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section id="contact">
         <h2 class="section-title">Ağ & İletişim</h2>
         <div class="about-text">
@@ -431,6 +679,59 @@
             <button type="button" class="btn btn-primary" id="contact-open">İletişime Geç</button>
         </div>
     </section>
+
+    <div class="contact-modal chief-modal" id="chief-modal" role="dialog" aria-modal="true" aria-labelledby="chief-title">
+        <div class="contact-card chief-card">
+            <button type="button" class="modal-close" id="chief-close" aria-label="Chief panelini kapat">&times;</button>
+            <span class="chief-kicker">Açık kaynak laboratuvar kaydı</span>
+            <h3 id="chief-title">Şef (Chief-Sef)</h3>
+            <div class="chief-meta">
+                <span id="chief-updated">GitHub verisi yükleniyor...</span>
+                <span id="chief-files">Kod kapsamı hesaplanıyor...</span>
+            </div>
+            <div aria-label="Chief faz ilerlemeleri">
+                <div class="chief-progress-item">
+                    <div class="chief-progress-title"><strong>Faz 1 · Statik analiz</strong><strong id="chief-phase-1-value">75%</strong></div>
+                    <div class="chief-progress"><span id="chief-phase-1-bar" style="width: 75%"></span></div>
+                    <span class="chief-progress-status" id="chief-phase-1-status">Tamamlandı</span>
+                </div>
+                <div class="chief-progress-item">
+                    <div class="chief-progress-title"><strong>Faz 2 · eBPF sistem izleme</strong><strong id="chief-phase-2-value">0%</strong></div>
+                    <div class="chief-progress"><span id="chief-phase-2-bar"></span></div>
+                    <span class="chief-progress-status" id="chief-phase-2-status">Başlanmadı</span>
+                </div>
+                <div class="chief-progress-item">
+                    <div class="chief-progress-title"><strong>Faz 3 · NPU / TEE izolasyonu</strong><strong id="chief-phase-3-value">0%</strong></div>
+                    <div class="chief-progress"><span id="chief-phase-3-bar"></span></div>
+                    <span class="chief-progress-status" id="chief-phase-3-status">Başlanmadı</span>
+                </div>
+            </div>
+
+            <div class="chief-section">
+                <h4>Genel özet</h4>
+                <p>Chief-Sef, dosyaları çalıştırmadan önce PE özellikleri, Shannon entropisi ve API kullanımını inceleyen makine öğrenmesi destekli bir yazılım/donanım güvenlik motorudur. Mevcut açık kaynak prototip, Faz 1’de statik analiz katmanını doğrular.</p>
+            </div>
+            <div class="chief-section">
+                <h4>Mevcut ilerleme</h4>
+                <ul>
+                    <li>Gerçek EMBER verisiyle Random Forest modeli ve ölçüm tutarlılığı tamamlandı.</li>
+                    <li>Faz 1 zamansal test doğruluğu: %83,8; aynı dönem test doğruluğu: %90,1.</li>
+                    <li>Bağımsız gerçek makine doğrulamasında yanlış alarm oranı: %3,5.</li>
+                </ul>
+            </div>
+            <div class="chief-section">
+                <h4>Beklenen performans ve sınırlar</h4>
+                <p>Bu değerler prototipin README’sindeki deney sonuçlarıdır; üretim garantisi değildir. Sonraki hedefler eBPF ile sistem çağrısı izleme ve NPU/TEE tabanlı donanımsal izolasyondur. Güncel .NET tehditlerinde modelin zayıf kaldığı özellikle belirtilmiştir.</p>
+            </div>
+            <div class="chief-section">
+                <h4>Fizibilite raporu</h4>
+                <p><strong>Genel değerlendirme: Teknik olarak uygulanabilir, ancak kademeli doğrulama gerektiriyor.</strong> Faz 1’in gerçek EMBER verisiyle tamamlanmış olması ve ölçüm tutarlılığının testlerle korunması, statik analiz çekirdeği için sağlam bir başlangıç sağlıyor. Zamansal doğruluk (%83,8) ve bağımsız yanlış alarm oranı (%3,5), prototipin araştırma ve ön eleme katmanı olarak anlamlı olduğunu gösteriyor; tek başına üretim güvenlik kararı vermesi için yeterli değil.</p>
+                <p>En yüksek öncelikli riskler veri dağılımının değişmesi, güncel .NET tehditlerindeki kaçırma oranı ve Python tabanlı prototipin performans/dağıtım sınırlarıdır. Bu nedenle Faz 2’de eBPF izleme katmanı önce Linux üzerinde ölçülebilir bir MVP olarak doğrulanmalı; Faz 3’te NPU/TEE izolasyonu ancak tehdit modeli, donanım erişimi ve gecikme maliyeti netleştirildikten sonra ele alınmalıdır.</p>
+                <p><strong>Önerilen sıra:</strong> .NET uzman özellikleri ve zaman içinde değişen veriyle yeniden doğrulama → eBPF olay şeması ve kaynak tüketimi ölçümü → güvenli donanım izolasyonu için platform seçimi. Bu sıra, erken optimizasyonu ve yalnızca tek bir doğruluk skoruna dayanma riskini azaltır.</p>
+            </div>
+            <a class="chief-link" href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Chief-Sef deposunu GitHub’da incele →</a>
+        </div>
+    </div>
 
     <div class="contact-modal" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
         <div class="contact-card">
@@ -455,12 +756,49 @@
                     observer.unobserve(entry.target);
                 }
             });
+            identityOpen.addEventListener('click', () => {
+                identityModal.classList.add('is-open');
+                identityClose.focus();
+            });
+            identityClose.addEventListener('click', () => {
+                identityModal.classList.remove('is-open');
+                identityOpen.focus();
+            });
+            identityModal.addEventListener('click', (event) => {
+                if (event.target === identityModal) {
+                    identityModal.classList.remove('is-open');
+                    identityOpen.focus();
+                }
+            });
         }, { threshold: 0.12 });
         revealItems.forEach((item) => revealObserver.observe(item));
 
         const contactModal = document.getElementById('contact-modal');
         const contactOpen = document.getElementById('contact-open');
         const contactClose = document.getElementById('contact-close');
+        const chiefModal = document.getElementById('chief-modal');
+        const chiefOpen = document.getElementById('chief-open');
+        const chiefClose = document.getElementById('chief-close');
+        const chiefUpdated = document.getElementById('chief-updated');
+        const chiefFiles = document.getElementById('chief-files');
+        const identityModal = document.getElementById('identity-modal');
+        const identityOpen = document.getElementById('identity-open');
+        const identityClose = document.getElementById('identity-close');
+        const chiefPhaseBars = [
+            document.getElementById('chief-phase-1-bar'),
+            document.getElementById('chief-phase-2-bar'),
+            document.getElementById('chief-phase-3-bar')
+        ];
+        const chiefPhaseValues = [
+            document.getElementById('chief-phase-1-value'),
+            document.getElementById('chief-phase-2-value'),
+            document.getElementById('chief-phase-3-value')
+        ];
+        const chiefPhaseStatuses = [
+            document.getElementById('chief-phase-1-status'),
+            document.getElementById('chief-phase-2-status'),
+            document.getElementById('chief-phase-3-status')
+        ];
 
         function closeContactModal() {
             contactModal.classList.remove('is-open');
@@ -478,6 +816,73 @@
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape' && contactModal.classList.contains('is-open')) {
                 closeContactModal();
+            }
+            if (event.key === 'Escape' && chiefModal.classList.contains('is-open')) {
+                chiefModal.classList.remove('is-open');
+                chiefOpen.focus();
+            }
+            if (event.key === 'Escape' && identityModal.classList.contains('is-open')) {
+                identityModal.classList.remove('is-open');
+                identityOpen.focus();
+            }
+        });
+
+        async function loadChiefStatus() {
+            const repo = 'ahmtrntsdln/Chief-Sef';
+            const treeResponse = await fetch(`https://api.github.com/repos/${repo}/git/trees/main?recursive=1`);
+            if (!treeResponse.ok) throw new Error('Chief kaynak ağacı alınamadı');
+            const tree = await treeResponse.json();
+            const files = tree.tree.filter((item) => item.type === 'blob');
+            const codeFiles = files.filter((item) => /\.(py|cpp|h|hpp|c|sh|js|ts)$/i.test(item.path));
+            const directories = new Set(files.map((item) => item.path.split('/')[0]));
+            chiefFiles.textContent = `${codeFiles.length} kod dosyası · ${directories.size} kaynak alanı`;
+            const paths = files.map((item) => item.path.toLowerCase());
+            const phaseOneComplete = paths.some((path) => path.includes('entropy.py'))
+                && paths.some((path) => path.includes('chief_1.2.py'))
+                && paths.some((path) => path.includes('tests/'));
+            const phaseTwoComplete = paths.some((path) => path.includes('ebpf'));
+            const phaseThreeComplete = paths.some((path) => path.includes('tee'))
+                || paths.some((path) => path.includes('npu'));
+            const phaseProgress = [
+                phaseOneComplete ? 75 : 0,
+                phaseTwoComplete ? 100 : 0,
+                phaseThreeComplete ? 100 : 0
+            ];
+            const phaseStatuses = [
+                phaseOneComplete ? 'Tamamlandı' : 'Başlanmadı',
+                phaseTwoComplete ? 'Tamamlandı' : 'Başlanmadı',
+                phaseThreeComplete ? 'Tamamlandı' : 'Başlanmadı'
+            ];
+            phaseProgress.forEach((progress, index) => {
+                chiefPhaseBars[index].style.width = `${progress}%`;
+                chiefPhaseValues[index].textContent = `${progress}%`;
+                chiefPhaseStatuses[index].textContent = phaseStatuses[index];
+            });
+            const repoResponse = await fetch(`https://api.github.com/repos/${repo}`);
+            if (!repoResponse.ok) throw new Error('Chief depo bilgisi alınamadı');
+            const repository = await repoResponse.json();
+            const updated = new Date(repository.pushed_at).toLocaleDateString('tr-TR');
+            chiefUpdated.textContent = `GitHub son güncelleme: ${updated}`;
+        }
+
+        chiefOpen.addEventListener('click', async () => {
+            chiefModal.classList.add('is-open');
+            chiefClose.focus();
+            try {
+                await loadChiefStatus();
+            } catch (error) {
+                chiefUpdated.textContent = 'Canlı GitHub verisi şu anda alınamadı';
+                chiefFiles.textContent = 'README tabanlı ilerleme gösteriliyor';
+            }
+        });
+        chiefClose.addEventListener('click', () => {
+            chiefModal.classList.remove('is-open');
+            chiefOpen.focus();
+        });
+        chiefModal.addEventListener('click', (event) => {
+            if (event.target === chiefModal) {
+                chiefModal.classList.remove('is-open');
+                chiefOpen.focus();
             }
         });
     </script>
