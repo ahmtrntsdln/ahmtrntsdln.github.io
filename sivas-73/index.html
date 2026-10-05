@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111b24">
+  <title>Sivas 73 — Strateji Demosu</title>
+  <style>
+    :root {
+      --ink: #e9e1ca;
+      --muted: #9a9a91;
+      --panel: #172129;
+      --panel-2: #1c2a32;
+      --line: #3a4a4c;
+      --gold: #e3b95f;
+      --gold-soft: #f7d98a;
+      --red: #c96756;
+      --blue: #5f9fb4;
+      --green: #6da577;
+      --map: #bcae82;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: #0d151b;
+      font: 14px/1.45 Georgia, "Times New Roman", serif;
+    }
+    button { font: inherit; }
+    .app { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: 12px clamp(16px, 3vw, 42px);
+      background: #101a21; border-bottom: 1px solid #304048;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .crest {
+      display: grid; place-items: center; width: 42px; height: 42px;
+      border: 1px solid var(--gold); border-radius: 50%; color: var(--gold);
+      font-size: 24px; box-shadow: inset 0 0 0 4px #101a21, inset 0 0 0 5px #725d33;
+    }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: clamp(18px, 2vw, 25px); letter-spacing: .03em; }
+    .eyebrow { color: var(--gold); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+    .top-stats { display: flex; gap: 22px; color: var(--muted); }
+    .top-stat strong { display: block; color: var(--gold-soft); font-size: 18px; }
+    .resource-strip { display: flex; align-items: center; gap: 18px; padding: 7px clamp(16px, 3vw, 42px); background: #15232b; border-bottom: 1px solid #304048; }
+    .resource-chip { display: flex; align-items: center; gap: 7px; color: var(--muted); }
+    .resource-chip .symbol { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold-soft); font-size: 14px; }
+    .resource-chip strong { color: var(--ink); font-size: 15px; }
+    .resource-chip small { color: var(--muted); font-size: 10px; }
+    .resource-chip.food .symbol { border-color: var(--green); color: #a9d9a7; }
+    .unit-strip { display: flex; gap: 15px; overflow-x: auto; padding: 5px clamp(16px, 3vw, 42px); color: var(--muted); background: #111d24; border-bottom: 1px solid #304048; }
+    .unit-total { white-space: nowrap; font-size: 11px; }
+    .unit-total strong { color: var(--gold-soft); font-size: 13px; }
+    .layout {
+      display: grid; grid-template-columns: minmax(0, 1fr) 300px;
+      width: min(1500px, 100%); margin: 0 auto; padding: 22px; gap: 22px;
+    }
+    .map-card, .panel {
+      border: 1px solid var(--line); background: var(--panel);
+      box-shadow: 0 18px 45px #0006;
+    }
+    .map-card { min-width: 0; overflow: hidden; border-radius: 5px; }
+    .map-heading { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+    .map-heading h2 { font-size: 20px; }
+    .map-heading span { color: var(--muted); font-size: 12px; }
+    .map-tools { display: flex; align-items: center; gap: 8px; }
+    .map-tools select { padding: 6px 8px; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); }
+    .map-wrap {
+      position: relative; min-height: 980px; padding: clamp(12px, 2vw, 30px);
+      overflow: hidden; cursor: grab; background: #827a5e;
+      background-image: radial-gradient(#c9d28c28 1px, transparent 1px), linear-gradient(135deg, #314c37, #708353 45%, #9b8b5e);
+      background-size: 12px 12px, 100% 100%;
+    }
+    .map-wrap::after {
+      position: absolute; inset: 9px; border: 1px solid #e4d39c88; content: "";
+      pointer-events: none;
+    }
+    .map-svg { position: relative; z-index: 1; display: block; width: 100%; height: min(105vw, 1120px); min-height: 900px; }
+    .map-svg.zoomed { transform-origin: center; transition: transform .12s ease-out; }
+    .map-wrap.is-panning { cursor: grabbing; }
+    .region.region-dimmed, .region-dimmed ~ .region-label { opacity: .2; }
+    .region {
+      fill: url(#steppeTexture); stroke: #394632; stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round;
+      cursor: pointer; transition: fill .18s, filter .18s, stroke-width .18s;
+    }
+    .region:hover, .region:focus { fill: #d1bb78; filter: brightness(1.12); outline: none; }
+    .region.selected { fill: #d6b762; stroke: #fff0ad; stroke-width: 4; filter: drop-shadow(0 0 6px #e3b95f); }
+    .region.enemy { fill: url(#enemyTerrain); }
+    .region.ally { fill: url(#greenTerrain); }
+    .region.ally { stroke: #577759; stroke-width: 5; }
+    .region.ally.selected { stroke: #fff0ad; stroke-width: 4; }
+    .region-label { fill: #f4e9bb; stroke: #2a2c25; stroke-width: 3px; paint-order: stroke; font-size: 15px; font-weight: bold; pointer-events: none; text-anchor: middle; }
+    .region-number { fill: #fff1b1; stroke: #2a2c25; stroke-width: 2px; paint-order: stroke; font-size: 12px; font-weight: bold; pointer-events: none; text-anchor: middle; }
+    .army { pointer-events: none; }
+    .army circle { fill: #202a2d; stroke: #f4d77d; stroke-width: 2; }
+    .army text { fill: #f7e8b4; font: bold 11px Arial, sans-serif; text-anchor: middle; dominant-baseline: central; }
+    .unit-entity { pointer-events: auto; cursor: pointer; }
+    .unit-entity.selected circle { stroke: #fff4b0; stroke-width: 4; filter: drop-shadow(0 0 7px #fff0a0); }
+    .unit-entity circle { stroke: #f7d98a; stroke-width: 2; filter: drop-shadow(0 0 4px #000b); }
+    .unit-entity text { fill: #fff3c0; font: bold 11px Arial, sans-serif; text-anchor: middle; dominant-baseline: central; }
+    .unit-entity.air circle { fill: #486b91; } .unit-entity.land circle { fill: #657b50; } .unit-entity.sea circle { fill: #397b88; }
+    .defense-entity { fill: #d7a94f; stroke: #fff0ad; stroke-width: 1.5; animation: defensePulse 1.8s ease-in-out infinite; }
+    .battle-effect { fill: none; stroke: #ffcf63; stroke-width: 4; opacity: 0; animation: battleFlash .8s ease-out forwards; pointer-events: none; }
+    .unit-info-popup { position: absolute; z-index: 5; width: 190px; padding: 10px; border: 1px solid var(--gold); border-radius: 5px; background: #172129f5; box-shadow: 0 10px 25px #000b; }
+    .unit-info-popup[hidden] { display: none; }
+    .unit-info-popup h4 { margin: 0 20px 5px 0; color: var(--gold-soft); font-size: 13px; }
+    .unit-info-popup p { margin: 3px 0; color: var(--muted); font-size: 11px; }
+    .unit-info-popup strong { color: var(--ink); }
+    .unit-info-close { position: absolute; top: 4px; right: 5px; border: 0; color: var(--muted); background: transparent; cursor: pointer; font-size: 17px; }
+    .unit-info-action { width: 100%; margin-top: 7px; padding: 6px; color: #1b1c18; background: var(--gold); border: 0; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .unit-info-action:disabled { opacity: .45; cursor: not-allowed; }
+    @keyframes defensePulse { 50% { opacity: .45; transform: scale(1.12); transform-origin: center; } }
+    @keyframes battleFlash { 15% { opacity: 1; } 100% { opacity: 0; r: 28px; } }
+    .settlement { pointer-events: none; }
+    .settlement-city { fill: #efe1a9; stroke: #40382a; stroke-width: 2; }
+    .settlement-castle { fill: #c5d3d0; stroke: #303f3f; stroke-width: 2; }
+    .settlement-village { fill: #d69a59; stroke: #4b3425; stroke-width: 1; }
+    .settlement-label { fill: #292b25; font-size: 10px; font-weight: bold; text-anchor: middle; }
+    .territory-label { fill: #dce4bd; font-size: 10px; letter-spacing: .08em; text-anchor: middle; opacity: .8; }
+    .legend { position: absolute; bottom: 20px; left: 24px; z-index: 2; display: flex; gap: 14px; padding: 8px 12px; color: #e9ddbb; background: #27302acc; border: 1px solid #eee0ae55; font-size: 11px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border: 1px solid #453d2f; vertical-align: -1px; }
+    .legend .mine { background: #a99b70; } .legend .ally { background: #819e84; } .legend .enemy { background: #a77368; }
+    aside { display: flex; flex-direction: column; gap: 14px; }
+    .panel {
+      padding: 18px;
+      border-radius: 4px;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) var(--panel);
+    }
+    .panel::-webkit-scrollbar, .map-actions::-webkit-scrollbar { width: 8px; }
+    .panel::-webkit-scrollbar-track, .map-actions::-webkit-scrollbar-track { background: var(--panel); }
+    .panel::-webkit-scrollbar-thumb, .map-actions::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+    .panel h2 { margin-bottom: 14px; font-size: 17px; color: var(--gold-soft); }
+    .selected-name { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
+    .selected-name strong { font-size: 22px; }
+    .badge { padding: 3px 7px; color: #182020; background: var(--green); border-radius: 2px; font: bold 10px Arial, sans-serif; text-transform: uppercase; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin: 14px 0; }
+    .fact { padding: 9px; background: var(--panel-2); color: var(--muted); font-size: 12px; }
+    .fact strong { display: block; color: var(--ink); font-size: 16px; }
+    .action {
+      width: 100%; margin-top: 7px; padding: 10px; color: #1b1c18; background: var(--gold);
+      border: 0; border-radius: 2px; cursor: pointer; font-weight: bold;
+    }
+    .action:hover, .action:focus-visible { background: var(--gold-soft); outline: 2px solid #fff0ad; outline-offset: 2px; }
+    .action.secondary { color: var(--ink); background: transparent; border: 1px solid var(--line); }
+    .action:disabled { cursor: not-allowed; opacity: .45; }
+    .resource { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; align-items: center; color: var(--muted); }
+    .resource strong { color: var(--gold-soft); }
+    .meter { grid-column: 1 / -1; height: 5px; background: #0d151b; }
+    .meter span { display: block; height: 100%; background: var(--gold); }
+    .army-row { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px solid #ffffff0e; }
+    .army-icon { display: grid; place-items: center; width: 30px; height: 30px; color: #1b2222; background: var(--gold); border-radius: 50%; font-weight: bold; }
+    .army-row small { display: block; color: var(--muted); }
+    .unit-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-height: 430px; overflow: auto; padding: 2px; }
+    .unit-row { position: relative; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: start; min-height: 136px; padding: 11px; background: linear-gradient(145deg, #22343b, #18272e); border: 1px solid #3a5558; border-radius: 8px; overflow: hidden; }
+    .unit-row::after { position: absolute; right: -22px; bottom: -28px; width: 78px; height: 78px; border: 1px solid #e3b95f22; border-radius: 50%; content: ""; }
+    .unit-row > div:first-child::before { display: grid; place-items: center; width: 38px; height: 38px; color: #172129; background: var(--unit-accent, var(--gold)); border-radius: 10px; content: attr(data-icon); font-size: 21px; }
+    .unit-row span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .unit-row strong { color: var(--gold-soft); font-size: 12px; }
+    .unit-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 5px; }
+    .unit-meta em { padding: 3px 6px; color: #d9e4d2; background: #ffffff0d; border: 1px solid #ffffff12; border-radius: 10px; font: 10px Arial, sans-serif; font-style: normal; }
+    .unit-meta em b { color: var(--gold-soft); }
+    .unit-row button { grid-column: 1 / -1; width: 100%; padding: 7px 8px; color: #1b1c18; background: var(--gold); border: 0; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .unit-row button:hover:not(:disabled) { background: var(--gold-soft); transform: translateY(-1px); }
+    .unit-row button:disabled { opacity: .4; cursor: not-allowed; }
+    .production-progress { grid-column: 1 / -1; height: 4px; background: #0d151b; }
+    .production-progress span { display: block; height: 100%; background: var(--green); transition: width .4s linear; }
+    .production-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .production-heading small { color: var(--muted); font-size: 10px; }
+    .queue-label { grid-column: 1 / -1; color: var(--green); font: 10px Arial, sans-serif; }
+    @media (max-width: 570px) { .unit-list { grid-template-columns: 1fr; } }
+    .ai-status { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; }
+    .ai-status strong { color: var(--red); }
+    .scenario { margin-top: 9px; padding: 8px; border-left: 3px solid var(--red); background: #2a2324; color: var(--ink); font-size: 12px; }
+    .combat-controls { display: grid; gap: 8px; }
+    .combat-controls select { width: 100%; padding: 8px; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); }
+    .battle-log { max-height: 120px; overflow: auto; margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .battle-log div { padding: 4px 0; border-bottom: 1px solid #ffffff0e; }
+    .defense-list { display: grid; gap: 7px; }
+    .defense-row { display: grid; grid-template-columns: 1fr auto; gap: 5px 8px; padding: 8px; background: var(--panel-2); }
+    .defense-row span { color: var(--muted); font-size: 11px; }
+    .defense-row strong { color: var(--gold-soft); font-size: 12px; }
+    .defense-row button { grid-column: 1 / -1; padding: 5px; color: #1b1c18; background: var(--gold); border: 0; border-radius: 2px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .defense-row button:disabled { opacity: .4; cursor: not-allowed; }
+    .map-actions {
+      position: absolute; z-index: 4; width: 210px; padding: 12px;
+      max-height: calc(100% - 24px); overflow-y: auto; overscroll-behavior: contain;
+      scrollbar-width: thin; scrollbar-color: var(--line) #172129;
+      border: 1px solid var(--gold); border-radius: 4px; background: #172129f2; box-shadow: 0 10px 28px #000b;
+    }
+    .map-actions[hidden] { display: none; }
+    .map-actions h3 { margin: 0 0 3px; padding-right: 22px; color: var(--gold-soft); font-size: 16px; }
+    .map-actions p { margin: 0 0 9px; color: var(--muted); font-size: 11px; }
+    .map-actions .action { margin-top: 4px; padding: 7px; }
+    .map-actions .popup-close { position: absolute; top: 5px; right: 6px; width: 22px; height: 22px; margin: 0; padding: 0; color: var(--muted); background: transparent; border: 0; font: 20px/20px Arial, sans-serif; }
+    .map-actions .popup-close:hover, .map-actions .popup-close:focus-visible { color: var(--gold-soft); background: #ffffff12; outline: 1px solid var(--gold); }
+    .attack-form { display: grid; gap: 7px; }
+    .attack-form[hidden] { display: none; }
+    .attack-form label { color: var(--muted); font-size: 11px; }
+    .attack-form select, .attack-form input { width: 100%; padding: 7px; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); }
+    .attack-summary { color: var(--gold-soft); font-size: 11px; }
+    .defense-form { display: grid; gap: 7px; }
+    .defense-form[hidden] { display: none; }
+    .defense-form h4 { margin: 0; color: var(--gold-soft); font-size: 12px; }
+    .defense-popup-list { display: grid; gap: 6px; }
+    .defense-popup-row { padding: 7px; background: var(--panel-2); }
+    .defense-popup-row strong, .defense-popup-row span { display: block; }
+    .defense-popup-row span { color: var(--muted); font-size: 10px; }
+    .defense-popup-row button { width: 100%; margin-top: 5px; padding: 5px; color: #1b1c18; background: var(--gold); border: 0; border-radius: 2px; cursor: pointer; font-size: 10px; font-weight: bold; }
+    .defense-popup-row button:disabled { opacity: .4; cursor: not-allowed; }
+    .attack-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .attack-slot { padding: 6px; background: var(--panel-2); border: 1px solid var(--line); }
+    .attack-slot label { display: block; margin-bottom: 4px; color: var(--gold-soft); font-size: 10px; }
+    .attack-slot select, .attack-slot input { padding: 5px; font-size: 10px; }
+    .sea { fill: #477f93; stroke: #9dc7c7; stroke-width: 2; }
+    .sea-label { fill: #d5eeee; font: italic 16px Georgia, serif; letter-spacing: .08em; opacity: .8; }
+    .waterway { fill: none; stroke: #73c4d0; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 5 8; opacity: .8; filter: drop-shadow(0 0 3px #173f4a); pointer-events: none; }
+    .waterway-label { fill: #d5eeee; font-size: 10px; font-style: italic; letter-spacing: .08em; text-anchor: middle; pointer-events: none; }
+    .river { fill: none; stroke: #4e9eae; stroke-width: 7; stroke-linecap: round; opacity: .9; filter: drop-shadow(0 0 2px #244e5a); pointer-events: none; }
+    .river-bank { fill: none; stroke: #b5d8b2; stroke-width: 11; stroke-linecap: round; opacity: .35; pointer-events: none; }
+    .river-label { fill: #d9ffff; stroke: #31545b; stroke-width: 2px; paint-order: stroke; font-size: 10px; font-style: italic; letter-spacing: .08em; text-anchor: middle; pointer-events: none; }
+    .bridge-city { fill: #e8c56b; stroke: #26352d; stroke-width: 3; filter: drop-shadow(0 0 5px #f7d98a); }
+    .bridge-city-core { fill: #27383c; stroke: #f7d98a; stroke-width: 2; }
+    .bridge-city-label { fill: #fff1b1; stroke: #26352d; stroke-width: 3px; paint-order: stroke; font-size: 12px; font-weight: bold; text-anchor: middle; pointer-events: none; }
+    .polar-north { fill: url(#northPolar); stroke: #bfe9eb; stroke-width: 2; opacity: .9; pointer-events: none; }
+    .polar-south { fill: url(#southPolar); stroke: #bfe9eb; stroke-width: 2; opacity: .88; pointer-events: none; }
+    .polar-mountain { fill: #dceff0; stroke: #739da2; stroke-width: 1.5; opacity: .9; pointer-events: none; }
+    .polar-shadow { fill: #86b7bd; opacity: .7; pointer-events: none; }
+    .polar-label { fill: #e6ffff; stroke: #31545b; stroke-width: 3px; paint-order: stroke; font-size: 11px; font-style: italic; letter-spacing: .12em; text-anchor: middle; pointer-events: none; }
+    .tip { margin-top: auto; color: var(--muted); font-size: 12px; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 5; padding: 12px 16px; color: #1b211e; background: var(--gold-soft); box-shadow: 0 6px 20px #0008; transform: translateY(20px); opacity: 0; pointer-events: none; transition: .25s; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .setup-screen { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 20px; background: #081117dd; backdrop-filter: blur(7px); }
+    .setup-screen[hidden] { display: none; }
+    .setup-card { width: min(430px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; padding: 28px; border: 1px solid var(--gold); border-radius: 6px; background: var(--panel); box-shadow: 0 24px 70px #000b; scrollbar-width: thin; scrollbar-color: var(--line) var(--panel); }
+    .setup-card h2 { margin: 5px 0 8px; color: var(--gold-soft); font-size: 26px; }
+    .setup-card p { margin-bottom: 18px; color: var(--muted); }
+    .setup-card label { display: block; margin: 12px 0 5px; color: var(--ink); font-size: 12px; }
+    .setup-card input, .setup-card select { width: 100%; padding: 11px; color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 2px; }
+    .kingdom-label { fill: #eff0c3; stroke: #26352d; stroke-width: 3px; paint-order: stroke; font-size: 11px; font-weight: bold; letter-spacing: .05em; text-anchor: middle; pointer-events: none; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; padding: 12px; }
+      .map-wrap { min-height: 760px; }
+      aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .panel { max-height: 52vh; }
+      .tip { grid-column: 1 / -1; }
+    }
+    @media (max-width: 570px) {
+      .topbar { align-items: flex-start; } .top-stats { gap: 10px; font-size: 11px; }
+      .top-stat strong { font-size: 15px; } .top-stats .hide-small { display: none; }
+      .map-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .map-svg { height: 720px; min-height: 0; } aside { display: flex; }
+      .panel { max-height: 58vh; }
+      .legend { left: 14px; bottom: 12px; gap: 7px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-screen" id="setup-screen">
+    <form class="setup-card" id="setup-form">
+      <div class="eyebrow">Sivas seferi · yeni hükümdar</div>
+      <h2>Krallığını kur</h2>
+      <p>Haritada hangi toprakla başlayacağını ve krallığının adını belirle.</p>
+      <label for="kingdom-name-input">Krallık adı</label>
+      <input id="kingdom-name-input" maxlength="24" required placeholder="Örn. Sivas Birliği">
+      <label for="start-region-input">Başlangıç toprağı</label>
+      <select id="start-region-input" required></select>
+      <button class="action" type="submit">Seferi başlat</button>
+    </form>
+  </div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="crest">✦</div><div><div class="eyebrow">Anadolu seferi · 1453</div><h1>Sivas 73</h1></div></div>
+      <div class="top-stats"><div class="top-stat"><span>Tur</span><strong id="turn">12</strong></div><div class="top-stat"><span>İtibar</span><strong id="honor">74</strong></div><div class="top-stat hide-small"><span>Durum</span><strong>Barış</strong></div></div>
+    </header>
+    <div class="resource-strip" aria-label="Krallık kaynakları">
+      <div class="resource-chip" title="Toplam nüfus"><span class="symbol">♙</span><strong id="total-population">0</strong></div>
+      <div class="resource-chip" title="Toplam altın"><span class="symbol">◈</span><strong id="total-gold">1.240</strong></div>
+      <div class="resource-chip food" title="Erzak ve üretim"><span class="symbol">♨</span><strong id="total-food">2.180</strong></div>
+      <div class="resource-chip" title="Toplam askeri güç"><span class="symbol">⚔</span><strong id="total-power">0</strong></div>
+      <div class="resource-chip" title="Kontrol edilen bölge"><span class="symbol">▣</span><strong id="total-territory">0</strong></div>
+    </div>
+    <div class="unit-strip" id="unit-strip" aria-label="Topraklardaki toplam birlikler"></div>
+    <main class="layout">
+      <section class="map-card" aria-label="Sivas 73 strateji haritası">
+        <div class="map-heading"><h2>Sivas 73</h2><div class="map-tools"><span>Scroll ile yakınlaştır ·</span><select id="region-filter" aria-label="Bölge görünümü"><option value="all">Tüm bölgeler</option></select></div></div>
+        <div class="map-wrap">
+          <svg class="map-svg" viewBox="0 0 900 590" role="img" aria-label="17 tıklanabilir bölgeden oluşan Sivas haritası">
+            <defs>
+              <linearGradient id="northPolar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dffcff"/><stop offset=".55" stop-color="#8fc6d0"/><stop offset="1" stop-color="#477f93"/></linearGradient>
+              <linearGradient id="southPolar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#477f93"/><stop offset=".55" stop-color="#79b8c1"/><stop offset="1" stop-color="#e5fbfb"/></linearGradient>
+              <linearGradient id="greenBase" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8eaa6a"/><stop offset=".5" stop-color="#607c50"/><stop offset="1" stop-color="#3f6245"/></linearGradient>
+              <linearGradient id="steppeBase" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c9b879"/><stop offset=".45" stop-color="#aa9b62"/><stop offset="1" stop-color="#81774d"/></linearGradient>
+              <linearGradient id="oceanBase" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#173f58"/><stop offset=".5" stop-color="#2c7183"/><stop offset="1" stop-color="#102d46"/></linearGradient>
+              <pattern id="oceanWaves" width="54" height="30" patternUnits="userSpaceOnUse"><path d="M0 15q13-9 27 0t27 0" fill="none" stroke="#9bd1d055" stroke-width="2"/><path d="M-15 27q13-9 27 0t27 0t27 0" fill="none" stroke="#b5e2e044" stroke-width="1.5"/></pattern>
+              <pattern id="greenTerrain" width="34" height="34" patternUnits="userSpaceOnUse"><rect width="34" height="34" fill="url(#greenBase)"/><path d="M2 27q7-12 14 0M20 30q5-10 12-1" fill="none" stroke="#bdd08a55" stroke-width="2"/><circle cx="7" cy="9" r="2" fill="#d4e59a66"/></pattern>
+              <pattern id="steppeTexture" width="38" height="38" patternUnits="userSpaceOnUse"><rect width="38" height="38" fill="url(#steppeBase)"/><path d="M3 28q8-9 16-1t16-2M8 11q5 4 10 0t12 2" fill="none" stroke="#e0cc8855" stroke-width="2"/><circle cx="29" cy="27" r="2" fill="#6c684555"/></pattern>
+              <pattern id="enemyTerrain" width="36" height="36" patternUnits="userSpaceOnUse"><rect width="36" height="36" fill="#9b6f61"/><path d="M3 28l9-12 7 8 8-15 7 19" fill="none" stroke="#d39a7950" stroke-width="2"/></pattern>
+            </defs>
+            <rect x="0" y="0" width="900" height="590" rx="34" fill="url(#oceanBase)"/>
+            <rect x="0" y="0" width="900" height="590" rx="34" fill="url(#oceanWaves)" opacity=".75"/>
+            <path d="M58 82 Q92 48 145 52 Q205 30 264 55 Q330 35 390 56 Q465 30 530 55 Q604 38 662 63 Q735 42 795 76 Q851 100 842 157 Q874 210 844 265 Q872 324 837 370 Q860 430 817 463 Q785 529 718 520 Q665 557 605 530 Q531 560 468 536 Q395 558 332 532 Q266 552 213 515 Q145 526 116 477 Q59 452 73 397 Q35 344 66 291 Q35 235 66 186 Q36 128 58 82Z" fill="url(#steppeBase)" stroke="#d9d39c" stroke-width="8" stroke-linejoin="round"/>
+            <path d="M74 112 Q140 70 220 88 T380 78 T545 83 T710 92 T827 130 M78 424 Q160 390 245 420 T420 409 T590 428 T758 407" fill="none" stroke="#9fc386" stroke-width="35" opacity=".72" stroke-linecap="round"/>
+            <path d="M105 145 Q190 105 280 130 T455 115 T620 130 T790 145 M105 370 Q200 340 300 365 T500 350 T690 375 T805 350" fill="none" stroke="#d6d99b55" stroke-width="18" stroke-linecap="round"/>
+            <path d="M145 92l26-28 20 22 24-30 23 31 27-24 26 26M640 475l24-28 20 24 25-32 24 28 29-20 24 23" fill="none" stroke="#cad8a077" stroke-width="7" stroke-linecap="round"/>
+            <text class="polar-label" x="150" y="28">KUZEY ORMAN KUŞAĞI</text><text class="polar-label" x="735" y="565">GÜNEY BOZKIRI</text>
+            <text class="sea-label" x="450" y="25" text-anchor="middle">KUZEY OKYANUSU</text><text class="sea-label" x="450" y="580" text-anchor="middle">GÜNEY OKYANUSU</text><text class="sea-label" x="20" y="310" transform="rotate(-90 20 310)" text-anchor="middle">BATI OKYANUSU</text><text class="sea-label" x="880" y="310" transform="rotate(90 880 310)" text-anchor="middle">DOĞU OKYANUSU</text>
+            <path class="waterway" d="M455 52 C430 105 480 150 450 205 S480 275 450 330 S475 405 455 460 S470 515 475 548"/>
+            <text class="waterway-label" x="515" y="395" transform="rotate(78 515 395)">İKİ DENİZ SU YOLU</text>
+            <path class="river-bank" d="M235 70 C275 125 245 175 300 220 S350 305 315 355 S270 430 330 510"/>
+            <path class="river" d="M235 70 C275 125 245 175 300 220 S350 305 315 355 S270 430 330 510"/>
+            <text class="river-label" x="270" y="190" transform="rotate(62 270 190)">SİVAS NEHRİ</text>
+            <path class="region ally selected" data-region="1" d="M55 95 Q58 82 72 78 L160 52 Q174 49 184 60 L238 98 Q245 104 241 116 L228 180 Q226 192 214 195 L151 211 Q142 214 132 207 L70 181 Q61 177 62 166Z"/><path class="region" data-region="2" d="M184 60 Q176 49 190 47 L292 40 Q304 39 311 50 L348 101 Q354 111 344 119 L291 161 Q285 166 275 166 L231 190 Q222 193 217 184 L239 113 Q243 104 235 98Z"/>
+            <path class="region enemy" data-region="3" d="M311 50 Q304 39 317 42 L415 66 Q428 69 429 82 L431 137 Q431 148 422 155 L357 187 Q348 192 338 185 L290 166 Q281 162 288 153 L344 119 Q354 112 348 101Z"/><path class="region" data-region="4" d="M428 82 Q428 69 441 66 L545 52 Q558 50 565 61 L603 116 Q609 125 601 134 L547 184 Q540 191 529 190 L439 151 Q429 147 430 137Z"/>
+            <path class="region" data-region="5" d="M565 61 Q558 50 572 53 L689 81 Q701 84 707 95 L732 151 Q737 162 727 169 L611 191 Q601 193 594 184 L547 134 Q540 126 547 117Z"/><path class="region" data-region="6" d="M707 95 Q701 84 714 88 L824 120 Q836 124 839 137 L853 209 Q855 221 844 226 L747 249 Q735 252 732 240 L732 169 Q733 160 727 151Z"/>
+            <path class="region" data-region="7" d="M62 166 Q61 177 72 181 L132 207 Q142 213 151 211 L216 194 Q226 191 231 201 L248 264 Q251 275 242 282 L181 326 Q174 332 163 328 L78 298 Q68 294 68 283 L61 181Z"/><path class="region" data-region="8" d="M231 201 Q226 191 237 186 L276 166 Q285 162 294 168 L344 185 Q353 189 357 200 L382 258 Q387 270 375 273 L258 278 Q248 278 247 267Z"/>
+            <path class="region enemy" data-region="9" d="M357 200 Q353 189 363 183 L420 153 Q430 148 440 153 L529 184 Q540 188 540 200 L536 263 Q535 276 523 277 L394 273 Q384 273 382 262Z"/><path class="region" data-region="10" d="M540 200 Q540 188 552 187 L594 184 Q603 193 613 191 L724 170 Q735 168 736 180 L735 241 Q735 251 727 257 L657 310 Q650 316 640 312 L544 278 Q534 274 536 263Z"/>
+            <path class="region" data-region="11" d="M736 180 Q735 168 747 169 L844 226 Q855 221 853 234 L843 329 Q842 341 830 345 L748 369 Q737 373 729 364 L657 310 Q650 315 657 306 L727 257 Q736 251 736 241Z"/><path class="region" data-region="12" d="M68 283 Q68 294 78 298 L163 328 Q174 332 181 326 L241 282 Q251 275 258 284 L313 340 Q321 348 315 359 L276 433 Q271 444 259 444 L151 433 Q140 432 133 425 L65 374 Q59 369 62 358Z"/>
+            <path class="region ally" data-region="13" d="M258 284 Q251 275 263 274 L374 270 Q385 270 390 280 L425 338 Q431 349 419 353 L331 359 Q321 359 315 350Z"/><path class="region" data-region="14" d="M390 280 Q385 270 397 271 L524 274 Q536 275 542 285 L590 351 Q597 362 586 368 L442 354 Q431 352 425 341Z"/>
+            <path class="region" data-region="15" d="M542 285 Q536 275 548 279 L640 312 Q650 316 657 322 L728 364 Q737 373 729 383 L687 446 Q680 456 669 451 L602 372 Q596 365 590 355Z"/><path class="region" data-region="16" d="M151 433 Q140 432 148 443 L218 536 Q225 548 238 550 L338 523 Q350 520 344 509 L277 449 Q270 443 259 444Z"/>
+            <path class="region" data-region="17" d="M277 449 Q270 443 280 436 L419 354 Q430 348 442 354 L586 368 Q597 372 603 382 L676 445 Q684 454 675 463 L598 526 Q590 535 578 535 L361 523 Q350 522 344 513Z"/>
+            <g aria-hidden="true">
+              <text class="region-number" x="145" y="130">1</text><text class="region-label" x="145" y="152">Merkez</text><text class="region-number" x="278" y="105">2</text><text class="region-label" x="278" y="127">Zara</text><text class="region-number" x="365" y="105">3</text><text class="region-label" x="365" y="127">Suşehri</text><text class="region-number" x="480" y="112">4</text><text class="region-label" x="480" y="134">Koyulhisar</text><text class="region-number" x="630" y="120">5</text><text class="region-label" x="630" y="142">Akıncılar</text><text class="region-number" x="785" y="165">6</text><text class="region-label" x="785" y="187">Gürün</text>
+              <text class="region-number" x="145" y="250">7</text><text class="region-label" x="145" y="272">Yıldızeli</text><text class="region-number" x="290" y="225">8</text><text class="region-label" x="290" y="247">Hafik</text><text class="region-number" x="455" y="225">9</text><text class="region-label" x="455" y="247">Şarkışla</text><text class="region-number" x="635" y="235">10</text><text class="region-label" x="635" y="257">Kangal</text><text class="region-number" x="790" y="285">11</text><text class="region-label" x="790" y="307">Divriği</text>
+              <text class="region-number" x="155" y="350">12</text><text class="region-label" x="155" y="372">Altınyayla</text><text class="region-number" x="315" y="310">13</text><text class="region-label" x="315" y="332">Ulaş</text><text class="region-number" x="465" y="315">14</text><text class="region-label" x="465" y="337">Gemerek</text><text class="region-number" x="600" y="330">15</text><text class="region-label" x="600" y="352">Gölova</text><text class="region-number" x="200" y="475">16</text><text class="region-label" x="200" y="497">Çamlıbel</text><text class="region-number" x="475" y="430">17</text><text class="region-label" x="475" y="452">Koyulhisar Ovası</text>
+              <g class="settlement" aria-label="Şehir, köy ve kale yerleşimleri">
+                <circle class="settlement-city" cx="155" cy="120" r="7"/><text class="settlement-label" x="155" y="110">Sivas şehri</text>
+                <path class="settlement-castle" d="M270 88l7-7 7 7v8h-14z"/><text class="settlement-label" x="284" y="78">Zara kalesi</text>
+                <circle class="settlement-village" cx="365" cy="145" r="5"/><text class="settlement-label" x="365" y="160">Suşehri köyü</text>
+                <path class="settlement-castle" d="M485 94l6-6 6 6v7h-12z"/><text class="settlement-label" x="500" y="88">Kale</text>
+                <circle class="settlement-village" cx="635" cy="165" r="5"/><text class="settlement-label" x="635" y="180">Akıncı köyü</text>
+                <circle class="settlement-city" cx="150" cy="235" r="6"/><text class="settlement-label" x="150" y="225">Yıldızeli</text>
+                <circle class="settlement-village" cx="290" cy="255" r="5"/><text class="settlement-label" x="290" y="268">Hafik köyü</text>
+                <path class="settlement-castle" d="M450 218l6-6 6 6v7h-12z"/><text class="settlement-label" x="470" y="215">Şarkışla kalesi</text>
+                <circle class="settlement-city" cx="635" cy="235" r="6"/><text class="settlement-label" x="635" y="222">Kangal</text>
+                <circle class="settlement-village" cx="790" cy="310" r="5"/><text class="settlement-label" x="790" y="325">Divriği köyü</text>
+                <circle class="settlement-village" cx="150" cy="385" r="5"/><text class="settlement-label" x="150" y="400">Altınyayla köyü</text>
+                <circle class="settlement-city" cx="320" cy="315" r="6"/><text class="settlement-label" x="320" y="300">Ulaş</text>
+                <path class="settlement-castle" d="M465 300l6-6 6 6v7h-12z"/><text class="settlement-label" x="490" y="300">Gemerek kalesi</text>
+                <circle class="settlement-village" cx="610" cy="355" r="5"/><text class="settlement-label" x="610" y="370">Gölova köyü</text>
+                <circle class="settlement-city" cx="475" cy="420" r="7"/><text class="settlement-label" x="475" y="410">Merkez şehir</text>
+                <circle class="settlement-village" cx="210" cy="475" r="5"/><text class="settlement-label" x="210" y="490">Çamlıbel köyü</text>
+              </g>
+              <g id="kingdom-labels" aria-label="Krallık adları"></g>
+              <g id="unit-entities" aria-label="Haritadaki birlikler"></g>
+              <g id="battle-effects" aria-hidden="true"></g>
+              <g class="bridge-city" aria-label="İki Deniz Şehri">
+                <circle cx="455" cy="285" r="17"/><circle class="bridge-city-core" cx="455" cy="285" r="8"/>
+                <path d="M447 284h16M455 276v18" stroke="#f7d98a" stroke-width="2"/>
+                <text class="bridge-city-label" x="455" y="263">İKİ DENİZ ŞEHRİ</text>
+              </g>
+              <g class="army"><circle cx="143" cy="176" r="16"/><text x="143" y="176">24</text></g><g class="army"><circle cx="460" cy="290" r="16"/><text x="460" y="290">12</text></g><g class="army"><circle cx="720" cy="390" r="16"/><text x="720" y="390">8</text></g>
+            </g>
+          </svg>
+          <div class="legend"><span><i class="mine"></i>Tarafsız</span><span><i class="ally"></i>Müttefik</span><span><i class="enemy"></i>Rakip</span></div>
+          <div class="unit-info-popup" id="unit-info-popup" hidden>
+            <button class="unit-info-close" id="unit-info-close" type="button" aria-label="Birlik bilgisini kapat">×</button>
+            <h4 id="unit-info-name">Birlik</h4>
+            <p>Durum: <strong id="unit-info-status">Hazır</strong></p>
+            <p>Can: <strong id="unit-info-health">100%</strong></p>
+            <p>Birim: <strong id="unit-info-count">0</strong></p>
+            <button class="unit-info-action" id="unit-merge" type="button">Seçili birlikleri birleştir</button>
+            <button class="unit-info-action secondary" id="unit-split" type="button">Birleşik birliği ayır</button>
+          </div>
+          <div class="map-actions" id="map-actions" hidden>
+            <h3 id="action-region">Bölge</h3>
+            <p id="action-status">Bölge emirleri</p>
+            <button class="action" id="popup-attack">Saldır</button>
+            <button class="action secondary" id="popup-scout">Gözetle</button>
+            <button class="action secondary" id="popup-defense">Savunma sistemleri</button>
+            <button class="popup-close" id="popup-close" type="button" aria-label="Emir penceresini kapat" title="Kapat">×</button>
+            <div class="attack-form" id="attack-form" hidden>
+              <label>Gönderilecek birlikler</label>
+              <div class="attack-slots">
+                <div class="attack-slot"><label for="popup-unit-1">1. birlik</label><select id="popup-unit-1"></select><input id="popup-count-1" type="number" min="0" value="0" aria-label="1. birlik sayısı"></div>
+                <div class="attack-slot"><label for="popup-unit-2">2. birlik</label><select id="popup-unit-2"></select><input id="popup-count-2" type="number" min="0" value="0" aria-label="2. birlik sayısı"></div>
+                <div class="attack-slot"><label for="popup-unit-3">3. birlik</label><select id="popup-unit-3"></select><input id="popup-count-3" type="number" min="0" value="0" aria-label="3. birlik sayısı"></div>
+              </div>
+              <div class="attack-summary" id="attack-summary">Maliyet: 0 altın · Güç: 0</div>
+              <button class="action" id="popup-confirm-attack">Saldırıyı onayla</button>
+              <button class="action secondary" id="popup-back">Geri</button>
+            </div>
+            <div class="defense-form" id="defense-form" hidden>
+              <h4>Bu bölgede savunma kur</h4>
+              <div class="defense-popup-list" id="defense-popup-list"></div>
+              <button class="action secondary" id="popup-defense-back">Geri</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <aside>
+        <section class="panel" id="region-info-panel">
+          <h2>Bölge bilgisi</h2>
+          <div class="selected-name"><strong id="region-name">Merkez</strong><span class="badge" id="region-status">Müttefik</span></div>
+          <div class="facts"><div class="fact">Nüfus<strong id="population">42.000</strong></div><div class="fact">Savunma<strong id="defense">65</strong></div><div class="fact">Üretim<strong id="production">+18</strong></div><div class="fact">Garnizon<strong id="garrison">24</strong></div></div>
+          <button class="action" id="move-button">Birlik gönder</button><button class="action secondary" id="claim-button">Bölgeyi sahiplen</button>
+        </section>
+        <section class="panel">
+          <div class="production-heading"><h2>Birlik üretimi</h2><small>Tugay komuta merkezi</small></div>
+          <div class="unit-list" id="unit-list"></div>
+        </section>
+        <section class="panel">
+          <h2>Rakip komutan</h2>
+          <div class="ai-status"><span>Karar motoru</span><strong id="ai-state">Hazır</strong></div>
+          <div class="scenario" id="ai-scenario">Senaryo: sınır baskısı analiz ediliyor.</div>
+        </section>
+        <section class="panel">
+          <h2>Savaş komutası</h2>
+          <div class="combat-controls">
+            <select id="attacker-select" aria-label="Saldıran birlik"></select>
+            <button class="action" id="attack-button">Saldırı emri ver</button>
+          </div>
+          <div class="battle-log" id="battle-log" aria-live="polite"><div>Çatışma raporu bekleniyor.</div></div>
+        </section>
+        <section class="panel" id="defense-panel">
+          <h2>Bölge savunması</h2>
+          <div class="defense-list" id="defense-list"></div>
+        </section>
+        <section class="panel">
+          <h2>Hazine</h2>
+          <div class="resource"><span>Altın</span><strong id="gold">1.240</strong><div class="meter"><span style="width: 68%"></span></div><span>Odun</span><strong id="wood">860</strong><div class="meter"><span style="width: 48%; background: var(--green)"></span></div><span>Erzak</span><strong id="food">2.180</strong><div class="meter"><span style="width: 82%; background: var(--blue)"></span></div></div>
+        </section>
+        <section class="panel">
+          <h2>Ordularım</h2>
+          <div class="army-row"><div class="army-icon">♜</div><div><strong>Merkez Muhafızları</strong><small>Merkez · 24 asker</small></div></div>
+          <div class="army-row"><div class="army-icon">⚔</div><div><strong>Batı Akıncıları</strong><small>Ulaş · 12 asker</small></div></div>
+          <p class="tip">Haritadaki bir sancağa tıklayın. Birlik gönderme, seçili bölgeye 5 asker taşır; sahiplenme tarafsız bölgeleri krallığınıza bağlar.</p>
+        </section>
+      </aside>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    (() => {
+      const data = {
+        1: ["Merkez", "42.000", 65, "+18", 24, "Müttefik"], 2: ["Zara", "18.500", 42, "+11", 9, "Tarafsız"], 3: ["Suşehri", "21.300", 72, "+8", 16, "Rakip"],
+        4: ["Koyulhisar", "14.800", 38, "+9", 5, "Tarafsız"], 5: ["Akıncılar", "11.200", 35, "+7", 4, "Tarafsız"], 6: ["Gürün", "26.700", 58, "+14", 12, "Tarafsız"],
+        7: ["Yıldızeli", "16.100", 44, "+10", 7, "Tarafsız"], 8: ["Hafik", "12.400", 39, "+8", 6, "Tarafsız"], 9: ["Şarkışla", "29.600", 76, "+13", 12, "Rakip"],
+        10: ["Kangal", "19.700", 51, "+12", 8, "Tarafsız"], 11: ["Divriği", "23.900", 63, "+15", 10, "Tarafsız"], 12: ["Altınyayla", "10.600", 34, "+6", 3, "Tarafsız"],
+        13: ["Ulaş", "13.500", 46, "+10", 12, "Müttefik"], 14: ["Gemerek", "15.300", 41, "+9", 5, "Tarafsız"], 15: ["Gölova", "9.800", 32, "+5", 2, "Tarafsız"],
+        16: ["Çamlıbel", "8.900", 29, "+5", 2, "Tarafsız"], 17: ["Koyulhisar Ovası", "31.000", 61, "+16", 15, "Tarafsız"]
+      };
+      let selected = 1; let turn = 12; let honor = 74; let gold = 1240; let food = 2180; let wood = 860;
+      let selectedUnitId = null;
+      let selectedUnitIds = [];
+      let kingdomName = "";
+      let panStart = null;
+      let dragStart = null;
+      let panOffset = { x: 0, y: 0 };
+      let didPan = false;
+      const units = [
+        ["Piyade · Subay", "Kara / piyade", 4], ["Piyade · Er", "Kara / piyade", 2],
+        ["Mekanize · Tank", "Kara / mekanize", 6], ["Mekanize · General", "Kara / mekanize", 6],
+        ["Ağır hava · F-35", "Hava / ağır", 8], ["Ağır hava · KAAN", "Hava / ağır", 8],
+        ["Hafif hava · Atak helikopteri", "Hava / hafif", 4], ["Hafif hava · İHA", "Hava / hafif", 4],
+        ["Deniz · Savaş gemisi", "Deniz", 5]
+      ];
+      const unitIcons = ["♟", "•", "▣", "♜", "✈", "✦", "▲", "◇", "⚓"];
+      const unitAccents = ["#d6b762", "#a9c27e", "#c8795e", "#b879d1", "#78b8da", "#8d9fe0", "#79c3a0", "#8ec8bb", "#5fabbc"];
+      const combatUnits = [
+        { name: "Piyade subayı", domain: "kara", brigadeSize: 10, power: 4, defense: 18, speed: 3.8, strongAgainst: "mekanize", weakAgainst: "hava" },
+        { name: "Piyade eri", domain: "kara", brigadeSize: 10, power: 1, defense: 12, speed: 4.2, strongAgainst: "hava", weakAgainst: "mekanize" },
+        { name: "Tank", domain: "mekanize", brigadeSize: 15, power: 45, defense: 30, speed: 2.4, strongAgainst: "piyade", weakAgainst: "hava" },
+        { name: "General", domain: "mekanize", brigadeSize: 1, power: 30, defense: 25, speed: 2.8, strongAgainst: "piyade", weakAgainst: "hava" },
+        { name: "F-35", domain: "hava", brigadeSize: 20, power: 150, defense: 20, speed: 9.5, strongAgainst: "mekanize", weakAgainst: "hava" },
+        { name: "KAAN", domain: "hava", brigadeSize: 20, power: 150, defense: 23, speed: 9.2, strongAgainst: "hava", weakAgainst: "hava" },
+        { name: "Atak helikopteri", domain: "hava", brigadeSize: 12, power: 70, defense: 17, speed: 7.2, strongAgainst: "mekanize", weakAgainst: "kara" },
+        { name: "İHA", domain: "hava", brigadeSize: 8, power: 35, defense: 10, speed: 8.1, strongAgainst: "piyade", weakAgainst: "hava" },
+        { name: "Savaş gemisi", domain: "deniz", brigadeSize: 4, power: 95, defense: 34, speed: 3.1, strongAgainst: "kara", weakAgainst: "hava" }
+      ];
+      const unitEntities = [
+        { id: "garrison-1", index: 1, composition: [1], count: 1, health: 100, region: 1, x: 143, y: 176 },
+        { id: "garrison-13", index: 2, composition: [2], count: 1, health: 100, region: 13, x: 330, y: 330 }
+      ];
+      const defenseSystems = [
+        { name: "Hava savunma", domain: "hava", fixed: 78, mobile: 45, cost: 420, buildSeconds: 18, icon: "✦" },
+        { name: "Kara savunma", domain: "kara", fixed: 70, mobile: 42, cost: 360, buildSeconds: 15, icon: "♜" },
+        { name: "Deniz savunma", domain: "deniz", fixed: 82, mobile: 48, cost: 520, buildSeconds: 22, icon: "⚓" }
+      ];
+      const regionDefenses = {};
+      Object.keys(data).forEach(id => { regionDefenses[id] = defenseSystems.map(() => ({ fixed: 0, mobile: 0 })); });
+      const mobileDefenseStock = [2, 2, 1];
+      const coastalRegions = [5, 6, 11, 15];
+      const unitStock = [8, 24, 5, 2, 2, 1, 4, 6, 2];
+      const unitCosts = [32, 10, 260, 180, 900, 900, 420, 210, 560];
+      const unitProductionSeconds = combatUnits.map(unit => Math.max(18, Math.ceil(unit.power / 3) + unit.brigadeSize));
+      const productionQueue = [];
+      const regionArea = { 1: 100, 2: 72, 3: 88, 4: 70, 5: 94, 6: 110, 7: 76, 8: 60, 9: 105, 10: 98, 11: 120, 12: 82, 13: 65, 14: 84, 15: 102, 16: 90, 17: 140 };
+      const regionCenters = {
+        1: [145, 130], 2: [278, 105], 3: [365, 105], 4: [480, 112], 5: [630, 120], 6: [785, 165],
+        7: [145, 250], 8: [290, 225], 9: [455, 225], 10: [635, 235], 11: [790, 285],
+        12: [155, 350], 13: [315, 310], 14: [465, 315], 15: [635, 350], 16: [200, 475], 17: [475, 430]
+      };
+      let mapZoom = 1;
+      const aiScenarios = [
+        ["Sınır baskısı", "Rakip, en zayıf savunma hattına piyade yığıyor."],
+        ["Hava üstünlüğü", "Rakip, ağır hava birlikleriyle merkez üzerinde keşif yapıyor."],
+        ["Deniz ablukası", "Rakip, kıyı deniz alanlarında savaş gemilerini topluyor."]
+      ];
+      const forest = [
+        { test: state => state.turn % 3 === 0, scenario: aiScenarios[2], action: "Deniz filosu kıyıya ilerliyor." },
+        { test: state => state.enemyPower > state.playerPower, scenario: aiScenarios[1], action: "Rakip hava kanadı saldırıya hazırlanıyor." },
+        { test: state => true, scenario: aiScenarios[0], action: "Rakip sınır bölgesine birlik kaydırıyor." }
+      ];
+      const $ = id => document.getElementById(id);
+      const toast = message => { $("toast").textContent = message; $("toast").classList.add("show"); setTimeout(() => $("toast").classList.remove("show"), 2200); };
+      function getRegionGroups() {
+        const groups = { owned: [], unowned: [] };
+        Object.entries(data).forEach(([id, region]) => {
+          (region[5] === "Müttefik" ? groups.owned : groups.unowned).push(Number(id));
+        });
+        return groups;
+      }
+      function getSelectedRegionGroup() {
+        return getRegionGroups().owned.includes(selected) ? "owned" : "unowned";
+      }
+      function closeMapActions() {
+        $("map-actions").hidden = true;
+        $("attack-form").hidden = true;
+        $("defense-form").hidden = true;
+        $("popup-attack").hidden = false;
+        $("popup-scout").hidden = false;
+        $("popup-defense").hidden = false;
+        $("popup-close").hidden = false;
+      }
+      function resetMapActions() {
+        $("attack-form").hidden = true;
+        $("defense-form").hidden = true;
+        $("popup-attack").hidden = false;
+        $("popup-scout").hidden = false;
+        $("popup-defense").hidden = false;
+        $("popup-close").hidden = false;
+      }
+      function updateAttackSummary() {
+        let cost = 0;
+        let power = 0;
+        for (let slot = 1; slot <= 3; slot++) {
+          const index = Number($(`popup-unit-${slot}`).value);
+          const count = Math.max(0, Math.min(Number($(`popup-count-${slot}`).value) || 0, unitStock[index]));
+          $(`popup-count-${slot}`).max = unitStock[index];
+          cost += unitCosts[index] * count;
+          power += combatUnits[index].power * count;
+        }
+        $("attack-summary").textContent = `Maliyet: ${cost} altın · Güç: ${power}`;
+      }
+      function openAttackForm() {
+        $("popup-attack").hidden = true;
+        $("popup-scout").hidden = true;
+        $("popup-close").hidden = true;
+        $("attack-form").hidden = false;
+        const options = combatUnits.map((unit, index) => unitStock[index] > 0
+          ? `<option value="${index}">${unit.name} · ${unitStock[index]} mevcut</option>` : "").join("");
+        for (let slot = 1; slot <= 3; slot++) {
+          $(`popup-unit-${slot}`).innerHTML = options;
+          $(`popup-count-${slot}`).value = 0;
+        }
+        updateAttackSummary();
+      }
+      function openMapActions(region) {
+        const popup = $("map-actions");
+        resetMapActions();
+        const target = region.getBoundingClientRect();
+        const map = document.querySelector(".map-wrap").getBoundingClientRect();
+        $("action-region").textContent = data[selected][0];
+        $("action-status").textContent = data[selected][5] === "Müttefik"
+          ? `${kingdomName || "Senin krallığın"} · Sahip olunan bölge · Emir seçin.`
+          : `${data[selected][5]} bölge · Sahip olunmayan bölgeler · Emir seçin.`;
+        const owned = getSelectedRegionGroup() === "owned";
+        $("popup-attack").disabled = owned || selected === 1 || !combatUnits.some((unit, index) => unitStock[index] > 0);
+        $("popup-scout").disabled = selected === 1;
+        $("popup-defense").hidden = !owned;
+        popup.style.left = Math.max(12, Math.min(target.left - map.left, map.width - 222)) + "px";
+        popup.style.top = Math.max(12, Math.min(target.top - map.top + 18, map.height - 190)) + "px";
+        popup.hidden = false;
+      }
+      function openDefenseForm() {
+        if (getSelectedRegionGroup() !== "owned") return;
+        $("popup-attack").hidden = true;
+        $("popup-scout").hidden = true;
+        $("popup-defense").hidden = true;
+        $("popup-close").hidden = true;
+        $("defense-form").hidden = false;
+        $("defense-popup-list").innerHTML = defenseSystems.map((system, index) => {
+          const installed = regionDefenses[selected][index];
+          const fixedCost = system.cost;
+          const mobileCost = Math.round(system.cost * .65);
+          const pending = productionQueue.filter(job => job.kind === "defense" && job.region === selected && job.index === index).length;
+          return `<div class="defense-popup-row"><strong>${system.icon} ${system.name}</strong><span>Sabit: ${installed.fixed} · Mobil: ${installed.mobile} · Bekleyen: ${pending} · Süre: ${system.buildSeconds} sn · Güç: ${installed.fixed * system.fixed + installed.mobile * system.mobile}</span><button data-popup-defense-fixed="${index}" ${gold < fixedCost ? "disabled" : ""}>Sabit bina kur · ${fixedCost} altın · ${system.buildSeconds} sn</button><button data-popup-defense-mobile="${index}" ${gold < mobileCost || mobileDefenseStock[index] < 1 ? "disabled" : ""}>Mobil birlik konuşlandır · ${mobileCost} altın · ${system.buildSeconds} sn · stok ${mobileDefenseStock[index]}</button></div>`;
+        }).join("");
+        document.querySelectorAll("[data-popup-defense-fixed]").forEach(button => button.addEventListener("click", () => buildDefense(Number(button.dataset.popupDefenseFixed), true)));
+        document.querySelectorAll("[data-popup-defense-mobile]").forEach(button => button.addEventListener("click", () => buildDefense(Number(button.dataset.popupDefenseMobile), false)));
+      }
+      function trainAI() {
+        const state = { turn, playerPower: totalPower(), enemyPower: 80 + selected * 2 };
+        const treeVotes = forest.map(tree => tree.test(state) ? tree : forest[2]);
+        const decision = treeVotes[0] || treeVotes[1] || treeVotes[2];
+        $("ai-state").textContent = "Aktif";
+        $("ai-scenario").textContent = "Senaryo: " + decision.scenario[0] + " — " + decision.scenario[1] + " " + decision.action;
+      }
+      function renderUnits() {
+        $("unit-list").innerHTML = units.map((unit, index) =>
+          `<div class="unit-row" style="--unit-accent:${unitAccents[index]}"><div data-icon="${unitIcons[index]}"></div><div><strong>${unit[0]} tugayı</strong><span>${unit[1]} · ${combatUnits[index].brigadeSize} ${index >= 4 && index <= 7 ? "platform" : "personel/araç"}</span></div><div class="unit-meta"><em>Tugay <b>${unitStock[index]}</b></em><em>Güç <b>${combatUnits[index].power}</b></em><em>Süre <b>${unitProductionSeconds[index]} sn</b></em></div><button data-unit="${index}" ${gold < unitCosts[index] || getSelectedRegionGroup() !== "owned" ? "disabled" : ""}>${gold < unitCosts[index] ? "Altın yetersiz" : getSelectedRegionGroup() !== "owned" ? "Bölge sahibi değil" : "＋ Tugay üret"} · ${unitCosts[index]} ◈</button></div>`
+        ).join("");
+        document.querySelectorAll("[data-unit]").forEach(button => button.addEventListener("click", () => {
+          const index = Number(button.dataset.unit);
+          if (gold < unitCosts[index]) return;
+          gold -= unitCosts[index];
+          productionQueue.push({ kind: "unit", index, region: selected, readyAt: Date.now() + unitProductionSeconds[index] * 1000, durationMs: unitProductionSeconds[index] * 1000, label: `${units[index][0]} tugayı` });
+          $("gold").textContent = gold.toLocaleString("tr-TR");
+          toast(units[index][0] + " üretim kuyruğuna alındı."); render();
+        }));
+        renderProductionQueue();
+      }
+      function renderProductionQueue() {
+        const queued = productionQueue.filter(job => job.readyAt > Date.now());
+        const queueMarkup = queued.length ? queued.map(job => {
+          const total = job.durationMs || (job.kind === "unit" ? unitProductionSeconds[job.index] * 1000 : job.buildSeconds * 1000);
+          const remaining = Math.max(0, job.readyAt - Date.now());
+          return `<div class="unit-row" style="--unit-accent:var(--green)"><div data-icon="⚙"></div><div><strong>Üretimde: ${job.label}</strong><span>Kalan süre: ${Math.ceil(remaining / 1000)} sn · Hazırlanıyor</span></div><div class="queue-label">Üretim kuyruğu · ${Math.round((1 - remaining / total) * 100)}% tamamlandı</div><div class="production-progress"><span style="width:${Math.min(100, Math.max(0, (1 - remaining / total) * 100))}%"></span></div></div>`;
+        }).join("") : "";
+        $("unit-list").insertAdjacentHTML("afterbegin", queueMarkup);
+      }
+      function processProductionQueue() {
+        const now = Date.now();
+        let changed = false;
+        for (let i = productionQueue.length - 1; i >= 0; i--) {
+          const job = productionQueue[i];
+          if (job.readyAt > now) continue;
+          if (job.kind === "unit") {
+            unitStock[job.index]++;
+            addUnitEntity(job.index, job.region);
+          }
+          else if (job.kind === "defense") {
+            const defense = regionDefenses[job.region][job.index];
+            defense[job.fixed ? "fixed" : "mobile"]++;
+            addBattleEffect(job.region, "defense");
+          }
+          productionQueue.splice(i, 1);
+          changed = true;
+          toast(job.label + " üretimi tamamlandı.");
+        }
+        function addUnitEntity(unitIndex, regionId) {
+          const [x, y] = regionCenters[regionId];
+          const sameRegion = unitEntities.filter(entity => entity.region === regionId).length;
+          unitEntities.push({
+            id: `brigade-${Date.now()}-${unitIndex}`,
+            index: unitIndex,
+            composition: [unitIndex],
+            count: 1,
+            health: 100,
+            region: regionId,
+            x: x + (sameRegion % 3 - 1) * 22,
+            y: y + (Math.floor(sameRegion / 3) - 1) * 22
+          });
+        }
+        if (changed) { turn++; $("turn").textContent = turn; render(); }
+        else { renderUnits(); }
+      }
+      function renderCombatUnits() {
+        const available = combatUnits.map((unit, index) => ({ unit, index })).filter(item => unitStock[item.index] > 0);
+        $("attacker-select").innerHTML = available.length
+          ? available.map(item => `<option value="${item.index}">${item.unit.name} tugayı · Mevcut ${unitStock[item.index]} · ${item.unit.brigadeSize} kişilik · Güç ${item.unit.power}</option>`).join("")
+          : "<option value=\"\" disabled>Hazır birlik yok</option>";
+      }
+      function renderDefenses() {
+        const owned = getSelectedRegionGroup() === "owned";
+        $("defense-list").innerHTML = defenseSystems.map((system, index) => {
+          const installed = regionDefenses[selected][index];
+          const fixedPower = installed.fixed * system.fixed;
+          const mobilePower = installed.mobile * system.mobile;
+          const pending = productionQueue.filter(job => job.kind === "defense" && job.region === selected && job.index === index).length;
+          return `<div class="defense-row"><div><strong>${system.icon} ${system.name}</strong><span>Sabit ${installed.fixed} · Mobil ${installed.mobile} · Bekleyen: ${pending} · Süre: ${system.buildSeconds} sn</span></div><strong>${fixedPower + mobilePower} savunma</strong><button data-defense-fixed="${index}" ${!owned || gold < system.cost ? "disabled" : ""}>Sabit kur · ${system.cost} altın · ${system.buildSeconds} sn</button><button data-defense-mobile="${index}" ${!owned || mobileDefenseStock[index] < 1 || gold < Math.round(system.cost * .65) ? "disabled" : ""}>Mobil konuşlandır · ${Math.round(system.cost * .65)} altın · ${system.buildSeconds} sn · stok ${mobileDefenseStock[index]}</button></div>`;
+        }).join("");
+        document.querySelectorAll("[data-defense-fixed]").forEach(button => button.addEventListener("click", () => buildDefense(Number(button.dataset.defenseFixed), true)));
+        document.querySelectorAll("[data-defense-mobile]").forEach(button => button.addEventListener("click", () => buildDefense(Number(button.dataset.defenseMobile), false)));
+      }
+      function buildDefense(index, fixed) {
+        const system = defenseSystems[index];
+        const cost = fixed ? system.cost : Math.round(system.cost * .65);
+        if (getSelectedRegionGroup() !== "owned" || gold < cost || (!fixed && mobileDefenseStock[index] < 1)) return;
+        gold -= cost;
+        if (!fixed) mobileDefenseStock[index]--;
+        productionQueue.push({ kind: "defense", index, fixed, region: selected, buildSeconds: system.buildSeconds, readyAt: Date.now() + system.buildSeconds * 1000, label: `${system.name} ${fixed ? "sabit bina" : "mobil birlik"}` });
+        toast(`${system.name} ${fixed ? "sabit bina" : "mobil birlik"} üretim kuyruğuna alındı.`);
+        render();
+        if (!$("map-actions").hidden) openDefenseForm();
+      }
+      function getDefenseProfile(regionId) {
+        const installed = regionDefenses[regionId];
+        const scores = defenseSystems.map((system, index) => ({
+          domain: system.domain,
+          score: installed[index].fixed * system.fixed + installed[index].mobile * system.mobile
+        }));
+        const strongest = scores.reduce((best, current) => current.score > best.score ? current : best, scores[0]);
+        return { total: scores.reduce((sum, item) => sum + item.score, 0), domain: strongest.score ? strongest.domain : "kara" };
+      }
+      function totalPower() {
+        return combatUnits.reduce((sum, unit, index) => sum + unit.power * unitStock[index], 0);
+      }
+      function updateResourceStrip() {
+        const owned = Object.entries(data).filter(([, region]) => region[5] === "Müttefik");
+        const population = owned.reduce((sum, [, region]) => sum + Number(region[1].replace(".", "")), 0);
+        const area = owned.reduce((sum, [id]) => sum + regionArea[id], 0);
+        const productionRate = owned.reduce((sum, [, region]) => sum + Number(region[3].replace("+", "")), 0);
+        const foodRate = Math.max(1, Math.round(area * .12));
+        $("total-population").textContent = population.toLocaleString("tr-TR");
+        $("total-gold").textContent = gold.toLocaleString("tr-TR") + " (+" + productionRate + "/sn)";
+        $("total-food").textContent = food.toLocaleString("tr-TR") + " (+" + foodRate + "/sn)";
+        $("total-power").textContent = totalPower().toLocaleString("tr-TR");
+        $("total-territory").textContent = owned.length;
+        $("food").textContent = food.toLocaleString("tr-TR");
+        $("unit-strip").innerHTML = combatUnits.map((unit, index) => `<span class="unit-total" title="${unit.name} tugayı"><strong>${unitStock[index]}</strong> ${unit.name} tugayı</span>`).join("");
+      }
+      function collectProduction() {
+        const owned = Object.values(data).filter(region => region[5] === "Müttefik");
+        const productionRate = owned.reduce((sum, region) => sum + Number(region[3].replace("+", "")), 0);
+        const area = Object.entries(data).filter(([, region]) => region[5] === "Müttefik").reduce((sum, [id]) => sum + regionArea[id], 0);
+        const foodRate = Math.max(1, Math.round(area * .12));
+        gold += productionRate;
+        food += foodRate;
+        $("gold").textContent = gold.toLocaleString("tr-TR");
+        $("food").textContent = food.toLocaleString("tr-TR");
+        updateResourceStrip();
+      }
+      function populateRegionFilter() {
+        $("region-filter").innerHTML = '<option value="all">Tüm bölgeler</option>' + Object.entries(data).map(([id, region]) => `<option value="${id}">${id}. ${region[0]}</option>`).join("");
+      }
+      function populateStartRegions() {
+        $("start-region-input").innerHTML = Object.entries(data).map(([id, region]) => `<option value="${id}">${id}. ${region[0]}</option>`).join("");
+      }
+      function renderKingdomLabels() {
+        const labels = $("kingdom-labels");
+        labels.replaceChildren();
+        if (!kingdomName) return;
+        Object.entries(data).forEach(([id, region]) => {
+          if (region[5] !== "Müttefik") return;
+          const [x, y] = regionCenters[id];
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("class", "kingdom-label");
+          label.setAttribute("x", x);
+          label.setAttribute("y", y);
+          label.textContent = kingdomName;
+          labels.appendChild(label);
+        });
+      }
+      function renderUnitEntities() {
+        const layer = $("unit-entities");
+        layer.replaceChildren();
+        unitEntities.forEach(entity => {
+          const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          const composition = entity.composition || [entity.index];
+          const unit = combatUnits[entity.index];
+          group.setAttribute("class", `unit-entity ${selectedUnitIds.includes(entity.id) ? "selected " : ""}${unit.domain === "hava" ? "air" : unit.domain === "deniz" ? "sea" : "land"}`);
+          group.dataset.unitEntity = entity.id;
+          group.setAttribute("transform", `translate(${entity.x} ${entity.y})`);
+          group.innerHTML = `<circle r="14"/><text y="1">${composition.map(index => unitIcons[index]).join("")}</text><text y="25">x${entity.count} · ${composition.length} tür</text>`;
+          layer.appendChild(group);
+        });
+        Object.entries(regionDefenses).forEach(([regionId, systems]) => {
+          const [x, y] = regionCenters[regionId];
+          systems.forEach((defense, index) => {
+            if (!defense.fixed && !defense.mobile) return;
+            const marker = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            marker.setAttribute("class", "defense-entity");
+            marker.setAttribute("d", "M0 -9 L8 7 L0 3 L-8 7Z");
+            marker.setAttribute("transform", `translate(${x + (index - 1) * 18} ${y - 25})`);
+            marker.setAttribute("aria-label", `${defenseSystems[index].name} savunması`);
+            layer.appendChild(marker);
+          });
+        });
+      }
+      function getEntitySpeed(entity) {
+        const composition = entity.composition || [entity.index];
+        return Math.min(...composition.map(index => combatUnits[index].speed));
+      }
+      function placeEntityInRegion(entity, regionId, offsetIndex = 0) {
+        const [x, y] = regionCenters[regionId];
+        entity.region = regionId;
+        entity.x = x + (offsetIndex % 3 - 1) * 22;
+        entity.y = y + (Math.floor(offsetIndex / 3) - 1) * 22;
+      }
+      function openUnitInfo(entity, element) {
+        selectedUnitId = entity.id;
+        if (!selectedUnitIds.includes(entity.id)) selectedUnitIds = [entity.id];
+        renderUnitEntities();
+        const popup = $("unit-info-popup");
+        const wrap = document.querySelector(".map-wrap").getBoundingClientRect();
+        const rect = element.getBoundingClientRect();
+        const composition = entity.composition || [entity.index];
+        const unit = combatUnits[entity.index];
+        const selectedEntities = unitEntities.filter(item => selectedUnitIds.includes(item.id));
+        const names = selectedEntities.map(item => combatUnits[item.index].name);
+        $("unit-info-name").textContent = selectedEntities.length > 1 ? `${selectedEntities.length} birlik grubu` : `${unit.name} tugayı`;
+        $("unit-info-status").textContent = entity.moving ? "Hareket halinde" : `Konuşlu · ${data[entity.region][0]}`;
+        $("unit-info-health").textContent = `${Math.max(0, Math.round(entity.health || 100))}%`;
+        $("unit-info-count").textContent = `${selectedEntities.reduce((sum, item) => sum + item.count * combatUnits[item.index].brigadeSize, 0)} (${selectedEntities.length} tugay)`;
+        $("unit-merge").disabled = selectedEntities.length < 2;
+        $("unit-split").disabled = composition.length < 2;
+        popup.style.left = `${Math.max(8, Math.min(rect.left - wrap.left + 18, wrap.width - 202))}px`;
+        popup.style.top = `${Math.max(8, Math.min(rect.top - wrap.top - 10, wrap.height - 130))}px`;
+        popup.hidden = false;
+      }
+      function closeUnitInfo() {
+        $("unit-info-popup").hidden = true;
+        selectedUnitId = null;
+        selectedUnitIds = [];
+        renderUnitEntities();
+      }
+      function toggleUnitSelection(entity, additive) {
+        if (!additive) selectedUnitIds = [entity.id];
+        else if (selectedUnitIds.includes(entity.id)) selectedUnitIds = selectedUnitIds.filter(id => id !== entity.id);
+        else selectedUnitIds.push(entity.id);
+        selectedUnitId = selectedUnitIds[0] || null;
+        if (selectedUnitIds.length) openUnitInfo(unitEntities.find(item => item.id === selectedUnitIds[selectedUnitIds.length - 1]), document.querySelector(`[data-unit-entity="${selectedUnitIds[selectedUnitIds.length - 1]}"]`));
+        else closeUnitInfo();
+      }
+      function mergeSelectedUnits() {
+        const selectedEntities = unitEntities.filter(item => selectedUnitIds.includes(item.id));
+        if (selectedEntities.length < 2) return;
+        const types = selectedEntities.flatMap(item => item.composition || [item.index]);
+        if (new Set(types).size !== types.length) {
+          toast("Aynı türden iki tugay aynı birlikte birleştirilemez.");
+          return;
+        }
+        const region = selectedEntities[0].region;
+        if (selectedEntities.some(item => item.region !== region)) {
+          toast("Birlikler aynı bölgede olmalı.");
+          return;
+        }
+        const primary = selectedEntities[0];
+        primary.composition = types;
+        primary.count = selectedEntities.reduce((sum, item) => sum + item.count, 0);
+        primary.health = Math.round(selectedEntities.reduce((sum, item) => sum + (item.health || 100), 0) / selectedEntities.length);
+        primary.moving = false;
+        unitEntities.splice(0, unitEntities.length, ...unitEntities.filter(item => !selectedUnitIds.includes(item.id) || item.id === primary.id));
+        selectedUnitIds = [primary.id]; selectedUnitId = primary.id;
+        toast("Birlikler tek komuta grubunda birleştirildi.");
+        openUnitInfo(primary, document.querySelector(`[data-unit-entity="${primary.id}"]`));
+      }
+      function splitSelectedUnit() {
+        const entity = unitEntities.find(item => item.id === selectedUnitId);
+        const composition = entity && entity.composition ? entity.composition : [];
+        if (!entity || composition.length < 2) return;
+        const total = Math.max(composition.length, entity.count || composition.length);
+        const baseCount = Math.floor(total / composition.length);
+        const remainder = total % composition.length;
+        const index = unitEntities.indexOf(entity);
+        const parts = composition.map((unitIndex, partIndex) => ({
+          id: `brigade-${Date.now()}-${partIndex}-${unitIndex}`,
+          index: unitIndex,
+          composition: [unitIndex],
+          count: baseCount + (partIndex < remainder ? 1 : 0),
+          health: entity.health || 100,
+          region: entity.region,
+          x: entity.x,
+          y: entity.y
+        }));
+        unitEntities.splice(index, 1, ...parts);
+        selectedUnitIds = parts.map(part => part.id);
+        selectedUnitId = parts[0].id;
+        renderUnitEntities();
+        toast("Birleşik tugaylar ayrıldı.");
+        openUnitInfo(parts[0], document.querySelector(`[data-unit-entity="${parts[0].id}"]`));
+      }
+      function addBattleEffect(regionId, kind) {
+        const [x, y] = regionCenters[regionId];
+        const effect = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        effect.setAttribute("class", "battle-effect");
+        effect.setAttribute("cx", x); effect.setAttribute("cy", y); effect.setAttribute("r", 8);
+        effect.setAttribute("data-effect", kind);
+        $("battle-effects").appendChild(effect);
+        setTimeout(() => effect.remove(), 900);
+      }
+      function animateAttack(attacks, targetRegion, done) {
+        const [targetX, targetY] = regionCenters[targetRegion];
+        const source = unitEntities.find(entity => data[entity.region][5] === "Müttefik") || unitEntities[0];
+        const moving = attacks.map((attack, slot) => {
+          const unit = combatUnits[attack.index];
+          const entity = { id: `march-${Date.now()}-${slot}`, index: attack.index, count: attack.count, region: source.region, x: source.x, y: source.y };
+          unitEntities.push(entity);
+          return { entity, duration: Math.max(450, Math.round(Math.hypot(targetX - source.x, targetY - source.y) / unit.speed * 90)) };
+        });
+        const started = performance.now();
+        const longest = Math.max(...moving.map(item => item.duration));
+        function step(now) {
+          const elapsed = now - started;
+          moving.forEach(item => {
+            const progress = Math.min(1, elapsed / item.duration);
+            item.entity.moving = true;
+            item.entity.x = source.x + (targetX - source.x) * progress;
+            item.entity.y = source.y + (targetY - source.y) * progress;
+          });
+          renderUnitEntities();
+          if (elapsed < longest) requestAnimationFrame(step);
+          else {
+            moving.forEach(item => { const index = unitEntities.indexOf(item.entity); if (index >= 0) unitEntities.splice(index, 1); });
+            addBattleEffect(targetRegion, "attack");
+            renderUnitEntities();
+            done();
+          }
+        }
+        requestAnimationFrame(step);
+      }
+      function occupyNeutralRegion(attacks) {
+        const target = data[selected];
+        const usedStock = {};
+        const validAttacks = attacks.map(attack => {
+          const available = Math.max(0, unitStock[attack.index] - (usedStock[attack.index] || 0));
+          const count = Math.max(0, Math.min(attack.count, available));
+          usedStock[attack.index] = (usedStock[attack.index] || 0) + count;
+          return { index: attack.index, count };
+        }).filter(attack => attack.count > 0);
+        const totalCost = validAttacks.reduce((sum, attack) => sum + unitCosts[attack.index] * attack.count, 0);
+        if (!validAttacks.length || gold < totalCost) {
+          toast("Tarafsız bölgeyi almak için yeterli birlik veya altın yok.");
+          return;
+        }
+        validAttacks.forEach(attack => { unitStock[attack.index] -= attack.count; });
+        gold -= totalCost;
+        target[5] = "Müttefik";
+        honor += 2;
+        document.querySelector(`[data-region="${selected}"]`).classList.add("ally");
+        addBattleLog(`${target[0]} savaşsız şekilde ele geçirildi; ${validAttacks.length} tugay bölgeye yerleşti.`);
+        toast(target[0] + " savaşmadan ele geçirildi.");
+        render();
+      }
+      function resolveArrival(attacks) {
+        if (data[selected][5] === "Tarafsız") occupyNeutralRegion(attacks);
+        else if (data[selected][5] === "Rakip") runBattle(attacks);
+        else {
+          addBattleLog(`${data[selected][0]} bölgesine birlik takviyesi ulaştı.`);
+          toast("Birlik müttefik bölgeye konuşlandı.");
+          render();
+        }
+      }
+      function moveUnitEntity(entity, targetRegion) {
+        if (!entity || entity.region === targetRegion) return;
+        const [targetX, targetY] = regionCenters[targetRegion];
+        const unit = combatUnits[entity.index];
+        const startX = entity.x; const startY = entity.y;
+        const duration = Math.max(450, Math.round(Math.hypot(targetX - startX, targetY - startY) / getEntitySpeed(entity) * 90));
+        const started = performance.now();
+        function step(now) {
+          const progress = Math.min(1, (now - started) / duration);
+          entity.x = startX + (targetX - startX) * progress;
+          entity.y = startY + (targetY - startY) * progress;
+          entity.moving = true;
+          renderUnitEntities();
+          if (progress < 1) requestAnimationFrame(step);
+          else {
+            entity.region = targetRegion;
+            entity.moving = false;
+            if (data[targetRegion][5] === "Tarafsız") {
+              data[targetRegion][5] = "Müttefik";
+              honor += 2;
+              document.querySelector(`[data-region="${targetRegion}"]`).classList.add("ally");
+              toast(`${data[targetRegion][0]} otomatik olarak sahiplenildi.`);
+            }
+            consolidateEntitiesAtRegion(targetRegion);
+            selectedUnitId = entity.id;
+            selectedUnitIds = [entity.id];
+            renderUnitEntities();
+            toast(`${unit.name} ${data[targetRegion][0]} bölgesine ulaştı.`);
+          }
+        }
+        requestAnimationFrame(step);
+      }
+      function consolidateEntitiesAtRegion(regionId) {
+        const stationed = unitEntities.filter(entity => entity.region === regionId && !entity.moving);
+        if (stationed.length < 2) return;
+        const primary = stationed[0];
+        const types = stationed.flatMap(entity => entity.composition || [entity.index]);
+        if (new Set(types).size !== types.length) return;
+        primary.composition = types;
+        primary.count = stationed.reduce((sum, entity) => sum + entity.count, 0);
+        primary.health = Math.round(stationed.reduce((sum, entity) => sum + (entity.health || 100), 0) / stationed.length);
+        unitEntities.splice(0, unitEntities.length, ...unitEntities.filter(entity => !stationed.includes(entity) || entity === primary));
+      }
+      function moveSelectedUnits(targetRegion) {
+        const entities = unitEntities.filter(entity => selectedUnitIds.includes(entity.id) && !entity.moving);
+        if (!entities.length || entities.some(entity => entity.region !== entities[0].region)) {
+          toast("Seçili birlikler aynı bölgeden hareket etmeli.");
+          return;
+        }
+        const [targetX, targetY] = regionCenters[targetRegion];
+        const started = performance.now();
+        const moving = entities.map((entity, index) => ({
+          entity,
+          startX: entity.x,
+          startY: entity.y,
+          offsetX: (index % 3 - 1) * 22,
+          offsetY: (Math.floor(index / 3) - 1) * 22,
+          duration: Math.max(450, Math.round(Math.hypot(targetX - entity.x, targetY - entity.y) / getEntitySpeed(entity) * 90))
+        }));
+        const longest = Math.max(...moving.map(item => item.duration));
+        function step(now) {
+          const elapsed = now - started;
+          moving.forEach(item => {
+            const progress = Math.min(1, elapsed / item.duration);
+            item.entity.x = item.startX + (targetX + item.offsetX - item.startX) * progress;
+            item.entity.y = item.startY + (targetY + item.offsetY - item.startY) * progress;
+            item.entity.moving = progress < 1;
+            if (progress === 1) item.entity.region = targetRegion;
+          });
+          renderUnitEntities();
+          if (elapsed < longest) requestAnimationFrame(step);
+          else {
+            moving.forEach(item => { item.entity.moving = false; });
+            if (data[targetRegion][5] === "Tarafsız") {
+              data[targetRegion][5] = "Müttefik";
+              honor += 2;
+              toast(`${data[targetRegion][0]} otomatik olarak sahiplenildi.`);
+            }
+            consolidateEntitiesAtRegion(targetRegion);
+            selectedUnitIds = unitEntities.filter(entity => entity.region === targetRegion).map(entity => entity.id);
+            selectedUnitId = selectedUnitIds[0] || null;
+            render();
+            toast(`${selectedUnitIds.length} tugay ${data[targetRegion][0]} bölgesine ulaştı.`);
+          }
+        }
+        requestAnimationFrame(step);
+      }
+      function startGame(event) {
+        event.preventDefault();
+        kingdomName = $("kingdom-name-input").value.trim();
+        if (!kingdomName) return;
+        selected = Number($("start-region-input").value);
+        Object.values(data).forEach(region => { region[5] = "Tarafsız"; });
+        data[selected][5] = "Müttefik";
+        document.querySelectorAll(".region").forEach(region => {
+          region.classList.remove("ally", "enemy", "selected");
+          if (Number(region.dataset.region) === selected) region.classList.add("ally");
+        });
+        $("setup-screen").hidden = true;
+        render();
+        toast(kingdomName + " kuruldu.");
+      }
+      function filterRegions(value) {
+        document.querySelectorAll(".region").forEach(region => {
+          region.classList.toggle("region-dimmed", value !== "all" && region.dataset.region !== value);
+        });
+        if (value !== "all") {
+          selected = Number(value);
+          render();
+        } else {
+          closeMapActions();
+        }
+      }
+      function addBattleLog(message) {
+        const log = $("battle-log");
+        log.innerHTML = `<div>${message}</div>` + log.innerHTML;
+      }
+      function runBattle(attacks) {
+        const target = data[selected];
+        if (target[5] === "Müttefik" || selected === 1) return;
+        const usedStock = {};
+        const validAttacks = attacks.map(attack => {
+          const available = Math.max(0, unitStock[attack.index] - (usedStock[attack.index] || 0));
+          const count = Math.max(0, Math.min(attack.count, available));
+          usedStock[attack.index] = (usedStock[attack.index] || 0) + count;
+          return { index: attack.index, count };
+        }).filter(attack => attack.count > 0);
+        const totalCost = validAttacks.reduce((sum, attack) => sum + unitCosts[attack.index] * attack.count, 0);
+        if (!validAttacks.length || gold < totalCost) {
+          toast("Bu saldırı için yeterli altın yok.");
+          return;
+        }
+        if (validAttacks.some(attack => combatUnits[attack.index].domain === "deniz") && !coastalRegions.includes(selected)) {
+          toast("Savaş gemileri yalnızca kıyı bölgelerini destekleyebilir.");
+          return;
+        }
+        const defenseProfile = getDefenseProfile(selected);
+        const defenderDomain = defenseProfile.total ? defenseProfile.domain : (target[5] === "Rakip" ? (selected % 2 ? "mekanize" : "piyade") : "piyade");
+        const terrain = validAttacks.some(attack => combatUnits[attack.index].domain === "kara") && coastalRegions.includes(selected) ? 0.9 : 1;
+        const defenseFactor = Math.max(.35, 1 - target[2] / 220) * (1 - Math.min(.45, defenseProfile.total / 240));
+        const averageDefense = validAttacks.reduce((sum, attack) => sum + combatUnits[attack.index].defense * attack.count, 0) / validAttacks.reduce((sum, attack) => sum + attack.count, 0);
+        const effectivePower = validAttacks.reduce((sum, attack) => {
+          const unit = combatUnits[attack.index];
+          const matchup = unit.strongAgainst === defenderDomain ? 1.28 : unit.weakAgainst === defenderDomain ? .68 : 1;
+          return sum + unit.power * attack.count * matchup;
+        }, 0);
+        const attackDamage = Math.max(1, Math.round(effectivePower * defenseFactor * terrain * (.88 + Math.random() * .24)));
+        const retaliation = Math.max(1, Math.round(target[2] * defenseFactor * (.75 + Math.random() * .2) / (averageDefense / 18)));
+        const oldGarrison = target[4];
+        validAttacks.forEach(attack => { unitStock[attack.index] -= attack.count; });
+        gold -= totalCost;
+        $("gold").textContent = gold.toLocaleString("tr-TR");
+        target[4] = Math.max(0, target[4] - Math.ceil(attackDamage / 8));
+        turn++;
+        $("turn").textContent = turn;
+        if (target[4] === 0) {
+          target[5] = "Müttefik"; honor += 4; $("honor").textContent = honor;
+          document.querySelector(`[data-region="${selected}"]`).classList.add("ally");
+          addBattleLog(`${validAttacks.map(attack => `${attack.count} ${combatUnits[attack.index].name}`).join(" + ")}: ${attackDamage} hasar verdi; ${target[0]} ele geçirildi.`);
+          toast(target[0] + " ele geçirildi.");
+        } else {
+          addBattleLog(`${validAttacks.map(attack => `${attack.count} ${combatUnits[attack.index].name}`).join(" + ")}: ${attackDamage} hasar, savunma ${defenseProfile.total}; karşı saldırı ${retaliation}; garnizon ${oldGarrison} → ${target[4]}.`);
+          toast("Saldırı tamamlandı: " + attackDamage + " hasar.");
+        }
+        trainAI(); render();
+      }
+      function render() {
+        const r = data[selected]; $("region-name").textContent = r[0]; $("population").textContent = r[1]; $("defense").textContent = r[2]; $("production").textContent = r[3]; $("garrison").textContent = r[4]; $("region-status").textContent = r[5];
+        $("defense-panel").hidden = getSelectedRegionGroup() !== "owned";
+        $("region-status").style.background = r[5] === "Rakip" ? "var(--red)" : r[5] === "Müttefik" ? "var(--green)" : "var(--gold)";
+        $("claim-button").disabled = r[5] !== "Tarafsız" || gold < 100; $("move-button").disabled = selected === 1 || gold < 50;
+        document.querySelectorAll(".region").forEach(el => el.classList.toggle("selected", Number(el.dataset.region) === selected));
+        document.querySelectorAll(".region").forEach(el => el.classList.toggle("ally", data[el.dataset.region][5] === "Müttefik"));
+        renderKingdomLabels();
+        renderUnitEntities();
+        renderUnits();
+        renderCombatUnits();
+        renderDefenses();
+        updateResourceStrip();
+        $("attack-button").disabled = data[selected][5] === "Müttefik" || selected === 1 || !combatUnits.some((unit, index) => unitStock[index] > 0);
+        trainAI();
+      }
+      $("region-filter").addEventListener("change", event => filterRegions(event.target.value));
+      $("setup-form").addEventListener("submit", startGame);
+      document.querySelector(".map-wrap").addEventListener("wheel", event => {
+        event.preventDefault();
+        mapZoom = Math.max(.8, Math.min(2.2, mapZoom + (event.deltaY < 0 ? .1 : -.1)));
+        const svg = document.querySelector(".map-svg");
+        svg.classList.add("zoomed");
+        svg.style.transform = `translate(${panOffset.x}px, ${panOffset.y}px) scale(${mapZoom})`;
+      }, { passive: false });
+      const mapWrap = document.querySelector(".map-wrap");
+      mapWrap.addEventListener("contextmenu", event => {
+        const region = event.target.closest(".region");
+        if (!region) return;
+        event.preventDefault();
+        selected = Number(region.dataset.region);
+        render();
+        openMapActions(region);
+      });
+      mapWrap.addEventListener("pointerdown", event => {
+        if (event.button !== 0) return;
+        const unitElement = event.target.closest(".unit-entity");
+        if (unitElement) {
+          const entity = unitEntities.find(item => item.id === unitElement.dataset.unitEntity);
+          if (entity) toggleUnitSelection(entity, event.ctrlKey || event.shiftKey);
+          event.stopPropagation();
+          return;
+        }
+        const region = event.target.closest(".region");
+        if (region) {
+          selected = Number(region.dataset.region);
+          if (selectedUnitId) {
+            const entities = unitEntities.filter(item => selectedUnitIds.includes(item.id));
+            if (entities.length) {
+              if (entities.some(item => item.region !== entities[0].region)) {
+                toast("Birlikler aynı bölgeden hareket etmeli.");
+                return;
+              }
+              moveSelectedUnits(selected);
+              return;
+            }
+          }
+          render();
+        }
+        panStart = { x: event.clientX - panOffset.x, y: event.clientY - panOffset.y };
+        dragStart = { x: event.clientX, y: event.clientY };
+        didPan = false;
+        mapWrap.classList.add("is-panning");
+        mapWrap.setPointerCapture(event.pointerId);
+      });
+      mapWrap.addEventListener("pointermove", event => {
+        if (!panStart) return;
+        panOffset.x = event.clientX - panStart.x;
+        panOffset.y = event.clientY - panStart.y;
+        didPan = Math.abs(event.clientX - dragStart.x) > 4 || Math.abs(event.clientY - dragStart.y) > 4;
+        document.querySelector(".map-svg").style.transform = `translate(${panOffset.x}px, ${panOffset.y}px) scale(${mapZoom})`;
+      });
+      mapWrap.addEventListener("pointerup", event => {
+        if (!panStart) return;
+        panStart = null;
+        dragStart = null;
+        mapWrap.classList.remove("is-panning");
+        mapWrap.releasePointerCapture(event.pointerId);
+      });
+      mapWrap.addEventListener("pointercancel", () => {
+        panStart = null;
+        dragStart = null;
+        mapWrap.classList.remove("is-panning");
+      });
+      $("move-button").addEventListener("click", () => {
+        if ($("move-button").disabled) return;
+        const destination = selected;
+        gold -= 50;
+        $("gold").textContent = gold.toLocaleString("tr-TR");
+        animateAttack([{ index: 1, count: 5 }], destination, () => {
+          data[destination][4] += 5; turn++; $("turn").textContent = turn;
+          render(); toast("5 asker " + data[destination][0] + " bölgesine ulaştı.");
+        });
+      });
+      $("claim-button").addEventListener("click", () => { if ($("claim-button").disabled) return; data[selected][5] = "Müttefik"; gold -= 100; honor += 3; turn++; $("turn").textContent = turn; $("honor").textContent = honor; $("gold").textContent = gold.toLocaleString("tr-TR"); document.querySelector(`[data-region="${selected}"]`).classList.add("ally"); render(); toast(data[selected][0] + " artık senin sancağın."); });
+      $("attack-button").addEventListener("click", () => {
+        const index = Number($("attacker-select").value);
+        const attacks = [{ index, count: 1 }];
+        animateAttack(attacks, selected, () => resolveArrival(attacks));
+      });
+      $("popup-attack").addEventListener("click", openAttackForm);
+      for (let slot = 1; slot <= 3; slot++) {
+        $(`popup-unit-${slot}`).addEventListener("change", updateAttackSummary);
+        $(`popup-count-${slot}`).addEventListener("input", updateAttackSummary);
+      }
+      $("popup-confirm-attack").addEventListener("click", () => {
+        const attacks = [];
+        let totalCost = 0;
+        for (let slot = 1; slot <= 3; slot++) {
+          const index = Number($(`popup-unit-${slot}`).value);
+          const count = Math.max(0, Math.min(Number($(`popup-count-${slot}`).value) || 0, unitStock[index]));
+          if (count > 0) {
+            attacks.push({ index, count });
+            totalCost += unitCosts[index] * count;
+          }
+        }
+        if (!attacks.length) { toast("En az bir birlik gönderin."); return; }
+        if (gold < totalCost) { toast("Bu saldırı için yeterli altın yok."); return; }
+        closeMapActions();
+        animateAttack(attacks, selected, () => resolveArrival(attacks));
+      });
+      $("popup-back").addEventListener("click", () => {
+        $("attack-form").hidden = true;
+        $("popup-attack").hidden = false;
+        $("popup-scout").hidden = false;
+        $("popup-close").hidden = false;
+      });
+      $("popup-defense").addEventListener("click", openDefenseForm);
+      $("popup-defense-back").addEventListener("click", resetMapActions);
+      $("popup-scout").addEventListener("click", () => {
+        const r = data[selected];
+        addBattleLog(`Gözetleme: ${r[0]} savunma ${r[2]}, garnizon ${r[4]}, durum ${r[5]}.`);
+        turn++; $("turn").textContent = turn; closeMapActions(); toast(r[0] + " gözetlendi.");
+      });
+      $("popup-close").addEventListener("click", closeMapActions);
+      $("unit-info-close").addEventListener("click", closeUnitInfo);
+      $("unit-merge").addEventListener("click", mergeSelectedUnits);
+      $("unit-split").addEventListener("click", splitSelectedUnit);
+      $("unit-info-popup").addEventListener("pointerdown", event => event.stopPropagation());
+      $("popup-close").addEventListener("pointerdown", event => event.stopPropagation());
+      $("map-actions").addEventListener("pointerdown", event => event.stopPropagation());
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !$("map-actions").hidden) closeMapActions();
+      });
+      document.querySelector(".map-wrap").addEventListener("click", event => {
+        if (!$("map-actions").hidden && !event.target.closest("#map-actions") && !event.target.closest(".region")) closeMapActions();
+        if (!$("unit-info-popup").hidden && !event.target.closest("#unit-info-popup") && !event.target.closest(".unit-entity")) closeUnitInfo();
+      });
+      renderCombatUnits();
+      populateRegionFilter();
+      populateStartRegions();
+      updateResourceStrip();
+      render();
+      setInterval(collectProduction, 1000);
+      setInterval(processProductionQueue, 1000);
+    })();
+  </script>
+</body>
+</html>

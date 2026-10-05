@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-labelledby="title desc">
+  <title id="title">Turan Tech logo</title>
+  <desc id="desc">Turan Tech güvenli teknoloji ve insan kontrolünü simgeleyen geometrik logo</desc>
+
+  <rect x="2" y="6" width="356" height="84" rx="14" fill="#d7dde3"/>
+
+  <!-- Shield: güvenlik ve güven -->
+  <path d="M18 16h76l-5 39c-2 16-14 27-33 35C37 82 25 71 23 55z"
+        fill="#1f252c"/>
+  <path d="M30 27h52l-4 27c-2 10-8 17-22 24-13-7-20-14-22-24z"
+        fill="#d7dde3"/>
+
+  <!-- Circuit paths: mühendislik, yapay zeka ve sistematik düşünce -->
+  <g fill="none" stroke="#1f252c" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="3" d="M39 43h12l7-8h12"/>
+    <path stroke-width="3" d="M39 57h9l9 8h13"/>
+  </g>
+  <g fill="#1f252c">
+    <circle cx="39" cy="43" r="3"/>
+    <circle cx="39" cy="57" r="3"/>
+    <circle cx="70" cy="35" r="3"/>
+    <circle cx="70" cy="65" r="3"/>
+  </g>
+
+  <!-- Open center: kararın ve kontrolün insanda kalması -->
+  <path d="M60 41v18" fill="none" stroke="#1f252c" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="60" cy="50" r="5" fill="#d7dde3" stroke="#1f252c" stroke-width="3"/>
+
+  <g fill="#1f252c" font-family="Inter, Arial, Helvetica, sans-serif">
+    <text x="112" y="48" font-size="26" font-weight="800" letter-spacing="2">TURAN</text>
+    <text x="114" y="72" font-size="16" font-weight="600" letter-spacing="5">TECH</text>
+  </g>
+</svg>

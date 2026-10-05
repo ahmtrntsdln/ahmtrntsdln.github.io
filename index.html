@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turan Tech | Think. Build. Secure.</title>
+    <title>ahmtrntsdln.dev | Turan Tech</title>
+    <meta name="description" content="ahmtrntsdln.dev — yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
+    <meta name="keywords" content="ahmtrntsdln, ahmtrntsdln.dev, Turan Tech, yapay zeka, siber güvenlik, Sivas 73">
+    <link rel="canonical" href="https://ahmtrntsdln.dev/">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         /* Temel Ayarlar ve Renk Paleti */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background-color: #0b0f19; /* Antrasit/Siber Uzay Siyahı */
             color: #e2e8f0;
             line-height: 1.6;
+            overflow-x: hidden;
         }
-        
+
         /* Navigasyon (Menü) - Sol Üstte Logo */
         nav {
             display: flex;
@@ -51,7 +56,7 @@
             transition: color 0.3s;
         }
         .nav-links a:hover { color: #38bdf8; /* Teknoloji Mavisi Vurgu */ }
-        
+
         /* Karşılama Ekranı (Hero) */
         .hero {
             height: 100vh;
@@ -97,7 +102,21 @@
         .btn-secondary:hover { border-color: #e2e8f0; transform: translateY(-2px); }
 
         /* Bölümler (Sections) */
-        section { padding: 6rem 5%; }
+        section {
+            padding: 6rem 5%;
+            scroll-margin-top: 6rem;
+        }
+        .hero,
+        section,
+        footer {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .section-title {
             font-size: 2.5rem;
             margin-bottom: 3rem;
@@ -113,11 +132,24 @@
             background: #1e293b;
         }
 
-        /* Hakkımda (Felsefe) */
+        /* Hakkımızda */
         .about-text {
             font-size: 1.15rem;
             color: #94a3b8;
             max-width: 800px;
+        }
+        .about-text h3 {
+            margin: 2rem 0 0.75rem;
+            color: #ffffff;
+            font-size: 1.45rem;
+        }
+        .about-text h3:first-child { margin-top: 0; }
+        .about-text ul {
+            margin: 0.75rem 0 0;
+            padding-left: 1.5rem;
+        }
+        .about-text li {
+            margin-bottom: 0.85rem;
         }
         .highlight { color: #38bdf8; font-weight: 600; }
 
@@ -140,6 +172,34 @@
         }
         .card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #ffffff; }
         .card p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 1rem;}
+        .game-card {
+            grid-column: 1 / -1;
+            padding: 1.25rem;
+        }
+        .game-card h3,
+        .game-card p,
+        .game-card .tag-list {
+            margin-left: 1.25rem;
+            margin-right: 1.25rem;
+        }
+        .game-frame {
+            display: block;
+            width: 100%;
+            height: min(80vh, 900px);
+            min-height: 680px;
+            margin-top: 1.5rem;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            background: #0d151b;
+        }
+        .game-launch {
+            display: inline-block;
+            margin: 1rem 1.25rem 0;
+            color: #38bdf8;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .game-launch:hover { text-decoration: underline; }
         .tag {
             font-size: 0.8rem;
             padding: 0.4rem 0.8rem;
@@ -157,18 +217,152 @@
             border-top: 1px solid #1e293b;
             color: #64748b;
         }
+
+        /* İletişim penceresi */
+        .contact-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: rgba(3, 7, 18, 0.72);
+            backdrop-filter: blur(5px);
+        }
+        .contact-modal.is-open { display: flex; }
+        .contact-card {
+            position: relative;
+            width: min(100%, 390px);
+            padding: 2rem;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+        }
+        .contact-card h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .contact-card > p {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+        .contact-detail {
+            display: block;
+            padding: 0.9rem 1rem;
+            margin-top: 0.75rem;
+            color: #e2e8f0;
+            background: #0b0f19;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .contact-detail:hover { color: #38bdf8; border-color: #38bdf8; }
+        .modal-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.9rem;
+            border: 0;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: #ffffff; }
+        @media (max-width: 700px) {
+            nav {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.9rem;
+                padding: 1rem 5%;
+            }
+            .logo img { height: 38px; }
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.6rem 1.1rem;
+            }
+            .nav-links a {
+                margin-left: 0;
+                font-size: 0.85rem;
+            }
+            .hero {
+                min-height: 100svh;
+                height: auto;
+                padding: 9rem 7% 5rem;
+            }
+            .hero h1 {
+                font-size: clamp(3.2rem, 16vw, 5rem);
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .btn-group {
+                flex-direction: column;
+                align-items: stretch;
+                max-width: 22rem;
+            }
+            .btn {
+                display: block;
+                padding: 0.9rem 1.2rem;
+                text-align: center;
+            }
+            section { padding: 4.5rem 7%; }
+            .section-title {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+                margin-bottom: 2rem;
+            }
+            .about-text { font-size: 1rem; }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .game-card {
+                padding: 1rem;
+            }
+            .game-card h3,
+            .game-card p,
+            .game-card .tag-list {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .game-frame {
+                height: 720px;
+                min-height: 720px;
+                margin-top: 1.2rem;
+            }
+            .game-launch {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .contact-card {
+                padding: 1.5rem;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .hero, section, footer {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">
-            <!-- Logonun eklendiği yer -->
-            <img src="watermarked_img_14926327025407123271.jpg" alt="Turan Tech Logo">
-            Turan Tech
+            <img src="logo.svg" alt="Turan Tech logo">
         </div>
         <div class="nav-links">
-            <a href="#about">Felsefe</a>
+            <a href="#about">Hakkımızda</a>
             <a href="#projects">Laboratuvar</a>
             <a href="#contact">Ağ</a>
         </div>
@@ -179,16 +373,27 @@
         <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek.</p>
         <div class="btn-group">
             <a href="#projects" class="btn btn-primary">Projeleri İncele</a>
-            <a href="https://github.com/KENDI_GITHUB_KULLANICI_ADIN" target="_blank" class="btn btn-secondary">GitHub'da Keşfet</a>
+            <a href="https://github.com/ahmtrntsdln" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub'da Keşfet</a>
+            <a href="https://www.linkedin.com/in/ahmet-turan-ta%C5%9Fdelen-a6b96a383" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">LinkedIn'de Keşfet</a>
         </div>
     </div>
 
     <section id="about">
-        <h2 class="section-title">Merakla başlar, mühendislikle biter.</h2>
+        <h2 class="section-title">Hakkımızda</h2>
         <div class="about-text">
-            <p>Gazi Üniversitesi'nde Bilgisayar Mühendisliği öğrencisiyim. Düşük seviyeli sistem programlama (C/C++, Assembly) dünyasına duyduğum tutku, beni karmaşık sistemlerin temeline inmeye ve onları güvenli hale getirmeye yöneltti.</p>
-            <br>
-            <p>Misyonum: <span class="highlight">Güvenli, açık ve öğretici yazılım araçları geliştirmek.</span> Gelecekte yapay zeka ve kuantum teknolojilerinin güvenliği üzerine odaklanarak, kontrolün her zaman insanda kaldığı sağlam mimariler inşa etmeyi hedefliyorum.</p>
+            <h3>Vizyon</h3>
+            <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek; karmaşık sistemleri sade, güvenli ve anlaşılır kılan, Türkiye'den doğan global bir teknoloji markası olmak.</p>
+
+            <h3>Misyon</h3>
+            <p>Merakı mühendisliğe, mühendisliği güvene dönüştürmek. Bunu üç ilkeyle yapıyoruz:</p>
+            <ul>
+                <li><strong>Merak önce gelir.</strong> Her ürün bir soruyla başlar. Önce gözlemler, sonra kurarız.</li>
+                <li><strong>Kodda sadelik, davranışta öngörülemezlik.</strong> Ne kadar az bileşen, o kadar az saldırı yüzeyi. Savunma ise tahmin edilebilir olmamalı.</li>
+                <li><strong>Güven, ezbere değil doğrulamaya dayanır.</strong> Bir sisteme güvenmek için onu denetleyebilmek gerekir. Yapay zeka güçlü bir araçtır; kararın sahibi insandır.</li>
+            </ul>
+
+            <h3>Bizi yönlendiren inanç</h3>
+            <p>Matematik her şeyin dilidir ve sürekli inşa edilen bir yapıdır. İnsan yapımı hiçbir sistem kusursuz değildir. Bu yüzden kusursuzluk iddia etmek yerine kusuru öngören, katmanlı ve şeffaf sistemler tasarlarız.</p>
         </div>
     </section>
 
@@ -204,14 +409,16 @@
                     <span class="tag">Cyber Security</span>
                 </div>
             </div>
-            <div class="card">
-                <h3>Unreal Engine AI</h3>
-                <p>C++ ile geliştirilmiş, performans odaklı yapay zeka davranış ağaçları ve gelişmiş strateji mekaniklerini barındıran simülasyon projesi.</p>
-                <div>
-                    <span class="tag">Unreal Engine</span>
-                    <span class="tag">C++</span>
-                    <span class="tag">Game Dev</span>
+            <div class="card game-card">
+                <h3>Sivas 73</h3>
+                <p>Sivas'ın tarihinden ve kültüründen ilham alan, tarayıcı içinde oynanabilen strateji demosu.</p>
+                <div class="tag-list">
+                    <span class="tag">Strategy</span>
+                    <span class="tag">Browser Game</span>
+                    <span class="tag">Sivas</span>
                 </div>
+                <iframe class="game-frame" src="sivas-73/index.html" title="Sivas 73 oynanabilir strateji oyunu" loading="eager" allowfullscreen></iframe>
+                <a class="game-launch" href="sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu yeni sekmede aç</a>
             </div>
         </div>
     </section>
@@ -221,13 +428,58 @@
         <div class="about-text">
             <p>Güvenli sistemler inşa etmek, siber güvenlik veya yapay zeka mimarileri üzerine tartışmak için bana her zaman ulaşabilirsin.</p>
             <br><br>
-            <a href="mailto:senin@epostan.com" class="btn btn-primary">İletişime Geç</a>
+            <button type="button" class="btn btn-primary" id="contact-open">İletişime Geç</button>
         </div>
     </section>
+
+    <div class="contact-modal" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+        <div class="contact-card">
+            <button type="button" class="modal-close" id="contact-close" aria-label="Pencereyi kapat">&times;</button>
+            <h3 id="contact-title">İletişime Geç</h3>
+            <p>Görüşmek veya bir proje hakkında konuşmak için ulaşabilirsin.</p>
+            <a class="contact-detail" href="mailto:ahmtrntsdln58@gmail.com">ahmtrntsdln58@gmail.com</a>
+            <a class="contact-detail" href="tel:+905360451658">536 045 1658</a>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Turan Tech. Tüm hakları saklıdır.</p>
     </footer>
 
+    <script>
+        const revealItems = document.querySelectorAll('.hero, section, footer');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        revealItems.forEach((item) => revealObserver.observe(item));
+
+        const contactModal = document.getElementById('contact-modal');
+        const contactOpen = document.getElementById('contact-open');
+        const contactClose = document.getElementById('contact-close');
+
+        function closeContactModal() {
+            contactModal.classList.remove('is-open');
+            contactOpen.focus();
+        }
+
+        contactOpen.addEventListener('click', () => {
+            contactModal.classList.add('is-open');
+            contactClose.focus();
+        });
+        contactClose.addEventListener('click', closeContactModal);
+        contactModal.addEventListener('click', (event) => {
+            if (event.target === contactModal) closeContactModal();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && contactModal.classList.contains('is-open')) {
+                closeContactModal();
+            }
+        });
+    </script>
 </body>
 </html>
