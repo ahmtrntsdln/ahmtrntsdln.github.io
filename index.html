@@ -52,6 +52,7 @@
             align-items: center;
             gap: 0.75rem;
             color: #ffffff;
+            filter: drop-shadow(0 0 12px #ffffff22);
         }
         .logo img {
             height: 45px; /* Logonun Boyutu */
@@ -64,6 +65,7 @@
             font-weight: 700;
             letter-spacing: 0.02em;
             white-space: nowrap;
+            text-shadow: 0 0 14px #ffffff55;
         }
         .nav-links a {
             color: #94a3b8;
@@ -145,56 +147,13 @@
         }
         .tech-transition {
             position: relative;
-            height: 230px;
+            height: 210px;
             overflow: hidden;
             border-top: 1px solid #1e293b;
             border-bottom: 1px solid #1e293b;
-            background:
-                radial-gradient(circle at center, #1d3345 0, #0d1117 38%, #0d1117 72%);
-            transition: opacity 0.15s linear;
+            background: radial-gradient(circle at center, #1d3345 0, #0d1117 42%, #0d1117 75%);
         }
-        .tech-transition::before,
-        .tech-transition::after {
-            position: absolute;
-            inset: 0;
-            content: "";
-            pointer-events: none;
-        }
-        .tech-transition::before {
-            opacity: 0.72;
-            background-image:
-                linear-gradient(115deg, transparent 48%, #38bdf833 49%, transparent 50%),
-                linear-gradient(65deg, transparent 48%, #38bdf822 49%, transparent 50%),
-                radial-gradient(circle, #58a6ff 1px, transparent 2px);
-            background-size: 150px 120px, 180px 140px, 42px 42px;
-            background-position: center;
-            mask-image: linear-gradient(to bottom, transparent, #000 24%, #000 76%, transparent);
-        }
-        .tech-transition::after {
-            background: linear-gradient(90deg, #0d1117, transparent 28%, transparent 72%, #0d1117);
-        }
-        .tech-transition-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            z-index: 2;
-            width: clamp(68px, 10vw, 104px);
-            height: clamp(68px, 10vw, 104px);
-            object-fit: contain;
-            transform: translate(-50%, -50%);
-            filter: drop-shadow(0 0 20px #38bdf866);
-        }
-        .tech-binary {
-            position: absolute;
-            z-index: 1;
-            color: #7ee787;
-            font: 0.75rem/1.8 "Courier New", monospace;
-            letter-spacing: 0.35em;
-            opacity: 0.6;
-            user-select: none;
-        }
-        .tech-binary-left { top: 18%; left: 12%; transform: rotate(-12deg); }
-        .tech-binary-right { right: 12%; bottom: 18%; transform: rotate(12deg); }
+        #techTransition { display: block; width: 100%; height: 100%; }
         .tech-transition-label {
             position: absolute;
             right: 0;
@@ -207,6 +166,24 @@
             text-align: center;
             text-transform: uppercase;
             pointer-events: none;
+        }
+        .signature-band {
+            display: grid;
+            place-items: center;
+            min-height: 120px;
+            padding: 1.5rem 1rem 0.5rem;
+            background: linear-gradient(180deg, #0b0f19, #111827);
+        }
+        .signature-band img {
+            width: min(330px, 78vw);
+            height: auto;
+            filter: drop-shadow(0 0 9px #ffffff33);
+        }
+        .site-version {
+            margin-top: 0.45rem;
+            color: #475569;
+            font-size: 0.75rem;
+            letter-spacing: 0.04em;
         }
         .btn-group { display: flex; flex-wrap: wrap; gap: 1rem; }
         .btn {
@@ -391,13 +368,6 @@
             border-top: 1px solid #1e293b;
             color: #64748b;
         }
-        .site-version {
-            margin-top: 0.45rem;
-            color: #475569;
-            font-size: 0.75rem;
-            letter-spacing: 0.04em;
-        }
-
         /* İletişim penceresi */
         .contact-modal {
             display: none;
@@ -637,7 +607,7 @@
             .hero p {
                 font-size: 1rem;
             }
-            .tech-transition { height: 175px; }
+            .tech-transition { height: 165px; }
             .btn-group {
                 flex-direction: column;
                 align-items: stretch;
@@ -729,13 +699,6 @@
             <a href="https://github.com/ahmtrntsdln" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub'da Keşfet</a>
             <a href="https://www.linkedin.com/in/ahmet-turan-ta%C5%9Fdelen-a6b96a383" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">LinkedIn'de Keşfet</a>
         </div>
-    </div>
-
-    <div class="tech-transition" aria-label="Sistem mimarisi ve yapay zeka geçiş animasyonu">
-        <img class="tech-transition-logo" src="assets/ttech-logo.png" alt="TT logo">
-        <span class="tech-binary tech-binary-left">0101 1010<br>1100 0110</span>
-        <span class="tech-binary tech-binary-right">1001 0111<br>0010 1101</span>
-        <span class="tech-transition-label">System architecture · data · intelligence</span>
     </div>
 
     <section id="projects">
@@ -912,6 +875,14 @@
         </div>
     </div>
 
+    <div class="signature-band">
+        <img src="assets/ataturk-signature.png" alt="Mustafa Kemal Atatürk imzası">
+    </div>
+    <div class="tech-transition" aria-label="Sistem mimarisi ve yapay zeka animasyonu">
+        <canvas id="techTransition"></canvas>
+        <span class="tech-transition-label">System Architecture · Data · Intelligence</span>
+    </div>
+
     <footer>
         <p>&copy; 2026 Turan Tech. Tüm hakları saklıdır.</p>
         <p class="site-version">Site sürümü v1.4.0 · 5 Ekim 2026</p>
@@ -943,20 +914,56 @@
         }, { threshold: 0.12 });
         revealItems.forEach((item) => revealObserver.observe(item));
 
-        const techTransition = document.querySelector('.tech-transition');
-        let transitionFadeFrame;
-        function fadeTechTransition() {
-            const bounds = techTransition.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            const visibleRange = Math.max(1, viewportHeight + bounds.height);
-            const progress = Math.min(1, Math.max(0, (viewportHeight - bounds.top) / visibleRange));
-            techTransition.style.opacity = String(1 - progress * 0.82);
-            transitionFadeFrame = null;
+        const transitionCanvas = document.getElementById('techTransition');
+        const transitionContext = transitionCanvas.getContext('2d');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let transitionWidth = 0;
+        let transitionHeight = 0;
+        let transitionAngle = 0;
+        function resizeTransitionCanvas() {
+            const scale = window.devicePixelRatio || 1;
+            const bounds = transitionCanvas.getBoundingClientRect();
+            transitionWidth = bounds.width;
+            transitionHeight = bounds.height;
+            transitionCanvas.width = Math.floor(transitionWidth * scale);
+            transitionCanvas.height = Math.floor(transitionHeight * scale);
+            transitionContext.setTransform(scale, 0, 0, scale, 0, 0);
         }
-        window.addEventListener('scroll', () => {
-            if (!transitionFadeFrame) transitionFadeFrame = requestAnimationFrame(fadeTechTransition);
-        }, { passive: true });
-        fadeTechTransition();
+        function drawTransition() {
+            transitionContext.clearRect(0, 0, transitionWidth, transitionHeight);
+            transitionContext.save();
+            transitionContext.translate(transitionWidth / 2, transitionHeight / 2);
+            transitionContext.rotate(transitionAngle);
+            const radius = Math.max(transitionWidth, transitionHeight) * 0.7;
+            transitionContext.strokeStyle = 'rgba(88, 166, 255, 0.2)';
+            transitionContext.lineWidth = 1;
+            for (let ring = 0; ring < 5; ring += 1) {
+                transitionContext.beginPath();
+                transitionContext.arc(0, 0, radius * (0.35 + ring * 0.14), 0, Math.PI * 2);
+                transitionContext.stroke();
+            }
+            transitionContext.strokeStyle = 'rgba(88, 166, 255, 0.14)';
+            for (let ray = 0; ray < 16; ray += 1) {
+                const angle = (Math.PI * 2 * ray) / 16;
+                transitionContext.beginPath();
+                transitionContext.moveTo(Math.cos(angle) * 35, Math.sin(angle) * 35);
+                transitionContext.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+                transitionContext.stroke();
+            }
+            transitionContext.fillStyle = 'rgba(126, 231, 135, 0.65)';
+            transitionContext.font = '12px Courier New';
+            for (let bit = 0; bit < 24; bit += 1) {
+                const angle = (Math.PI * 2 * bit) / 24;
+                const distance = radius * (0.42 + (bit % 3) * 0.12);
+                transitionContext.fillText(bit % 2 ? '1' : '0', Math.cos(angle) * distance, Math.sin(angle) * distance);
+            }
+            transitionContext.restore();
+            transitionAngle += reducedMotion ? 0 : 0.0009;
+            if (!reducedMotion) requestAnimationFrame(drawTransition);
+        }
+        resizeTransitionCanvas();
+        drawTransition();
+        window.addEventListener('resize', resizeTransitionCanvas);
 
         const contactModal = document.getElementById('contact-modal');
         const contactOpen = document.getElementById('contact-open');
