@@ -7,6 +7,18 @@
     <meta name="description" content="ahmtrntsdln.dev — yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
     <meta name="keywords" content="ahmtrntsdln, ahmtrntsdln.dev, Turan Tech, yapay zeka, siber güvenlik, Sivas 73">
     <link rel="canonical" href="https://ahmtrntsdln.dev/">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Turan Tech">
+    <meta property="og:title" content="ahmtrntsdln.dev | Turan Tech">
+    <meta property="og:description" content="Yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
+    <meta property="og:url" content="https://ahmtrntsdln.dev/">
+    <meta property="og:image" content="https://ahmtrntsdln.dev/social-card.svg">
+    <meta property="og:image:type" content="image/svg+xml">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ahmtrntsdln.dev | Turan Tech">
+    <meta name="twitter:description" content="Yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
+    <meta name="twitter:image" content="https://ahmtrntsdln.dev/social-card.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         /* Temel Ayarlar ve Renk Paleti */
@@ -38,23 +50,33 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 1px;
+            gap: 0.75rem;
             color: #ffffff;
         }
         .logo img {
             height: 45px; /* Logonun Boyutu */
             border-radius: 6px;
         }
+        .logo-wordmark {
+            color: #e2e8f0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
         .nav-links a {
             color: #94a3b8;
             text-decoration: none;
-            margin-left: 2.5rem;
+            margin-left: 0;
             font-size: 0.95rem;
             font-weight: 600;
             transition: color 0.3s;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: clamp(1rem, 2.5vw, 2rem);
         }
         .nav-links a:hover { color: #38bdf8; /* Teknoloji Mavisi Vurgu */ }
 
@@ -325,6 +347,39 @@
             transition: border-color 0.3s, color 0.3s;
         }
         .contact-detail:hover { color: #38bdf8; border-color: #38bdf8; }
+        .contact-form {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 1.25rem;
+        }
+        .contact-form label {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.75rem 0.85rem;
+            color: #e2e8f0;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 5px;
+            font: inherit;
+        }
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: #38bdf8;
+            outline: 2px solid #38bdf844;
+            outline-offset: 1px;
+        }
+        .contact-form .form-honey {
+            position: absolute;
+            left: -9999px;
+        }
         .modal-close {
             position: absolute;
             top: 0.75rem;
@@ -467,6 +522,7 @@
                 padding: 1rem 5%;
             }
             .logo img { height: 38px; }
+            .logo-wordmark { font-size: 1.05rem; }
             .nav-links {
                 display: flex;
                 flex-wrap: wrap;
@@ -571,13 +627,14 @@
 
     <nav>
         <div class="logo">
-            <img src="logo.svg" alt="Turan Tech logo">
+            <img src="assets/ttech-logo.png" alt="TTech logo">
+            <span class="logo-wordmark">Turan Tech</span>
         </div>
         <div class="nav-links">
             <a href="#about">Amaç</a>
             <a href="#projects">Laboratuvar</a>
             <a href="#identity">Ben Kimim</a>
-            <a href="#contact">Ağ</a>
+            <a href="#contact">İletişim</a>
         </div>
     </nav>
 
@@ -642,7 +699,7 @@
     <section id="identity">
         <h2 class="section-title">Ben Kimim</h2>
         <div class="about-text">
-            <p>20 yaşında; fiziğe ve bilgisayar bilimlerine tutkuyla bağlı, öğrendiklerini geliştirmeye çalışan ve daima yeni fikirlere açık bir Gazi Üniversitesi öğrencisiyim.</p>
+            <p>Merhaba, ben <strong>Ahmet Turan Taşdelen</strong>. Gazi Üniversitesi Teknoloji Fakültesi'nde Bilgisayar Mühendisliği okuyan bir öğrenciyim.</p>
             <button type="button" class="project-button" id="identity-open">Profilimi incele</button>
         </div>
     </section>
@@ -655,7 +712,11 @@
                 <div>
                     <span class="chief-kicker">Kişisel profil</span>
                     <h3 id="identity-title">Ben Kimim?</h3>
-                    <p>20 yaşında; fiziğe ve bilgisayar bilimlerine tutkuyla bağlı, öğrenmeyi bir süreç olarak gören, öğrendiklerini sürekli geliştiren ve yeniliklere açık bir Gazi Üniversitesi 1. sınıf öğrencisiyim.</p>
+                    <p>Kendimi “deli dolu” biri olarak tanımlarım; bu delilik merakımdan gelir. Hayata, bilime ve insana karşı hiç dinmeyen bir merakım var. En çok güvendiğim yanım gözlem gücüm: bir şeyi anlamanın ilk adımının onu dikkatle izlemek olduğuna inanırım. Ezberlemek yerine konuyu kafamda kurar, bir soruyu çözerken farklı yollar ararım.</p>
+                    <p>Fizik ve matematik benim için yalnızca ders değil. Matematiğin her şeyin dili olduğuna, fiziğin henüz keşfetmediği şeyleri çoğu zaman önce matematiğin söylediğine inanıyorum. Bu merak beni bilgisayara ve yapay zekâya, oradan da siber güvenliğe getirdi.</p>
+                    <p>İlk büyük projem <strong>Şef</strong>: yapay zekâ destekli, donanımsal izolasyonu hedefleyen bir siber güvenlik motoru. Onu geliştirirken hatalarımı da açıkça yazıyorum; çünkü bir sistemi iyileştirmenin yolu kusurunu görmekten geçer.</p>
+                    <p>Hedeflerim net: fizik yan dalını tamamlamak, Avrupa'da yapay zekâ üzerine yüksek lisans yapmak ve uzun vadede donanım mimarisi ile siber güvenliği birleştirerek güvenli yapay zekâ sistemleri üzerinde çalışmak.</p>
+                    <p>Oyun oynamayı, türkü dinlemeyi ve bilgisayarla uğraşmayı hayatım boyunca bırakmayacağım üç şey olarak görüyorum. Çünkü iyi bir mühendis, işinin yanında ruhunu da besleyebilen insandır.</p>
                     <div class="identity-university">
                         <img src="assets/gazi-universitesi-logo.png" alt="Gazi Üniversitesi logosu">
                         <span>Gazi Üniversitesi<br><small>Bilgisayar Mühendisliği · 1. sınıf</small></span>
@@ -740,6 +801,18 @@
             <p>Görüşmek veya bir proje hakkında konuşmak için ulaşabilirsin.</p>
             <a class="contact-detail" href="mailto:ahmtrntsdln58@gmail.com">ahmtrntsdln58@gmail.com</a>
             <a class="contact-detail" href="tel:+905360451658">536 045 1658</a>
+            <form class="contact-form" action="https://formsubmit.co/ahmtrntsdln58@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="Turan Tech web sitesi iletişim formu">
+                <input type="hidden" name="_next" value="https://ahmtrntsdln.dev/#contact">
+                <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off">
+                <label for="contact-name">Adınız</label>
+                <input id="contact-name" name="name" type="text" autocomplete="name" required>
+                <label for="contact-email">E-posta adresiniz</label>
+                <input id="contact-email" name="email" type="email" autocomplete="email" required>
+                <label for="contact-message">Mesajınız</label>
+                <textarea id="contact-message" name="message" required></textarea>
+                <button type="submit" class="btn btn-primary">Mesajı Gönder</button>
+            </form>
         </div>
     </div>
 

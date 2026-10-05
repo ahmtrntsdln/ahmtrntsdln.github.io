@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Turan Tech — Think. Build. Secure.</title>
+  <desc id="desc">ahmtrntsdln.dev sosyal paylaşım görseli</desc>
+  <rect width="1200" height="630" fill="#0b0f19"/>
+  <circle cx="1030" cy="110" r="300" fill="#1e293b" opacity=".45"/>
+  <path d="M0 560h1200" stroke="#334155" stroke-width="2"/>
+  <g transform="translate(95 105)">
+    <path d="M0 0h210l-54 105H54z" fill="#20242d" stroke="#626b7b" stroke-width="8"/>
+    <path d="M62 68h148l-36 78h-55v92l-43-43v-49H30z" fill="#252a34" stroke="#626b7b" stroke-width="8"/>
+  </g>
+  <text x="95" y="400" fill="#f8fafc" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700">Turan Tech</text>
+  <text x="99" y="470" fill="#38bdf8" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" letter-spacing="8">THINK. BUILD. SECURE.</text>
+  <text x="99" y="535" fill="#94a3b8" font-family="Arial, Helvetica, sans-serif" font-size="24">ahmtrntsdln.dev</text>
+</svg>
