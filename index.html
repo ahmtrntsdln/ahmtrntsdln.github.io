@@ -169,11 +169,11 @@
         .tech-transition-label {
             position: absolute;
             right: 0;
-            bottom: 1.2rem;
+            top: 1rem;
             left: 0;
             z-index: 3;
             color: #94a3b8;
-            font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+            font-size: clamp(0.58rem, 1.35vw, 0.75rem);
             letter-spacing: 0.18em;
             text-align: center;
             text-transform: uppercase;
@@ -181,15 +181,16 @@
         }
         .tech-transition-copyright {
             position: absolute;
-            top: calc(50% + 4.25rem);
+            top: calc(50% + 3.65rem);
             right: 0;
             left: 0;
             z-index: 3;
             color: #94a3b8;
-            font-size: clamp(0.62rem, 1.25vw, 0.75rem);
-            letter-spacing: 0.18em;
+            font-size: clamp(0.56rem, 1.1vw, 0.68rem);
+            letter-spacing: 0.14em;
             text-align: center;
             text-transform: uppercase;
+            white-space: nowrap;
         }
         .tech-transition-version {
             position: absolute;
@@ -646,6 +647,12 @@
             .tech-transition { height: 165px; }
             .tech-transition-signature { width: min(125px, 30vw); }
             .tech-transition-version { left: 0.75rem; font-size: 0.65rem; }
+            .tech-transition-label { top: 0.7rem; letter-spacing: 0.1em; }
+            .tech-transition-copyright {
+                top: calc(50% + 3.35rem);
+                font-size: 0.52rem;
+                letter-spacing: 0.08em;
+            }
             .btn-group {
                 flex-direction: column;
                 align-items: stretch;
