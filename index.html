@@ -268,24 +268,28 @@
             margin-left: 1.25rem;
             margin-right: 1.25rem;
         }
-        .game-frame {
-            display: block;
-            width: 100%;
-            height: min(80vh, 900px);
-            min-height: 680px;
-            margin-top: 1.5rem;
+        .project-preview {
+            display: grid;
+            min-height: 190px;
+            place-items: center;
+            margin: 1.5rem 1.25rem 0;
+            padding: 2rem;
             border: 1px solid #334155;
             border-radius: 6px;
-            background: #0d151b;
+            background: radial-gradient(circle at 20% 20%, #24384a, #0d151b 62%);
+            color: #64748b;
+            text-align: center;
         }
-        .game-launch {
+        .project-preview strong { display: block; color: #cbd5e1; margin-bottom: 0.35rem; }
+        .project-preview span { font-size: 0.85rem; }
+        .project-page-link {
             display: inline-block;
             margin: 1rem 1.25rem 0;
             color: #38bdf8;
             font-size: 0.9rem;
             text-decoration: none;
         }
-        .game-launch:hover { text-decoration: underline; }
+        .project-page-link:hover { text-decoration: underline; }
         .tag {
             font-size: 0.8rem;
             padding: 0.4rem 0.8rem;
@@ -473,6 +477,10 @@
             text-decoration: none;
         }
         .chief-link:hover { text-decoration: underline; }
+        .choice-modal { align-items: center; }
+        .choice-card { width: min(100%, 520px); }
+        .choice-actions { display: grid; gap: 0.75rem; margin-top: 1.25rem; }
+        .choice-actions .btn { text-align: center; }
         .identity-modal {
             align-items: flex-start;
             overflow-y: auto;
@@ -574,12 +582,12 @@
                 margin-left: 0;
                 margin-right: 0;
             }
-            .game-frame {
-                height: 720px;
-                min-height: 720px;
-                margin-top: 1.2rem;
+            .project-preview {
+                margin-left: 0;
+                margin-right: 0;
+                min-height: 150px;
             }
-            .game-launch {
+            .project-page-link {
                 margin-left: 0;
                 margin-right: 0;
             }
@@ -606,10 +614,6 @@
             .hero { padding-left: 8%; padding-right: 8%; }
             section { padding-left: 8%; padding-right: 8%; }
             .hero h1 { font-size: clamp(2.8rem, 15vw, 4rem); }
-            .game-frame {
-                height: 620px;
-                min-height: 620px;
-            }
             .chief-progress-title { font-size: 0.78rem; }
             .identity-university { align-items: flex-start; }
         }
@@ -680,6 +684,7 @@
                 </div>
                 <div class="project-actions">
                     <button type="button" class="project-button" id="chief-open">İlerleme ve teknik özet</button>
+                    <a class="project-button" href="projects/chief-sef.html">Proje detaylarını gör</a>
                 </div>
             </div>
             <div class="card game-card">
@@ -690,8 +695,13 @@
                     <span class="tag">Browser Game</span>
                     <span class="tag">Sivas</span>
                 </div>
-                <iframe class="game-frame" src="sivas-73/index.html" title="Sivas 73 oynanabilir strateji oyunu" loading="eager" allowfullscreen></iframe>
-                <a class="game-launch" href="sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu yeni sekmede aç</a>
+                <div class="project-preview">
+                    <div><strong>Oyun ana sayfa açılışında çalıştırılmaz</strong><span>Denemek veya proje sürecini incelemek için bir seçenek seç.</span></div>
+                </div>
+                <div class="project-actions">
+                    <button type="button" class="project-button" id="sivas-open">Seçenekleri aç</button>
+                    <a class="project-button" href="projects/sivas-73.html">Proje detaylarını gör</a>
+                </div>
             </div>
         </div>
     </section>
@@ -740,6 +750,19 @@
             <button type="button" class="btn btn-primary" id="contact-open">İletişime Geç</button>
         </div>
     </section>
+
+    <div class="contact-modal choice-modal" id="sivas-modal" role="dialog" aria-modal="true" aria-labelledby="sivas-choice-title">
+        <div class="contact-card choice-card">
+            <button type="button" class="modal-close" id="sivas-close" aria-label="Sivas 73 seçeneklerini kapat">&times;</button>
+            <span class="chief-kicker">Laboratuvar seçeneği</span>
+            <h3 id="sivas-choice-title">Sivas 73</h3>
+            <p>Oyunu ayrı bir sayfada açabilir veya projenin amacını ve geliştirme sürecini inceleyebilirsin.</p>
+            <div class="choice-actions">
+                <a class="btn btn-primary" href="sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu dene</a>
+                <a class="btn btn-secondary" href="projects/sivas-73.html">Proje detaylarını gör</a>
+            </div>
+        </div>
+    </div>
 
     <div class="contact-modal chief-modal" id="chief-modal" role="dialog" aria-modal="true" aria-labelledby="chief-title">
         <div class="contact-card chief-card">
@@ -791,6 +814,7 @@
                 <p><strong>Önerilen sıra:</strong> .NET uzman özellikleri ve zaman içinde değişen veriyle yeniden doğrulama → eBPF olay şeması ve kaynak tüketimi ölçümü → güvenli donanım izolasyonu için platform seçimi. Bu sıra, erken optimizasyonu ve yalnızca tek bir doğruluk skoruna dayanma riskini azaltır.</p>
             </div>
             <a class="chief-link" href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Chief-Sef deposunu GitHub’da incele →</a>
+            <a class="chief-link" href="projects/chief-sef.html">Ayrıntılı proje sayfasını aç →</a>
         </div>
     </div>
 
@@ -852,6 +876,9 @@
         const chiefModal = document.getElementById('chief-modal');
         const chiefOpen = document.getElementById('chief-open');
         const chiefClose = document.getElementById('chief-close');
+        const sivasModal = document.getElementById('sivas-modal');
+        const sivasOpen = document.getElementById('sivas-open');
+        const sivasClose = document.getElementById('sivas-close');
         const chiefUpdated = document.getElementById('chief-updated');
         const chiefFiles = document.getElementById('chief-files');
         const identityModal = document.getElementById('identity-modal');
@@ -893,6 +920,10 @@
             if (event.key === 'Escape' && chiefModal.classList.contains('is-open')) {
                 chiefModal.classList.remove('is-open');
                 chiefOpen.focus();
+            }
+            if (event.key === 'Escape' && sivasModal.classList.contains('is-open')) {
+                sivasModal.classList.remove('is-open');
+                sivasOpen.focus();
             }
             if (event.key === 'Escape' && identityModal.classList.contains('is-open')) {
                 identityModal.classList.remove('is-open');
@@ -956,6 +987,20 @@
             if (event.target === chiefModal) {
                 chiefModal.classList.remove('is-open');
                 chiefOpen.focus();
+            }
+        });
+        sivasOpen.addEventListener('click', () => {
+            sivasModal.classList.add('is-open');
+            sivasClose.focus();
+        });
+        sivasClose.addEventListener('click', () => {
+            sivasModal.classList.remove('is-open');
+            sivasOpen.focus();
+        });
+        sivasModal.addEventListener('click', (event) => {
+            if (event.target === sivasModal) {
+                sivasModal.classList.remove('is-open');
+                sivasOpen.focus();
             }
         });
     </script>

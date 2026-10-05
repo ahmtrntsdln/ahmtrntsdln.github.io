@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sivas 73 | Turan Tech</title>
+  <meta name="description" content="Sivas 73 tarayıcı strateji demosunun amacı, teknolojileri ve geliştirme süreci.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #e2e8f0; background: #0b0f19; font: 16px/1.7 Inter, system-ui, sans-serif; }
+    a { color: #38bdf8; }
+    .wrap { width: min(1080px, 90%); margin: auto; }
+    header { padding: 1.5rem 0; border-bottom: 1px solid #1e293b; }
+    .nav { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+    .brand { display: flex; gap: .7rem; align-items: center; color: #fff; text-decoration: none; font: 700 1.2rem Georgia, serif; }
+    .brand img { width: 42px; height: 42px; }
+    .back { text-decoration: none; font-size: .9rem; }
+    main { padding: 5rem 0 6rem; }
+    .kicker { color: #38bdf8; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    h1 { max-width: 720px; margin: .5rem 0 1rem; color: #fff; font-size: clamp(2.4rem, 7vw, 5rem); line-height: 1.05; }
+    .lead { max-width: 720px; color: #94a3b8; font-size: 1.15rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin: 2rem 0 4rem; }
+    .btn { padding: .75rem 1.1rem; border: 1px solid #334155; border-radius: 5px; color: #e2e8f0; text-decoration: none; }
+    .btn.primary { color: #0f172a; background: #e2e8f0; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .panel { padding: 1.5rem; border: 1px solid #1e293b; border-radius: 8px; background: #111827; }
+    .panel h2 { margin-top: 0; color: #fff; }
+    .screen { min-height: 280px; padding: 1rem; border: 1px solid #475569; border-radius: 6px; background: #182b31; }
+    .screen-top { display: flex; justify-content: space-between; padding-bottom: .8rem; color: #f7d98a; border-bottom: 1px solid #49605e; }
+    .map { display: grid; grid-template-columns: repeat(6, 1fr); gap: .35rem; padding: 1rem; height: 190px; background: linear-gradient(135deg, #314c37, #9b8b5e); }
+    .map span { border: 1px solid #e4d39c88; border-radius: 50%; }
+    .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .tag { padding: .35rem .6rem; border-radius: 4px; color: #cbd5e1; background: #1e293b; font-size: .85rem; }
+    .process { margin: 0; padding-left: 1.2rem; color: #94a3b8; }
+    .process li { margin: .65rem 0; }
+    footer { padding: 2rem 0; border-top: 1px solid #1e293b; color: #64748b; }
+    @media (max-width: 700px) { .nav { align-items: flex-start; flex-direction: column; } .grid { grid-template-columns: 1fr; } main { padding-top: 3rem; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav"><a class="brand" href="../index.html"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><a class="back" href="../index.html#projects">← Laboratuvara dön</a></div></header>
+  <main class="wrap">
+    <span class="kicker">Tarayıcı strateji demosu</span>
+    <h1>Sivas 73</h1>
+    <p class="lead">Sivas'ın tarihinden, coğrafyasından ve kültürel hafızasından ilham alan; kaynak yönetimi ve bölgesel kararlar üzerine kurulu tek dosyalı bir tarayıcı oyunu prototipi.</p>
+    <div class="actions"><a class="btn primary" href="../sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu dene</a><a class="btn" href="../index.html#projects">Laboratuvara dön</a></div>
+    <div class="grid">
+      <section class="panel"><h2>Ekran görüntüsü</h2><div class="screen" aria-label="Sivas 73 oyun arayüzü önizlemesi"><div class="screen-top"><strong>Sivas 73</strong><span>Harita · kaynaklar · birlikler</span></div><div class="map"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
+      <section class="panel"><h2>Proje özeti</h2><p>Oyuncu, sınırlı kaynaklarla harita üzerinde ilerler; kararların etkisini kaynak, birlik ve bölge dengesi üzerinden görür. Amaç, kısa sürede öğrenilebilen ama tekrar oynandıkça derinleşen yerel bir strateji deneyimi oluşturmaktır.</p><h2>Kullanılan teknoloji</h2><div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Vanilla JavaScript</span><span class="tag">Pointer Events</span><span class="tag">GitHub Pages</span></div></section>
+      <section class="panel"><h2>Geliştirme süreci</h2><ol class="process"><li>Harita, kaynak ve birlik ekranının tek dosyalı prototipi oluşturuldu.</li><li>Dokunmatik ve fare etkileşimleri mobil öncelikli hâle getirildi.</li><li>Oyun, ana sayfadan ayrıştırılarak yalnızca kullanıcı seçtiğinde açılacak şekilde düzenlendi.</li><li>Sonraki hedef: kayıt sistemi, görev akışı ve daha kapsamlı denge testleri.</li></ol></section>
+      <section class="panel"><h2>Durum</h2><p>Bu sürüm oynanabilir bir arayüz ve mekanik demosudur. Görsel dil, performans ve temel etkileşimler doğrulandı; içerik ve stratejik derinlik iteratif olarak geliştirilecektir.</p><a href="https://github.com/ahmtrntsdln/ahmtrntsdln.github.io" target="_blank" rel="noopener noreferrer">Kaynak projeyi GitHub'da gör →</a></section>
+    </div>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech</div></footer>
+</body>
+</html>
