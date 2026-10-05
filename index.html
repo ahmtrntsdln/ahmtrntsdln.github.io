@@ -259,20 +259,13 @@
             outline: none;
         }
         .game-card {
-            grid-column: 1 / -1;
-            padding: 1.25rem;
-        }
-        .game-card h3,
-        .game-card p,
-        .game-card .tag-list {
-            margin-left: 1.25rem;
-            margin-right: 1.25rem;
+            padding: 2.5rem;
         }
         .project-preview {
             display: grid;
             min-height: 190px;
             place-items: center;
-            margin: 1.5rem 1.25rem 0;
+            margin: 1.5rem 0 0;
             padding: 2rem;
             border: 1px solid #334155;
             border-radius: 6px;
@@ -282,6 +275,32 @@
         }
         .project-preview strong { display: block; color: #cbd5e1; margin-bottom: 0.35rem; }
         .project-preview span { font-size: 0.85rem; }
+        .play-button {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            border: 1px solid #4ade80;
+            border-radius: 5px;
+            color: #052e16;
+            background: #4ade80;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.3s, border-color 0.3s, transform 0.3s;
+        }
+        .play-button:hover,
+        .play-button:focus-visible {
+            border-color: #86efac;
+            background: #86efac;
+            transform: translateY(-2px);
+            outline: none;
+        }
+        .preview-detail {
+            display: block;
+            margin-top: 0.8rem;
+            color: #38bdf8;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .preview-detail:hover { text-decoration: underline; }
         .project-page-link {
             display: inline-block;
             margin: 1rem 1.25rem 0;
@@ -483,10 +502,6 @@
             text-decoration: none;
         }
         .chief-link:hover { text-decoration: underline; }
-        .choice-modal { align-items: center; }
-        .choice-card { width: min(100%, 520px); }
-        .choice-actions { display: grid; gap: 0.75rem; margin-top: 1.25rem; }
-        .choice-actions .btn { text-align: center; }
         .identity-modal {
             align-items: flex-start;
             overflow-y: auto;
@@ -579,15 +594,7 @@
             .card {
                 padding: 1.5rem;
             }
-            .game-card {
-                padding: 1rem;
-            }
-            .game-card h3,
-            .game-card p,
-            .game-card .tag-list {
-                margin-left: 0;
-                margin-right: 0;
-            }
+            .game-card { padding: 1.5rem; }
             .project-preview {
                 margin-left: 0;
                 margin-right: 0;
@@ -683,11 +690,10 @@
                     <span class="tag">Sivas</span>
                 </div>
                 <div class="project-preview">
-                    <div><strong>Oyun ana sayfa açılışında çalıştırılmaz</strong><span>Denemek veya proje sürecini incelemek için bir seçenek seç.</span></div>
-                </div>
-                <div class="project-actions">
-                    <button type="button" class="project-button" id="sivas-open">Seçenekleri aç</button>
-                    <a class="project-button" href="projects/sivas-73.html">Proje detaylarını gör</a>
+                    <div>
+                        <a class="play-button" href="sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyna</a>
+                        <a class="preview-detail" href="projects/sivas-73.html">Detaylarına bak</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -756,19 +762,6 @@
             <button type="button" class="btn btn-primary" id="contact-open">İletişime Geç</button>
         </div>
     </section>
-
-    <div class="contact-modal choice-modal" id="sivas-modal" role="dialog" aria-modal="true" aria-labelledby="sivas-choice-title">
-        <div class="contact-card choice-card">
-            <button type="button" class="modal-close" id="sivas-close" aria-label="Sivas 73 seçeneklerini kapat">&times;</button>
-            <span class="chief-kicker">Laboratuvar seçeneği</span>
-            <h3 id="sivas-choice-title">Sivas 73</h3>
-            <p>Oyunu ayrı bir sayfada açabilir veya projenin amacını ve geliştirme sürecini inceleyebilirsin.</p>
-            <div class="choice-actions">
-                <a class="btn btn-primary" href="sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu dene</a>
-                <a class="btn btn-secondary" href="projects/sivas-73.html">Proje detaylarını gör</a>
-            </div>
-        </div>
-    </div>
 
     <div class="contact-modal chief-modal" id="chief-modal" role="dialog" aria-modal="true" aria-labelledby="chief-title">
         <div class="contact-card chief-card">
@@ -883,9 +876,6 @@
         const chiefModal = document.getElementById('chief-modal');
         const chiefOpen = document.getElementById('chief-open');
         const chiefClose = document.getElementById('chief-close');
-        const sivasModal = document.getElementById('sivas-modal');
-        const sivasOpen = document.getElementById('sivas-open');
-        const sivasClose = document.getElementById('sivas-close');
         const chiefUpdated = document.getElementById('chief-updated');
         const chiefFiles = document.getElementById('chief-files');
         const identityModal = document.getElementById('identity-modal');
@@ -927,10 +917,6 @@
             if (event.key === 'Escape' && chiefModal.classList.contains('is-open')) {
                 chiefModal.classList.remove('is-open');
                 chiefOpen.focus();
-            }
-            if (event.key === 'Escape' && sivasModal.classList.contains('is-open')) {
-                sivasModal.classList.remove('is-open');
-                sivasOpen.focus();
             }
             if (event.key === 'Escape' && identityModal.classList.contains('is-open')) {
                 identityModal.classList.remove('is-open');
@@ -994,20 +980,6 @@
             if (event.target === chiefModal) {
                 chiefModal.classList.remove('is-open');
                 chiefOpen.focus();
-            }
-        });
-        sivasOpen.addEventListener('click', () => {
-            sivasModal.classList.add('is-open');
-            sivasClose.focus();
-        });
-        sivasClose.addEventListener('click', () => {
-            sivasModal.classList.remove('is-open');
-            sivasOpen.focus();
-        });
-        sivasModal.addEventListener('click', (event) => {
-            if (event.target === sivasModal) {
-                sivasModal.classList.remove('is-open');
-                sivasOpen.focus();
             }
         });
     </script>
