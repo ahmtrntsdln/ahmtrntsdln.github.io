@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu | Turan Tech</title>
+  <meta name="description" content="Genel skor bir alt grubun çöküşünü gizleyebilir: .NET kör noktası, uzman model ve “DLL ise zararsız” kestirmesi.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/notes/net-kor-nokta.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/net-kor-nokta.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu">
+  <meta property="og:description" content="Genel skor bir alt grubun çöküşünü gizleyebilir: .NET kör noktası, uzman model ve “DLL ise zararsız” kestirmesi.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/notes/net-kor-nokta.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-tr.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Güncel .NET zararlılarında kaçan oranı %92,8, uzman modelde %3,8">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">İçeriğe atla</a>
+  <header><div class="wrap nav"><a class="brand" href="../"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../">← Ana sayfa</a><a class="nav-link" href="../notes/">Notlar</a><a class="lang" href="../en/notes/dotnet-blind-spot.html" lang="en" hreflang="en">EN</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Araştırma notu · 9 Ekim 2026</span>
+    <h1>%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 9 Ekim 2026 · yaklaşık 7 dakika · Proje: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>Kısaca:</strong> Chief-Sef'in ilk modeli genel olarak iyi görünüyordu. Ama 2024'ün son aylarından 120.000 .NET dosyasında doğruluğu %53'e düştü ve zararlıların %92,8'ini kaçırdı. Genel skor bu çöküşü gizliyordu. Uzman bir model kurdum; onun da kendi kestirmesi çıktı: "DLL ise zararsız".</p>
+
+    <h2>İlk ipucu: genel skorun içindeki alt grup</h2>
+    <p>Model, EMBER 2018 verisinde yaklaşık %90 doğruluk veriyordu. Sonuçları dosya türüne göre ayırınca tablo değişti: çapraz doğrulamada .NET zararlılarının <strong>%52'si</strong> kaçıyordu; .NET dışı dosyalarda bu oran %11,5'ti. .NET dosyaları verinin küçük bir kısmı olduğu için genel ortalamada bu çöküş neredeyse görünmüyordu.</p>
+
+    <h2>Güncel veriyle: yazı-tura</h2>
+    <p>Daha zor bir soru sordum: model, eğitiminden altı yıl sonra çıkan .NET zararlılarında ne yapıyor? EMBER2024 veri setinin .NET test kümesini (Eylül–Aralık 2024, eğitimde hiç görülmemiş) kullandım. Bir not: belgede bu kümenin 60 bin dosya olduğu yazıyordu; saydığımda 120.000 çıktı. Belgelenen sayıya güvenmemek de bu işin parçası.</p>
+    <div class="table-wrap"><table><thead><tr><th>Ölçü (EMBER2024 .NET test)</th><th class="num">Sonuç</th></tr></thead><tbody><tr><td>Doğruluk</td><td class="num">%53</td></tr><tr><td>Kaçan zararlı</td><td class="num">%92,8</td></tr><tr><td>AUC</td><td class="num">0,63</td></tr></tbody></table></div>
+    <p>AUC 0,63, rastgele tahminden pek iyi değil. Kaçanların arasında xworm, njrat, asyncrat, agenttesla, redline ve clipbanker gibi yaygın aileler vardı; bu ailelerin örneklerinin %83 ile %99'u kaçıyordu.</p>
+
+    <h2>Neden kör?</h2>
+    <p>Modelin baktığı beş özellik PE dosyasının başlığından geliyor. .NET dosyalarında asıl kod, ortak dil çalışma zamanının (CLR) okuduğu ara dilde ve meta verilerde duruyor; başlık açısından hepsi birbirine benziyor: hemen hepsinin tek bir içe aktarımı var (<code>mscoree.dll</code>) ve entropileri yakın. Üstüne EMBER 2018 eğitim verisinde .NET zararlı sayısı azdı (162). Modele ".NET mi?" bayrağı eklemek de çözmedi: bayraksız model de aynı körlükteydi, bayraklı modelde kaçan oran %92,8'den %93,4'e çıktı.</p>
+
+    <h2>Uzman model: kazancın çoğu veriden</h2>
+    <p>.NET dosyaları için ayrı bir model denedim. EMBER2024'ün .NET eğitim kümesinin ilk 52 haftasından 100 bin dosyalık bir örneklemle eğittim, son 12 haftayla sınadım (zamansal bölme). Adım adım:</p>
+    <div class="table-wrap"><table><thead><tr><th>Model</th><th class="num">Kaçan zararlı</th><th class="num">AUC</th></tr></thead><tbody><tr><td>M0: mevcut model</td><td class="num">%92,8</td><td class="num">0,63</td></tr><tr><td>M1: yeni veri, aynı beş özellik</td><td class="num">%12,3</td><td class="num">0,94</td></tr><tr><td>M2: + dizge özellikleri</td><td class="num">%3,8</td><td class="num">0,993</td></tr></tbody></table></div>
+    <p>Kazancın büyüğü yeni veriden geldi; dizge özellikleri (dosyadaki okunabilir metinlerde URL, base64, şifreleme ve benzeri kalıpların sayımı) üstüne bir kat daha ekledi. M2'nin genel yanlış alarm oranı %4,2'ydi. Fazla iyi görünüyordu.</p>
+
+    <h2>Kestirme: "DLL ise zararsız"</h2>
+    <p>Modelin en önemli bulduğu özelliğe baktım: dosyada "privilege" kelimesinin kaç kez geçtiği. Bu aslında bir zararlılık sinyali değil, bir dosya türü vekiliydi. Bu kelime çalıştırılabilir (EXE) dosyaların manifestinde geçiyor ve veri setinde zararsızların ~%90'ı DLL, zararlıların ~%90'ı EXE idi. Model "EXE ise şüphelen" kestirmesini öğrenmişti.</p>
+    <p>Sonuçları türe göre ayırınca görüldü: M2'nin EXE dosyalarındaki yanlış alarm oranı <strong>~%26</strong>'ydı; genel %4,2 bunu gizliyordu. Manifest kelimelerini özelliklerden çıkarmak işe yaramadı (%21): tür bilgisi başka özelliklere de sinmişti.</p>
+
+    <h2>Çözüm: dengeyi türün içinde kurmak</h2>
+    <p>M2d'de eğitim örneklemini her dosya türünün içinde %50 zararlı / %50 zararsız olacak şekilde kurdum ve dosya türünü açıkça girdi olarak verdim. Böylece model türü bilmeye devam ediyor ama tür, zararlılığın yerine geçemiyor.</p>
+    <div class="table-wrap"><table><thead><tr><th>Ölçü</th><th class="num">M2</th><th class="num">M2d</th></tr></thead><tbody><tr><td>EXE yanlış alarm</td><td class="num">%26,5</td><td class="num">%7,3</td></tr><tr><td>EXE AUC</td><td class="num">0,966</td><td class="num">0,979</td></tr><tr><td>DLL AUC</td><td class="num">0,986</td><td class="num">0,993</td></tr><tr><td>EXE kaçan zararlı</td><td class="num">%2,9</td><td class="num">%8,0</td></tr><tr><td>Genel doğruluk</td><td class="num">%95,97</td><td class="num">%94,97</td></tr></tbody></table></div>
+    <p>Genel doğruluk bir puan düştü. Bunu bir kayıp olarak görmüyorum: test kümesi de aynı tür dengesizliğini taşıdığı için kestirme orada ödüllendiriliyordu. Düşüş, gerçekçi hâle gelmenin bedeli. M2d'de en önemli özellikler artık içerik sinyalleri: URL'ler, dizgelerin ortalama uzunluğu ve entropisi, şifreleme ve base64 kalıpları.</p>
+
+    <h2>Gerçek dosyalarda</h2>
+    <p>İki modeli kendi bilgisayarımdaki gerçek, zararsız .NET dosyalarında da sınadım (500 EXE, 500 DLL). EXE'lerde yanlış alarm M2'de <strong>%15,6</strong> (%95 güven aralığı 12,7–19,0), M2d'de <strong>%1,6</strong> (0,8–3,1) oldu; DLL'lerde ikisi de 500'de 0 yanlış alarm verdi. Kestirme gerçek dünyada da vardı ve M2d onu gideriyor. Bir uyarı: bu örneklem rastgele değil (klasör sırasıyla ilk 500) ve aynı paketten çok dosya içeriyor; gerçek belirsizlik aralıktan geniş.</p>
+
+    <h2>Bedeli</h2>
+    <p>Kestirme gidince bazı ailelerde kaçan oranı arttı: agenttesla %7,0'dan %11,1'e, formbook %2,8'den %6,2'ye, remcos %3,2'den %6,9'a. Bunları izliyorum; eşik tasarımında agenttesla'yı ayrıca ölçeceğim. M2d hâlâ deneysel ve ana modele alınmadı.</p>
+
+    <h2>Dersler</h2>
+    <ul>
+      <li><strong>Alt grupları ayrıca ölç.</strong> Dosya türü, .NET, paketlenmiş dosyalar: genel skor bir grubun çöküşünü gizleyebilir.</li>
+      <li><strong>"En önemli özellik" bir vekil olabilir.</strong> Önem sıralamasının başındaki özellik gerçekten ne ölçüyor, ayrıca sor.</li>
+      <li><strong>Dengeyi alt grubun içinde kur.</strong> Sınıflar genelde dengeli olsa bile bir alt grupta dengesizse model oradan kestirme öğrenir.</li>
+      <li><strong>Belgedeki sayıya güvenme, say.</strong></li>
+    </ul>
+
+    <h2>Şeffaflık</h2>
+    <p>Bu projenin kodunu yapay zekâ ile, Claude Code kullanarak yazıyorum. Ölçümlerin kurgusu, sonuçların yorumu ve neyin yayımlanacağı kararı benim. Ölçümleri yapan betikler (<code>net_dogrulama.py</code>, <code>net_model.py</code>) ve ayrıntılı notlar <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef deposunda</a>.</p>
+
+    <h2>Kaynaklar</h2>
+    <ul class="refs">
+      <li><a href="https://huggingface.co/datasets/joyce8/EMBER2024">EMBER2024 veri seti</a> (Hugging Face) ve özellik çıkarıcısı <a href="https://github.com/FutureComputing4AI/EMBER2024">thrember</a> (Apache-2.0); dizge özellikleri bu kodla birebir aynı hesaplanıyor.</li>
+      <li>H. S. Anderson, P. Roth. <a href="https://arxiv.org/abs/1804.04637">EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models</a>, 2018.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.7.0 · 9 Ekim 2026</small></div></footer>
+</body>
+</html>

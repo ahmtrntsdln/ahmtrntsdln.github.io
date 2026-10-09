@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A 90%-accurate model missed 93% of recent .NET malware | Turan Tech</title>
+  <meta name="description" content="An overall score can hide a subgroup collapsing: the .NET blind spot, a specialist model, and the “DLL means benign” shortcut.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/net-kor-nokta.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="A 90%-accurate model missed 93% of recent .NET malware">
+  <meta property="og:description" content="An overall score can hide a subgroup collapsing: the .NET blind spot, a specialist model, and the “DLL means benign” shortcut.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Miss rate on recent .NET malware: 92.8%, 3.8% with a specialist model">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">Skip to content</a>
+  <header><div class="wrap nav"><a class="brand" href="../../en/"><img src="../../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../../en/">← Home</a><a class="nav-link" href="../../en/notes/">Notes</a><a class="lang" href="../../notes/net-kor-nokta.html" lang="tr" hreflang="tr">TR</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Research note · 9 October 2026</span>
+    <h1>A 90%-accurate model missed 93% of recent .NET malware</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 9 October 2026 · about 7 minutes · Project: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>In short:</strong> The first Chief-Sef model looked good overall. But on 120,000 .NET files from the last months of 2024, its accuracy fell to 53% and it missed 92.8% of the malware. The overall score was hiding the collapse. I built a specialist model, and it found a shortcut of its own: “a DLL means benign”.</p>
+
+    <h2>The first hint: a subgroup inside the overall score</h2>
+    <p>The model scored about 90% accuracy on EMBER 2018 data. Splitting the results by file type changed the picture: in cross-validation, <strong>52%</strong> of .NET malware slipped through, against 11.5% for non-.NET files. Because .NET files are a small part of the data, the collapse was almost invisible in the overall average.</p>
+
+    <h2>On recent data: a coin toss</h2>
+    <p>I asked a harder question: what does the model do with .NET malware that appeared six years after its training data? I used the .NET test set of the EMBER2024 dataset (September–December 2024, never seen in training). A side note: the documentation said this set held 60 thousand files; when I counted, it held 120,000. Not trusting a documented number is part of the job.</p>
+    <div class="table-wrap"><table><thead><tr><th>Measurement (EMBER2024 .NET test)</th><th class="num">Result</th></tr></thead><tbody><tr><td>Accuracy</td><td class="num">53%</td></tr><tr><td>Missed malware</td><td class="num">92.8%</td></tr><tr><td>AUC</td><td class="num">0.63</td></tr></tbody></table></div>
+    <p>An AUC of 0.63 is not much better than guessing. The misses included common families such as xworm, njrat, asyncrat, agenttesla, redline and clipbanker; between 83% and 99% of each family's samples slipped through.</p>
+
+    <h2>Why is it blind?</h2>
+    <p>The five features the model looks at come from the PE header. In .NET files the real code lives in the intermediate language and metadata read by the Common Language Runtime (CLR); from the header's point of view they all look alike: almost every one has a single import (<code>mscoree.dll</code>) and similar entropy. On top of that, the EMBER 2018 training data held few .NET malware samples (162). Adding an “is it .NET?” flag did not help either: the model without the flag was just as blind, and with the flag the miss rate went from 92.8% to 93.4%.</p>
+
+    <h2>A specialist model: most of the gain comes from data</h2>
+    <p>I tried a separate model for .NET files. I trained it on a 100-thousand-file sample from the first 52 weeks of EMBER2024's .NET training set and tested it on the last 12 weeks (a temporal split). Step by step:</p>
+    <div class="table-wrap"><table><thead><tr><th>Model</th><th class="num">Missed malware</th><th class="num">AUC</th></tr></thead><tbody><tr><td>M0: existing model</td><td class="num">92.8%</td><td class="num">0.63</td></tr><tr><td>M1: new data, same five features</td><td class="num">12.3%</td><td class="num">0.94</td></tr><tr><td>M2: + string features</td><td class="num">3.8%</td><td class="num">0.993</td></tr></tbody></table></div>
+    <p>Most of the gain came from the new data; string features (counts of patterns such as URLs, base64 and cryptography terms in the readable text of a file) added another layer. M2's overall false-alarm rate was 4.2%. It looked too good.</p>
+
+    <h2>The shortcut: “a DLL means benign”</h2>
+    <p>I looked at the feature the model found most important: how many times the word “privilege” appears in the file. It was not a sign of maliciousness but a proxy for file type. The word appears in the manifest of executable (EXE) files, and in the dataset ~90% of benign files were DLLs while ~90% of malicious ones were EXEs. The model had learned the shortcut “be suspicious of EXEs”.</p>
+    <p>Splitting the results by type showed it: M2's false-alarm rate on EXE files was <strong>~26%</strong>, hidden by the overall 4.2%. Removing the manifest words from the features did not fix it (21%): the type information had seeped into other features too.</p>
+
+    <h2>The fix: balance within each type</h2>
+    <p>For M2d, I built the training sample so that each file type is 50% malicious / 50% benign within itself, and gave the file type to the model explicitly as an input. The model still knows the type, but the type can no longer stand in for maliciousness.</p>
+    <div class="table-wrap"><table><thead><tr><th>Measurement</th><th class="num">M2</th><th class="num">M2d</th></tr></thead><tbody><tr><td>EXE false alarms</td><td class="num">26.5%</td><td class="num">7.3%</td></tr><tr><td>EXE AUC</td><td class="num">0.966</td><td class="num">0.979</td></tr><tr><td>DLL AUC</td><td class="num">0.986</td><td class="num">0.993</td></tr><tr><td>EXE missed malware</td><td class="num">2.9%</td><td class="num">8.0%</td></tr><tr><td>Overall accuracy</td><td class="num">95.97%</td><td class="num">94.97%</td></tr></tbody></table></div>
+    <p>Overall accuracy dropped by a point. I do not see that as a loss: the test set carries the same type imbalance, so the shortcut was being rewarded there. The drop is the price of becoming realistic. In M2d the most important features are now content signals: URLs, the average length and entropy of strings, and cryptography and base64 patterns.</p>
+
+    <h2>On real files</h2>
+    <p>I also tested both models on real, benign .NET files from my own computer (500 EXEs, 500 DLLs). On EXEs, false alarms were <strong>15.6%</strong> for M2 (95% confidence interval 12.7–19.0) and <strong>1.6%</strong> for M2d (0.8–3.1); on DLLs both had 0 false alarms out of 500. The shortcut existed in the real world too, and M2d removes it. A caveat: this sample is not random (the first 500 in folder order) and contains many files from the same packages, so the real uncertainty is wider than the interval.</p>
+
+    <h2>The cost</h2>
+    <p>With the shortcut gone, the miss rate rose for some families: agenttesla from 7.0% to 11.1%, formbook from 2.8% to 6.2%, remcos from 3.2% to 6.9%. I am tracking these and will measure agenttesla separately when designing thresholds. M2d is still experimental and has not been merged into the main model.</p>
+
+    <h2>Lessons</h2>
+    <ul>
+      <li><strong>Measure subgroups separately.</strong> File type, .NET, packed files: an overall score can hide one group collapsing.</li>
+      <li><strong>“The most important feature” may be a proxy.</strong> Ask what the feature at the top of the ranking really measures.</li>
+      <li><strong>Balance within each subgroup.</strong> Even if the classes are balanced overall, an imbalance inside a subgroup lets the model learn a shortcut there.</li>
+      <li><strong>Do not trust a documented number; count.</strong></li>
+    </ul>
+
+    <h2>Transparency</h2>
+    <p>I write the code for this project with AI, using Claude Code. The design of the measurements, the interpretation of the results and the decision about what to publish are mine. The scripts that ran these measurements (<code>net_dogrulama.py</code>, <code>net_model.py</code>) and the detailed notes are in the <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef repository</a> (notes in Turkish).</p>
+
+    <h2>References</h2>
+    <ul class="refs">
+      <li><a href="https://huggingface.co/datasets/joyce8/EMBER2024">The EMBER2024 dataset</a> (Hugging Face) and its feature extractor <a href="https://github.com/FutureComputing4AI/EMBER2024">thrember</a> (Apache-2.0); the string features here are computed exactly as in that code.</li>
+      <li>H. S. Anderson, P. Roth. <a href="https://arxiv.org/abs/1804.04637">EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models</a>, 2018.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.7.0 · 9 October 2026</small></div></footer>
+</body>
+</html>

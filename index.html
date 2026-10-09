@@ -25,11 +25,60 @@
     <meta property="og:url" content="https://ahmtrntsdln.dev/">
     <meta property="og:image" content="https://ahmtrntsdln.dev/social-card.png">
     <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Turan Tech logosu ve Think. Build. Secure. sloganı">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Turan Tech: Think. Build. Secure.">
     <meta name="twitter:description" content="Ahmet Turan Taşdelen'in kurduğu bağımsız araştırma laboratuvarı: yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
     <meta name="twitter:image" content="https://ahmtrntsdln.dev/social-card.png">
+    <meta name="twitter:image:alt" content="Turan Tech logosu ve Think. Build. Secure. sloganı">
+    <!-- Yapısal veri: arama motorları markayı ve kurucusunu tanısın. Veri bloğu (çalıştırılmaz), CSP'den etkilenmez. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://ahmtrntsdln.dev/#org",
+          "name": "Turan Tech",
+          "url": "https://ahmtrntsdln.dev/",
+          "logo": "https://ahmtrntsdln.dev/assets/ttech-logo.png",
+          "description": "Ahmet Turan Taşdelen'in kurduğu bağımsız araştırma laboratuvarı: yapay zeka ve siber güvenlik.",
+          "founder": {
+            "@id": "https://ahmtrntsdln.dev/#person"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://ahmtrntsdln.dev/#person",
+          "name": "Ahmet Turan Taşdelen",
+          "url": "https://ahmtrntsdln.dev/",
+          "jobTitle": "Bilgisayar Mühendisliği öğrencisi",
+          "affiliation": {
+            "@type": "CollegeOrUniversity",
+            "name": "Gazi Üniversitesi"
+          },
+          "sameAs": [
+            "https://github.com/ahmtrntsdln",
+            "https://www.linkedin.com/in/ahmet-turan-ta%C5%9Fdelen-a6b96a383"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://ahmtrntsdln.dev/#website",
+          "url": "https://ahmtrntsdln.dev/",
+          "name": "Turan Tech",
+          "inLanguage": "tr",
+          "publisher": {
+            "@id": "https://ahmtrntsdln.dev/#org"
+          }
+        }
+      ]
+    }
+    </script>
     <link href="assets/fonts/inter.css" rel="stylesheet">
+    <link href="assets/site.css" rel="stylesheet">
     <!-- Kaydırınca beliren bölümler yalnızca JavaScript çalışıyorsa gizli başlar; çalışmazsa içerik hep görünür. -->
     <script>document.documentElement.classList.add('js');</script>
     <style>
@@ -113,7 +162,7 @@
             width: min(58vw, 760px);
             height: 100%;
             content: "";
-            background-image: linear-gradient(90deg, #0b0f19 0%, #0b0f1900 48%), linear-gradient(0deg, #0b0f19 0%, #0b0f1900 52%), url("assets/turk-bayragi.jpg");
+            background-image: linear-gradient(90deg, #0b0f19 0%, #0b0f1900 48%), linear-gradient(0deg, #0b0f19 0%, #0b0f1900 52%), url("assets/turk-bayragi.webp");
             background-position: center, center, center;
             background-size: cover, cover, cover;
             background-repeat: no-repeat;
@@ -209,7 +258,7 @@
             bottom: 0.85rem;
             left: 1.2rem;
             z-index: 3;
-            color: #475569;
+            color: var(--faint);
             font-size: 0.72rem;
             letter-spacing: 0.04em;
         }
@@ -229,6 +278,39 @@
             border: 1px solid #334155;
             border-radius: 4px;
         }
+        .note-card {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+        .note-kicker {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: #38bdf8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .note-group + .note-group { margin-top: 3rem; }
+        .note-group-title {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.4rem 1rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-size: 1.35rem;
+        }
+        .note-group-title a {
+            color: #38bdf8;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-decoration: none;
+        }
+        .note-group-title a:hover { text-decoration: underline; }
+        .chief-note-link { color: #38bdf8; text-decoration: none; }
+        .chief-note-link:hover { text-decoration: underline; }
         .lab-note {
             margin-bottom: 2rem;
             padding: 1rem 1.2rem;
@@ -244,7 +326,7 @@
         .form-note a { color: #38bdf8; }
         .site-version {
             margin-top: 0.45rem;
-            color: #475569;
+            color: var(--faint);
             font-size: 0.75rem;
             letter-spacing: 0.04em;
         }
@@ -754,6 +836,7 @@
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#icerik">İçeriğe atla</a>
 
     <nav>
         <div class="logo">
@@ -762,6 +845,7 @@
         </div>
         <div class="nav-links">
             <a href="#projects">Laboratuvar</a>
+            <a href="#notes">Notlar</a>
             <a href="#about">Amaç</a>
             <a href="#identity">Ben Kimim</a>
             <a href="#contact">İletişim</a>
@@ -769,6 +853,7 @@
         </div>
     </nav>
 
+    <main id="icerik">
     <div class="hero">
         <h1>Think.<br>Build.<br>Secure.</h1>
         <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek.</p>
@@ -813,10 +898,30 @@
         </div>
     </section>
 
+    <section id="notes">
+        <h2 class="section-title">Araştırma notları</h2>
+        <div class="note-group">
+        <h3 class="note-group-title">Şef (Chief-Sef) <a href="projects/chief-sef.html">Projeye git →</a></h3>
+        <div class="projects-grid">
+            <a class="card note-card" href="notes/zaman-ekseni.html">
+                <span class="note-kicker">Ölçüm</span>
+                <h3>Modelim %90 dedi, zamansal testte %83,8 çıktı</h3>
+                <p>Eğitim ve test verisi aynı aydan gelince skor yapay olarak kolaylaşıyor. Bunu nasıl fark ettiğimi ve gerçekçi sayıyı nasıl ölçtüğümü anlatıyorum.</p>
+            </a>
+            <a class="card note-card" href="notes/net-kor-nokta.html">
+                <span class="note-kicker">Alt gruplar</span>
+                <h3>%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu</h3>
+                <p>Genel skor bir alt grubun çöküşünü gizleyebilir. .NET kör noktası, uzman model ve "DLL ise zararsız" kestirmesi.</p>
+            </a>
+        </div>
+        </div>
+        <a class="project-page-link" href="notes/">Tüm notlar →</a>
+    </section>
+
     <section id="about" class="purpose-section">
         <h2 class="section-title">Amaç</h2>
         <div class="about-text">
-            <p class="lab-note"><strong>Turan Tech</strong>, Ahmet Turan Taşdelen'in kurduğu bağımsız bir araştırma laboratuvarıdır. Aşağıda kendi ağzımdan anlatıyorum.</p>
+            <p class="lab-note"><strong>Turan Tech</strong>, Ahmet Turan Taşdelen'in kurduğu bağımsız bir araştırma laboratuvarıdır.</p>
             <h3>Vizyon</h3>
             <p>Yapay zekanın ve siber güvenliğin kesiştiği yerde, insanın kontrolünü kaybetmeden güçlenen teknolojiler üretmek; Turan Tech'i karmaşık sistemleri sade, güvenli ve anlaşılır kılan, Türkiye'den doğan global bir teknoloji markasına dönüştürmek. Hayallerimin peşinden koşarak çevreme ve bilhassa vatanıma faydalı olmak.</p>
 
@@ -931,6 +1036,13 @@
                 <p>Beni en çok düşündüren konular verinin zamanla değişmesi, güncel .NET tehditlerini kaçırma ihtimali ve Python prototipinin gerçek kullanımda ne kadar hızlı çalışacağı. Bu yüzden önce Linux üzerinde küçük, ölçülebilir bir eBPF denemesi yapmayı; donanım izolasyonu fikrini ise tehdit modeli, kullanılacak cihaz ve gecikme maliyeti netleşince ele almayı planlıyorum.</p>
                 <p><strong>Benim sıram:</strong> yeni verilerle modeli tekrar sınamak → eBPF olaylarını ve kaynak tüketimini ölçmek → NPU/TEE seçimini gerçek bir kullanım senaryosuyla karşılaştırmak. Bu yaklaşım, yalnızca tek bir doğruluk skoruna güvenmememi sağlıyor.</p>
             </div>
+            <div class="chief-section">
+                <h4>Araştırma notları</h4>
+                <ul>
+                    <li><a class="chief-note-link" href="notes/zaman-ekseni.html">Modelim %90 dedi, zamansal testte %83,8 çıktı</a></li>
+                    <li><a class="chief-note-link" href="notes/net-kor-nokta.html">%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu</a></li>
+                </ul>
+            </div>
             <a class="chief-link" href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Chief-Sef deposunu GitHub’da incele →</a>
             <a class="chief-link" href="projects/chief-sef.html">Ayrıntılı proje sayfasını aç →</a>
         </div>
@@ -957,13 +1069,15 @@
         </div>
     </div>
 
+    </main>
+
     <footer class="tech-transition" aria-label="Site alt bilgisi ve sistem mimarisi animasyonu">
         <canvas id="techTransition"></canvas>
         <img class="tech-transition-logo" src="assets/ttech-logo.png" alt="TT logo">
         <span class="tech-transition-label">Think · Build · Secure</span>
         <p class="tech-transition-copyright">© 2026 Turan Tech. Tüm hakları saklıdır.</p>
         <a class="tech-transition-privacy" href="privacy.html">Gizlilik ve güvenlik</a>
-        <p class="tech-transition-version">Site sürümü v1.6.0 · 7 Ekim 2026</p>
+        <p class="tech-transition-version">Site sürümü v1.7.0 · 9 Ekim 2026</p>
     </footer>
 
     <script src="assets/site.js"></script>

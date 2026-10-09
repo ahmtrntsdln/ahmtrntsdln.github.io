@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My model scored 90%. On a temporal split, it scored 83.8% | Turan Tech</title>
+  <meta name="description" content="When training and test data come from the same month, a malware model's score gets artificially easy: how I noticed and measured it.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/zaman-ekseni.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="My model scored 90%. On a temporal split, it scored 83.8%">
+  <meta property="og:description" content="When training and test data come from the same month, a malware model's score gets artificially easy: how I noticed and measured it.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-zaman-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="90.1% accuracy on the same period, 83.8% on a temporal split">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">Skip to content</a>
+  <header><div class="wrap nav"><a class="brand" href="../../en/"><img src="../../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../../en/">← Home</a><a class="nav-link" href="../../en/notes/">Notes</a><a class="lang" href="../../notes/zaman-ekseni.html" lang="tr" hreflang="tr">TR</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Research note · 9 October 2026</span>
+    <h1>My model scored 90%. On a temporal split, it scored 83.8%</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 9 October 2026 · about 5 minutes · Project: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>In short:</strong> The first Chief-Sef model reached 90.1% accuracy on EMBER test data. When I split the same model design by time (training on the first ten months of 2018 and testing on the last two), it scored 83.8%. The gap came not from a bug, but from which weeks the sample was drawn from.</p>
+
+    <h2>Context</h2>
+    <p>Chief-Sef is an experimental security engine that inspects Windows executables (PE files) before they are run. The model of its first phase is a Random Forest over five static features: file size, zero-byte ratio, mean section entropy, total API count and suspicious API count. The training data is 5,700 malicious and 5,700 benign files from the EMBER 2018 dataset.</p>
+    <p>This was the third time a measurement misled me. The first model scored 99.9% on synthetic data; because the data came from five fixed scenarios, the model memorised those patterns rather than malicious behaviour. The second scored 97%; because the benign files came from a single computer, the model partly learned "is this file from this machine?". In the first two, the problem was where the data came from. The third was subtler, because this time both classes came from the same source, measured the same way; the problem was time.</p>
+
+    <h2>What I noticed</h2>
+    <p>I was collecting the sample pool from EMBER's files in order, and the code started from the alphabetically first file (<code>test_features.jsonl</code>). All 11,400 rows came from the first ~34 thousand records of that file, and every one of them was from <strong>November 2018</strong>. The 80% training / 20% test split happened inside that narrow window.</p>
+    <p>This is not leakage in the classic sense: the test files were not in the training set. But because they came from the same weeks, sibling samples of the same campaigns and malware families sat on both sides. The model was learning to recognise "this month", not "the future". In real life, a model only ever meets files that arrive after the day it was trained.</p>
+
+    <h2>How I measured it</h2>
+    <p>I tested the same model with the same five features in three different ways:</p>
+    <div class="table-wrap"><table><thead><tr><th>Evaluation</th><th class="num">Accuracy</th><th class="num">AUC</th></tr></thead><tbody><tr><td>Same period: 80% / 20% split within November 2018</td><td class="num">90.1%</td><td class="num">—</td></tr><tr><td>Same model, rest of the same file (188,600 records, Nov–Dec)</td><td class="num">87.4%</td><td class="num">0.947</td></tr><tr><td>Temporal split: train on Jan–Oct, test on Nov–Dec</td><td class="num">83.8%</td><td class="num">0.920</td></tr></tbody></table></div>
+    <p>As the window widens and the test data moves further in time from the training data, the number drops. The realistic number to report is the last one. A separate question, how many false alarms the model raises on legitimate files on a real computer (3.5% on 5,700 files never seen in training), is not affected by this finding.</p>
+
+    <h2>Why it matters</h2>
+    <p>Malware keeps changing: new families, new packers, new campaigns. An evaluation that takes training and test data from the same period never measures how well a model withstands that change. This is a known problem in machine learning for security: the TESSERACT study showed that experiments ignoring time can inflate results considerably, and datasets such as BODMAS are published with timestamps for exactly this reason.</p>
+
+    <h2>What I changed</h2>
+    <p>I added a rule to the project and corrected the README accordingly:</p>
+    <ul>
+      <li>The headline number comes from a temporal split: training on an earlier period, testing on a later one.</li>
+      <li>If the sample is collected in file order, check which period it falls into.</li>
+      <li>If a same-period number is reported, it sits next to the temporal one. The README now gives both.</li>
+    </ul>
+
+    <h2>Three questions for your own model</h2>
+    <ul>
+      <li>Is the oldest sample in your test data newer than the newest sample in your training data?</li>
+      <li>Did you draw your sample at random, or in the order of a file or table? If in order, which dates did it land on?</li>
+      <li>If your score looks very good, what happens when you recompute it only on data from after the first weeks?</li>
+    </ul>
+
+    <h2>Transparency</h2>
+    <p>I write the code for this project with AI, using Claude Code. The design of the measurements, the interpretation of the results and the decision about what to publish are mine. The scripts that ran these measurements and the detailed notes are in the <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef repository</a>: <code>CLAUDE.md</code> (the measurement note and Critical Rule 6) and <code>GELISIM_SURECI.md</code> (both in Turkish).</p>
+
+    <h2>References</h2>
+    <ul class="refs">
+      <li>H. S. Anderson, P. Roth. <a href="https://arxiv.org/abs/1804.04637">EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models</a>, 2018.</li>
+      <li>F. Pendlebury et al. <a href="https://www.usenix.org/conference/usenixsecurity19/presentation/pendlebury">TESSERACT: Eliminating Experimental Bias in Malware Classification across Space and Time</a>, USENIX Security 2019.</li>
+      <li>L. Yang et al. <a href="https://whyisyoung.github.io/BODMAS/">BODMAS: An Open Dataset for Learning based Temporal Analysis of PE Malware</a>, 2021.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.7.0 · 9 October 2026</small></div></footer>
+</body>
+</html>

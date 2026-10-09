@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modelim %90 dedi, zamansal testte %83,8 çıktı | Turan Tech</title>
+  <meta name="description" content="Eğitim ve test aynı aydan gelince zararlı yazılım modelinin skoru yapay olarak kolaylaşıyor: zaman ekseni sorununu nasıl fark ettim ve ölçtüm.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/notes/zaman-ekseni.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/zaman-ekseni.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/temporal-split.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="Modelim %90 dedi, zamansal testte %83,8 çıktı">
+  <meta property="og:description" content="Eğitim ve test aynı aydan gelince zararlı yazılım modelinin skoru yapay olarak kolaylaşıyor: zaman ekseni sorununu nasıl fark ettim ve ölçtüm.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/notes/zaman-ekseni.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-zaman-tr.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Aynı dönemde %90,1, zamansal bölmede %83,8 doğruluk">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">İçeriğe atla</a>
+  <header><div class="wrap nav"><a class="brand" href="../"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../">← Ana sayfa</a><a class="nav-link" href="../notes/">Notlar</a><a class="lang" href="../en/notes/temporal-split.html" lang="en" hreflang="en">EN</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Araştırma notu · 9 Ekim 2026</span>
+    <h1>Modelim %90 dedi, zamansal testte %83,8 çıktı</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 9 Ekim 2026 · yaklaşık 5 dakika · Proje: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>Kısaca:</strong> Chief-Sef'in ilk modeli EMBER test verisinde %90,1 doğruluk verdi. Aynı model tasarımını zamana göre böldüğümde (2018'in ilk on ayıyla eğitip son iki ayıyla sınadığımda) sonuç %83,8 oldu. Fark bir kod hatasından değil, örneklemin hangi haftalardan toplandığından kaynaklanıyordu.</p>
+
+    <h2>Bağlam</h2>
+    <p>Chief-Sef, Windows çalıştırılabilir (PE) dosyalarını çalıştırmadan önce inceleyen bir güvenlik motoru denemesi. İlk aşamanın modeli bir Random Forest; beş statik özelliğe bakıyor: dosya boyutu, sıfır bayt oranı, bölümlerin ortalama entropisi, toplam API sayısı ve şüpheli API sayısı. Eğitim verisi EMBER 2018 veri setinden 5.700 zararlı ve 5.700 zararsız dosya.</p>
+    <p>Bu, ölçümün beni yanılttığı üçüncü durumdu. İlk model sentetik veriyle %99,9 vermişti; veri beş sabit senaryodan üretildiği için model zararlı davranışı değil o kalıpları ezberlemişti. İkinci model %97 vermişti; zararsız dosyalar tek bir bilgisayardan geldiği için model kısmen "bu dosya bu makineden mi?" sorusunu öğrenmişti. İlk ikisinde sorun verinin kaynağındaydı. Üçüncüsü daha sinsiydi, çünkü bu kez iki sınıf da aynı kaynaktan, aynı ölçümle geliyordu; sorun zamandaydı.</p>
+
+    <h2>Ne fark ettim?</h2>
+    <p>Örneklem havuzunu EMBER dosyalarından sırayla topluyordum ve kod alfabetik olarak ilk dosyadan (<code>test_features.jsonl</code>) başlıyordu. 11.400 satırın tamamı o dosyanın ilk ~34 bin kaydından gelmişti ve hepsi <strong>Kasım 2018</strong> tarihliydi. %80 eğitim / %20 test bölmesi bu dar pencerenin içinde yapılıyordu.</p>
+    <p>Bu, klasik anlamda bir sızıntı değil: test dosyaları eğitimde yoktu. Ama aynı haftalardan geldikleri için aynı kampanyaların, aynı zararlı ailelerinin kardeş örnekleri iki tarafta da bulunuyordu. Model "geleceği" değil "bu ayı" tanımayı öğreniyordu. Gerçek hayatta ise bir model hep eğitildiği günden sonra gelen dosyalarla karşılaşır.</p>
+
+    <h2>Nasıl ölçtüm?</h2>
+    <p>Aynı modeli ve aynı beş özelliği üç farklı değerlendirmeyle sınadım:</p>
+    <div class="table-wrap"><table><thead><tr><th>Değerlendirme</th><th class="num">Doğruluk</th><th class="num">AUC</th></tr></thead><tbody><tr><td>Aynı dönem: Kasım 2018 içinde %80 / %20 bölme</td><td class="num">%90,1</td><td class="num">—</td></tr><tr><td>Aynı model, aynı dosyanın geri kalanı (188.600 kayıt, Kasım–Aralık)</td><td class="num">%87,4</td><td class="num">0,947</td></tr><tr><td>Zamansal bölme: Ocak–Ekim ile eğit, Kasım–Aralık ile sına</td><td class="num">%83,8</td><td class="num">0,920</td></tr></tbody></table></div>
+    <p>Pencere genişledikçe ve test verisi eğitimden zamanca uzaklaştıkça sayı düşüyor. Raporlanması gereken gerçekçi sayı en alttaki. Ayrı bir soru olan "gerçek bir bilgisayardaki meşru dosyalarda ne kadar yanlış alarm veriyor?" ölçümü (eğitimde hiç görülmemiş 5.700 dosyada %3,5) bu bulgudan etkilenmiyor.</p>
+
+    <h2>Bu neden önemli?</h2>
+    <p>Zararlı yazılım sürekli değişiyor; yeni aileler, yeni paketleyiciler, yeni kampanyalar çıkıyor. Eğitim ve testi aynı zaman diliminden alan bir değerlendirme, modelin bu değişime ne kadar dayanıklı olduğunu hiç ölçmez. Bu, güvenlik alanındaki makine öğrenmesinde bilinen bir sorun: TESSERACT çalışması zamana dikkat etmeyen deneylerin sonuçları ciddi biçimde şişirdiğini gösterdi, BODMAS gibi veri setleri de tam bu yüzden zaman bilgisiyle yayımlanıyor.</p>
+
+    <h2>Ne değiştirdim?</h2>
+    <p>Projenin kurallarına bir madde ekledim ve README'yi buna göre düzelttim:</p>
+    <ul>
+      <li>Raporlanan ana sayı zamansal bölmeden gelir: eğitim eski dönem, test sonraki dönem.</li>
+      <li>Örneklem dosya sırasıyla toplanıyorsa hangi döneme düştüğü kontrol edilir.</li>
+      <li>Aynı dönem sayısı raporlanacaksa zamansal sayıyla yan yana yazılır. README artık iki sayıyı birlikte veriyor.</li>
+    </ul>
+
+    <h2>Kendi modelin için üç soru</h2>
+    <ul>
+      <li>Test verisindeki en eski örnek, eğitim verisindeki en yeni örnekten daha yeni mi?</li>
+      <li>Örneklemi rastgele mi, yoksa bir dosya ya da tablo sırasıyla mı topladın? Sırayla topladıysan hangi tarihlere düştü?</li>
+      <li>Skorun çok iyi görünüyorsa, onu sadece ilk haftalardan sonraki verilerle tekrar hesapladığında ne oluyor?</li>
+    </ul>
+
+    <h2>Şeffaflık</h2>
+    <p>Bu projenin kodunu yapay zekâ ile, Claude Code kullanarak yazıyorum. Ölçümlerin kurgusu, sonuçların yorumu ve neyin yayımlanacağı kararı benim. Ölçümü yapan betikler ve ayrıntılı notlar <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef deposunda</a>: <code>CLAUDE.md</code> (ölçüm notu ve Kritik Kural 6) ile <code>GELISIM_SURECI.md</code>.</p>
+
+    <h2>Kaynaklar</h2>
+    <ul class="refs">
+      <li>H. S. Anderson, P. Roth. <a href="https://arxiv.org/abs/1804.04637">EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models</a>, 2018.</li>
+      <li>F. Pendlebury ve diğerleri. <a href="https://www.usenix.org/conference/usenixsecurity19/presentation/pendlebury">TESSERACT: Eliminating Experimental Bias in Malware Classification across Space and Time</a>, USENIX Security 2019.</li>
+      <li>L. Yang ve diğerleri. <a href="https://whyisyoung.github.io/BODMAS/">BODMAS: An Open Dataset for Learning based Temporal Analysis of PE Malware</a>, 2021.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.7.0 · 9 Ekim 2026</small></div></footer>
+</body>
+</html>

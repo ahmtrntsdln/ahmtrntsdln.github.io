@@ -117,6 +117,27 @@
     contactModal.addEventListener('click', (event) => {
         if (event.target === contactModal) closeContactModal();
     });
+    // Açık pencerede Tab / Shift+Tab pencerenin içinde döner; odak arkadaki sayfaya kaçmaz.
+    const focusableSelector = 'a[href], button:not([disabled]), input:not([type="hidden"]):not([tabindex="-1"]), textarea, select, [tabindex]:not([tabindex="-1"])';
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') return;
+        const openModal = document.querySelector('.contact-modal.is-open');
+        if (!openModal) return;
+        const focusable = [...openModal.querySelectorAll(focusableSelector)].filter((element) => element.getClientRects().length);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!openModal.contains(document.activeElement)) {
+            event.preventDefault();
+            first.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && contactModal.classList.contains('is-open')) {
             closeContactModal();
