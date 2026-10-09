@@ -6,6 +6,22 @@
   <title>Sivas 5-8 | Turan Tech</title>
   <meta name="description" content="Sivas 5-8 tarayıcı strateji demosunun amacı, teknolojileri ve geliştirme süreci.">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik yok: içerik güvenlik politikası hiçbir betiğe izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../assets/fonts/inter.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/projects/sivas-73.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/projects/sivas-73.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/projects/sivas-73.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/projects/sivas-73.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="Sivas 5-8 | Turan Tech">
+  <meta property="og:description" content="Sivas 5-8 tarayıcı strateji demosunun amacı, teknolojileri ve geliştirme süreci.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/projects/sivas-73.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/social-card.png">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; color: #e2e8f0; background: #0b0f19; font: 16px/1.7 Inter, system-ui, sans-serif; }
@@ -26,32 +42,33 @@
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
     .panel { padding: 1.5rem; border: 1px solid #1e293b; border-radius: 8px; background: #111827; }
     .panel h2 { margin-top: 0; color: #fff; }
-    .screen { min-height: 280px; padding: 1rem; border: 1px solid #475569; border-radius: 6px; background: #182b31; }
-    .screen-top { display: flex; justify-content: space-between; padding-bottom: .8rem; color: #f7d98a; border-bottom: 1px solid #49605e; }
-    .map { display: grid; grid-template-columns: repeat(6, 1fr); gap: .35rem; padding: 1rem; height: 190px; background: linear-gradient(135deg, #314c37, #9b8b5e); }
-    .map span { border: 1px solid #e4d39c88; border-radius: 50%; }
+    .shot { margin: 0; }
+    .shot img { display: block; width: 100%; height: auto; border: 1px solid #475569; border-radius: 6px; }
+    .shot figcaption { margin-top: .7rem; color: #64748b; font-size: .82rem; line-height: 1.5; }
     .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
     .tag { padding: .35rem .6rem; border-radius: 4px; color: #cbd5e1; background: #1e293b; font-size: .85rem; }
     .process { margin: 0; padding-left: 1.2rem; color: #94a3b8; }
     .process li { margin: .65rem 0; }
     footer { padding: 2rem 0; border-top: 1px solid #1e293b; color: #64748b; }
+    .nav-right { display: flex; gap: 1rem; align-items: center; }
+    .lang { padding: .1rem .5rem; border: 1px solid #334155; border-radius: 4px; text-decoration: none; font-size: .85rem; }
     @media (max-width: 700px) { .nav { align-items: flex-start; flex-direction: column; } .grid { grid-template-columns: 1fr; } main { padding-top: 3rem; } }
   </style>
 </head>
 <body>
-  <header><div class="wrap nav"><a class="brand" href="../index.html"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><a class="back" href="../index.html#projects">← Laboratuvara dön</a></div></header>
+  <header><div class="wrap nav"><a class="brand" href="../index.html"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../index.html#projects">← Laboratuvara dön</a><a class="lang" href="../en/projects/sivas-73.html" lang="en" hreflang="en">EN</a></span></div></header>
   <main class="wrap">
     <span class="kicker">Tarayıcı strateji demosu</span>
     <h1>Sivas 5-8</h1>
-    <p class="lead">Sivas'ın tarihinden, coğrafyasından ve kültürel hafızasından ilham alan; kaynak yönetimi ve bölgesel kararlar üzerine kurulu tek dosyalı bir tarayıcı oyunu prototipi.</p>
+    <p class="lead">Sivas'ın tarihinden, coğrafyasından ve kültürel hafızasından ilham alan; kaynak yönetimi ve bölgesel kararlar üzerine kurulu, hiçbir dış kütüphane kullanmayan bir tarayıcı oyunu prototipi.</p>
     <div class="actions"><a class="btn primary" href="../sivas-73/index.html" target="_blank" rel="noopener noreferrer">Oyunu dene</a><a class="btn" href="../index.html#projects">Laboratuvara dön</a></div>
     <div class="grid">
-      <section class="panel"><h2>Ekran görüntüsü</h2><div class="screen" aria-label="Sivas 5-8 oyun arayüzü önizlemesi"><div class="screen-top"><strong>Sivas 5-8</strong><span>Harita · kaynaklar · birlikler</span></div><div class="map"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
+      <section class="panel"><h2>Ekran görüntüsü</h2><figure class="shot"><img src="../assets/sivas-58-oyun.webp" width="881" height="710" loading="lazy" alt="Sivas 5-8 haritası: oyuncunun yeşil bölgeleri batıda ve ortada, rakip beyliğin kırmızı bölgeleri doğuda; her ilçede bir kale, bölgelerin üstünde bekleyen tank, hava filosu ve gemi birlikleri."><figcaption>Gerçek oyun ekranı · yeni bir seferin ilk dakikası, Orta zorluk · 7 Ekim 2026 sürümü. Birlikler yürütüldükleri bölgelerin üstünde emir bekliyor; rakip beylik doğuda.</figcaption></figure></section>
       <section class="panel"><h2>Proje özeti</h2><p>Oyuncu, sınırlı kaynaklarla harita üzerinde ilerler; kararların etkisini kaynak, birlik ve bölge dengesi üzerinden görür. Amaç, kısa sürede öğrenilebilen ama tekrar oynandıkça derinleşen yerel bir strateji deneyimi oluşturmaktır.</p><h2>Kullanılan teknoloji</h2><div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Vanilla JavaScript</span><span class="tag">Pointer Events</span><span class="tag">GitHub Pages</span></div></section>
-      <section class="panel"><h2>Geliştirme süreci</h2><ol class="process"><li>Harita, kaynak ve birlik ekranının tek dosyalı prototipi oluşturuldu.</li><li>Dokunmatik ve fare etkileşimleri mobil öncelikli hâle getirildi.</li><li>Oyun, ana sayfadan ayrıştırılarak yalnızca kullanıcı seçtiğinde açılacak şekilde düzenlendi.</li><li>Gerçek rakip eklendi: haritanın öbür ucunda kurulan beylik gelir toplar, asker yazar, tarafsız toprakları ve oyuncunun sınır bölgelerini fethetmeye çalışır.</li><li>Zafer / yenilgi koşulları ve tarayıcıda otomatik kayıt ("kayıtlı sefere devam et") eklendi.</li><li>Beş savaş zorluğu eklendi (Başlangıç, Amatör, Orta, Zor, Fatih); seviyeler hem hareketsiz oyuncuya hem kural tabanlı bir bota karşı simülasyonla ayarlandı.</li><li>Arayüz sadeleştirildi ve telefonla birebir eşitlendi: aynı içerik, dokunarak seçme/yürütme, iki parmakla yakınlaştırma, alttan açılan pencereler.</li><li>Her ilçeye surlu kale eklendi: surlar ayaktayken garnizona hasar azdır, önce kuşatmayla yıkılmaları gerekir. Ordular sancaklı bir komutanın ardından dörtnala giden atlı kol olarak yürür; nal, kılıç ve savaş narası sesleri tarayıcıda Web Audio ile üretilir.</li><li>Her tugay haritada bir nesne oldu: üretilen birlik şehrinde belirir; birliğe dokunup hedefe dokunarak yürütülür ya da saldırtılır. Şehre sağ tıklayınca (telefonda basılı tutunca) açılan "Garnizonu yönet" penceresinde birlikler kaleye alınır veya kaleden çıkarılır. Birlikler türlerine göre çizilir: F-35, KAAN, İHA, atak helikopteri, tank, savaş gemisi, piyade ve atlı general.</li><li>Ordular yolda da yönetilebilir oldu: yürüyen orduya dokununca rotası görünür; yeni bir bölgeye dokunarak yön değiştirilir ya da "Geri dön" ile çağrılır. Varan ordu kaleye girmez, başka birliğe de karışmaz; bölgenin üstünde ayrı bir birlik olarak emir bekler.</li><li>Kuşatma kampı eklendi: düşmeyen kalenin önünde sağ kalanlar çadır kurar, toparlanınca yeniden saldırabilir ya da çekilebilir. Rakip buna karşılık verir: kalesi yeterince güçlüyse çıkıp kampı dağıtmaya çalışır, değilse komşu kalelerden takviye çeker. Üst üste binen birlik ve yürüyen ordudan dokunuşa yakın olan seçilir; aynı yere yeniden dokunmak diğerine geçer.</li><li>Sonraki hedef: görev akışı ve daha kapsamlı denge testleri.</li></ol></section>
+      <section class="panel"><h2>Geliştirme süreci</h2><ol class="process"><li>Harita, kaynak ve birlik ekranının tek dosyalı prototipi oluşturuldu.</li><li>Dokunmatik ve fare etkileşimleri mobil öncelikli hâle getirildi.</li><li>Oyun, ana sayfadan ayrıştırılarak yalnızca kullanıcı seçtiğinde açılacak şekilde düzenlendi.</li><li>Gerçek rakip eklendi: haritanın öbür ucunda kurulan beylik gelir toplar, asker yazar, tarafsız toprakları ve oyuncunun sınır bölgelerini fethetmeye çalışır.</li><li>Zafer / yenilgi koşulları ve tarayıcıda otomatik kayıt ("kayıtlı sefere devam et") eklendi.</li><li>Beş savaş zorluğu eklendi (Başlangıç, Amatör, Orta, Zor, Fatih); seviyeler hem hareketsiz oyuncuya hem kural tabanlı bir bota karşı simülasyonla ayarlandı.</li><li>Arayüz sadeleştirildi ve telefonla birebir eşitlendi: aynı içerik, dokunarak seçme/yürütme, iki parmakla yakınlaştırma, alttan açılan pencereler.</li><li>Her ilçeye surlu kale eklendi: surlar ayaktayken garnizona hasar azdır, önce kuşatmayla yıkılmaları gerekir. Ordular sancaklı bir komutanın ardından dörtnala giden atlı kol olarak yürür; nal, kılıç ve savaş narası sesleri tarayıcıda Web Audio ile üretilir.</li><li>Her tugay haritada bir nesne oldu: üretilen birlik şehrinde belirir; birliğe dokunup hedefe dokunarak yürütülür ya da saldırtılır. Şehre sağ tıklayınca (telefonda basılı tutunca) açılan "Garnizonu yönet" penceresinde birlikler kaleye alınır veya kaleden çıkarılır. Birlikler türlerine göre çizilir: F-35, KAAN, İHA, atak helikopteri, tank, savaş gemisi, piyade ve atlı general.</li><li>Ordular yolda da yönetilebilir oldu: yürüyen orduya dokununca rotası görünür; yeni bir bölgeye dokunarak yön değiştirilir ya da "Geri dön" ile çağrılır. Varan ordu kaleye girmez, başka birliğe de karışmaz; bölgenin üstünde ayrı bir birlik olarak emir bekler.</li><li>Kuşatma kampı eklendi: düşmeyen kalenin önünde sağ kalanlar çadır kurar, toparlanınca yeniden saldırabilir ya da çekilebilir. Rakip buna karşılık verir: kalesi yeterince güçlüyse çıkıp kampı dağıtmaya çalışır, değilse komşu kalelerden takviye çeker. Üst üste binen birlik ve yürüyen ordudan dokunuşa yakın olan seçilir; aynı yere yeniden dokunmak diğerine geçer.</li><li>Oyunun kodu sayfadan ayrı bir dosyaya (game.js) alındı ve sayfaya içerik güvenlik politikası eklendi: tarayıcı yalnızca bu siteden gelen kodu çalıştırır; oyun dışarıya hiçbir istek göndermez.</li><li>Sonraki hedef: görev akışı ve daha kapsamlı denge testleri.</li></ol></section>
       <section class="panel"><h2>Durum</h2><p>Bu sürüm baştan sona oynanabilir bir demodur: rakip beyliğin son toprağını alan kazanır, tüm topraklarını kaybeden yenilir. Seçilen zorluğa göre rakip bir barış süresi tanır, sonra zayıf sınırlara saldırır. Masaüstünde ve telefonda aynı oyun oynanır. İçerik ve stratejik derinlik iteratif olarak geliştirilecektir.</p><a href="https://github.com/ahmtrntsdln/ahmtrntsdln.github.io" target="_blank" rel="noopener noreferrer">Kaynak projeyi GitHub'da gör →</a></section>
     </div>
   </main>
-  <footer><div class="wrap">© 2026 Turan Tech<br><small>Site sürümü v1.5.0 · 7 Ekim 2026</small></div></footer>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.6.0 · 7 Ekim 2026</small></div></footer>
 </body>
 </html>

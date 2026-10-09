@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chief-Sef | Turan Tech</title>
+  <meta name="description" content="The purpose, technologies and development process of the Chief-Sef cybersecurity engine.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik yok: içerik güvenlik politikası hiçbir betiğe izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../../assets/fonts/inter.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/en/projects/chief-sef.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/projects/chief-sef.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/projects/chief-sef.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/projects/chief-sef.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="Chief-Sef | Turan Tech">
+  <meta property="og:description" content="The purpose, technologies and development process of the Chief-Sef cybersecurity engine.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/en/projects/chief-sef.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/social-card.png">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #e2e8f0; background: #0b0f19; font: 16px/1.7 Inter, system-ui, sans-serif; }
+    a { color: #38bdf8; } .wrap { width: min(1080px, 90%); margin: auto; }
+    header { padding: 1.5rem 0; border-bottom: 1px solid #1e293b; }
+    .nav { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+    .brand { display: flex; gap: .7rem; align-items: center; color: #fff; text-decoration: none; font: 700 1.2rem Georgia, serif; }
+    .brand img { width: 42px; height: 42px; } .back { text-decoration: none; font-size: .9rem; }
+    main { padding: 5rem 0 6rem; } .kicker { color: #38bdf8; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    h1 { max-width: 720px; margin: .5rem 0 1rem; color: #fff; font-size: clamp(2.4rem, 7vw, 5rem); line-height: 1.05; }
+    .lead { max-width: 760px; color: #94a3b8; font-size: 1.15rem; } .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin: 2rem 0 4rem; }
+    .btn { padding: .75rem 1.1rem; border: 1px solid #334155; border-radius: 5px; color: #e2e8f0; text-decoration: none; } .btn.primary { color: #0f172a; background: #e2e8f0; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } .panel { padding: 1.5rem; border: 1px solid #1e293b; border-radius: 8px; background: #111827; }
+    .panel h2 { margin-top: 0; color: #fff; } .screen { min-height: 280px; padding: 1.1rem; border: 1px solid #334155; border-radius: 6px; background: #0b0f19; }
+    .terminal { margin: 0; padding: .8rem; color: #94a3b8; background: #111827; font: .8rem/1.6 ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; } .terminal b { color: #38bdf8; font-weight: normal; }
+    .caption { margin: .7rem 0 0; color: #64748b; font-size: .82rem; line-height: 1.5; }
+    .bar { height: 10px; margin: .35rem 0 1rem; overflow: hidden; border-radius: 99px; background: #1e293b; } .bar span { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #64748b); }
+    .tags { display: flex; flex-wrap: wrap; gap: .5rem; } .tag { padding: .35rem .6rem; border-radius: 4px; color: #cbd5e1; background: #1e293b; font-size: .85rem; }
+    .process { margin: 0; padding-left: 1.2rem; color: #94a3b8; } .process li { margin: .65rem 0; } footer { padding: 2rem 0; border-top: 1px solid #1e293b; color: #64748b; }
+    .nav-right { display: flex; gap: 1rem; align-items: center; }
+    .lang { padding: .1rem .5rem; border: 1px solid #334155; border-radius: 4px; text-decoration: none; font-size: .85rem; }
+    @media (max-width: 700px) { .nav { align-items: flex-start; flex-direction: column; } .grid { grid-template-columns: 1fr; } main { padding-top: 3rem; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav"><a class="brand" href="../index.html"><img src="../../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../index.html#projects">← Back to the lab</a><a class="lang" href="../../projects/chief-sef.html" lang="tr" hreflang="tr">TR</a></span></div></header>
+  <main class="wrap">
+    <span class="kicker">Open-source security lab</span>
+    <h1>Şef (Chief-Sef)</h1>
+    <p class="lead">Research on a security engine that inspects PE files before they are run: machine-learning-assisted static analysis today, extending to hardware isolation in the future.</p>
+    <div class="actions"><a class="btn primary" href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Open the GitHub repository</a><a class="btn" href="../index.html#projects">Back to the lab</a></div>
+    <div class="grid">
+      <section class="panel"><h2>Real output</h2><div class="screen"><pre class="terminal" aria-label="Real output of the tahmin_et.py command"><b>$ python tahmin_et.py C:\Windows\System32\notepad.exe</b>
+Dosya: notepad.exe
+  Boyut_Bayt       : 360448
+  Sifir_Orani      : 22.73
+  Ortalama_Entropi : 3.202
+  Toplam_API       : 310
+  Supheli_API      : 1
+Zararli olasiligi: %10.0 -> zararsiz (esik 0.5)
+  Not: skor EMBER'in %50 zararli dunyasina gore; gercek ortamda zararli cok daha nadir oldugu icin gercek olasilik daha dusuktur (CLAUDE.md, Model Secimi).</pre><p class="caption">Unabridged output of the Phase 1 model on a benign Windows file · 7 October 2026. The tool prints in Turkish: “Zararli olasiligi: %10.0 -&gt; zararsiz” means “probability of being malicious: 10.0% → benign (threshold 0.5)”. Live malware is not run on a personal computer; results on the malicious side come from measurements on the EMBER dataset.</p><p>Phase 1 · Static analysis · completed on 25 September 2026</p><div class="bar"><span></span></div></div></section>
+      <section class="panel"><h2>Project overview</h2><p>Chief-Sef aims to pre-screen malware by combining PE features, Shannon entropy and API usage. Explainable measurements and the final human decision are at the heart of the design.</p><h2>Technology</h2><div class="tags"><span class="tag">Python</span><span class="tag">Random Forest</span><span class="tag">EMBER</span><span class="tag">PE analysis</span><span class="tag">eBPF / TEE roadmap</span></div></section>
+      <section class="panel"><h2>Development process</h2><p><strong>5 October 2026 · Transparency note:</strong> I am not building Şef alone but together with AI. I work with Claude Code for coding, and I also get support from Claude in technical discussions and text drafts. I decide which features are added, how results are interpreted and what gets published; I try to test and verify every output the AI produces. AI is a powerful tool and the decision belongs to a human: the architect of the system is a human, but the tools that write the code are agentic AIs.</p><ol class="process"><li>Static feature extraction and a Random Forest model were built on real EMBER data.</li><li>Measurement consistency was examined with temporal and independent tests; Phase 1 closed on 25 September 2026.</li><li>Measurements showed that the model misses most recent .NET malware; an experimental .NET specialist model is in progress to address this.</li><li>Phase 2 (Linux system-call monitoring with eBPF) and Phase 3 (NPU/TEE hardware isolation) have not started yet; they are on the roadmap.</li></ol></section>
+      <section class="panel"><h2>Feasibility and status</h2><p>In my assessment, Phase 1 is viable as a research and pre-screening layer, but it is not yet at the point of making a security decision on its own. The README reports 83.8% temporal accuracy, 90.1% same-period accuracy and a 3.5% independent false-alarm rate. I need to re-test these scores across different time periods and against recent .NET threats.</p><p>My first next step is a small, measurable eBPF experiment on Linux. I will consider the NPU/TEE side only once the threat model, the hardware choice and the latency cost are clear.</p><a href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Browse the technical sources on GitHub →</a></section>
+    </div>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Privacy and security</a><br><small>Site version v1.6.0 · 7 October 2026</small></div></footer>
+</body>
+</html>

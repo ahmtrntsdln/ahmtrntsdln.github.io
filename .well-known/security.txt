@@ -1,0 +1,5 @@
+Contact: https://ahmtrntsdln.dev/privacy.html#guvenlik-bildirimi
+Expires: 2027-04-07T00:00:00.000Z
+Preferred-Languages: tr, en
+Canonical: https://ahmtrntsdln.dev/.well-known/security.txt
+Policy: https://ahmtrntsdln.dev/privacy.html#guvenlik-bildirimi
