@@ -1033,8 +1033,8 @@
             <div class="chief-section">
                 <h4>Feasibility report</h4>
                 <p><strong>My short assessment:</strong> This project is viable as a research and pre-screening layer, but it is not yet at the point of making a “safe” decision on its own. Seeing the measurement results in Phase 1 is a good start, but I still need to test separately whether the model behaves the same way across different time periods and new file types.</p>
-                <p>What concerns me most is how the data drifts over time, the risk of missing recent .NET threats, and how fast the Python prototype will run in real use. So I plan to run a small, measurable eBPF experiment on Linux first, and to take up hardware isolation once the threat model, the target device and the latency cost are clear.</p>
-                <p><strong>My order:</strong> re-test the model with new data → measure eBPF events and resource usage → compare NPU/TEE options against a real use case. This approach keeps me from relying on a single accuracy score.</p>
+                <p>What concerns me most is how the data drifts over time, the risk of missing recent .NET threats, and how fast the Python prototype will run in real use. So I plan to first rebuild and test the model on recent data (EMBER2024), then run a small, measurable eBPF experiment on Linux, and to take up hardware isolation once the threat model, the target device and the latency cost are clear.</p>
+                <p><strong>My order:</strong> rebuild and re-test the model on new data (EMBER2024) → measure eBPF events and resource usage → compare NPU/TEE options against a real use case. This approach keeps me from relying on a single accuracy score.</p>
             </div>
             <div class="chief-section">
                 <h4>Research notes</h4>
