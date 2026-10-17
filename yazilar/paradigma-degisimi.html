@@ -36,20 +36,15 @@
 
     <h2>Giriş</h2>
     <p>En güçlü şifreleme yöntemlerinin, en pahalı güvenlik duvarlarının tabiri caizse en zayıf tarafı veya en kısa yolu insan olmuştur. Bir sistemde teknik bir açık aramak, çoğu zaman sistemin içindeki bir insana ulaşmak ve onda bir zaaf aramaktan çok daha zor ve maliyetli olmuştur. Bu gerek zaman gerekse maliyet bakımından bir mühendislik çalışması gerektirdiğinden böyledir. Kimlik avı (phishing) bir çalışanı ikna ederek veya kandırarak şifresini ya da elde etmek istediğimiz mimariye/siteye dair önemli bir bilgiye ulaştıracak bir kaynağın eldesi sağlanır. Bu saldırı yöntemi yıllardır siber güvenlik saldırılarının giriş noktasını oluşturmaktadır. (Initial Access vector). Phishing yazımda bundan sonrası için Türkçe karşılığı olan “Kimlik avı” olarak adlandırılacak. Geçmişte kimlik avı saldırıları bozuk gramer yapılarıyla, imla ve söz dizimi hatalarıyla dolu “Hesabınız kapatılacak, hemen buraya tıklayın” gibi kaba ve herkese aynı anda gönderilen (spam) mesajlardan oluşuyordu. Bu diğer yöntemlere göre görece ucuz ve basit bir yöntemdi. Gerek insanların bu konudaki bilincinin artması gerekse AI’ın yükselişi (LLM ve Üretken yapay zekanın (Generative AI) gelişimi) ve hayatımızda önemli bir yer edinişiyle tablo tamamen değişmiştir. Artık karşımızda hedefini tanıyan, kurumsal yazışma diline hakim; dolayısıyla kusursuz biçimde taklit edebilen, hatta yöneticilerin sesini ve görüntüsünü kopyalayabilen otonom bir tehdit mekanizması bulunmaktadır. Bu yazımda AI’ın kimlik saldırılarını teknik ve psikolojik olarak nasıl dönüştüğünü somut senaryo ve örneklerle inceleyecek ve yeni tehdide karşı alınması gereken çok katmanlı savunma önlemlerine değineceğim. (Kaynak : Verizon, 2025)</p>
+    <figure class="gorsel">
+      <img src="../assets/yazilar/paradigma-oltalama-donusumu.webp" width="1024" height="572" loading="lazy" alt="Oltalama yöntemlerinin dönüşümü. Klasik kimlik avında tek tip e-posta spam filtresine takılır ve yakalanır. Yapay zekâ destekli kimlik avında OSINT verisi dil modeliyle kişiselleştirilir ve bin farklı e-posta üretilir; karşısında NLP tabanlı bir savunma duvarı gerekir.">
+    </figure>
 
     <h2>2. Yapay Zeka Kimlik Avı Saldırılarını Nasıl Dönüştürdü</h2>
     <p>Bir kimlik avı saldırısı temel olarak yedi aşamalı bir yaşam döngüsünden oluşur: Keşif (Reconnaissance), Altyapı Kurulumu (Infrastructure setup), Silahlandırma (Weaponization), İletim (Delivery), İstismar (Exploitation), Kimlik Bilgisi Hasadı (Credential harvesting) ve Veri Sızdırma (Data exfiltration).</p>
-    <figure class="akis-sekil">
-      <ol class="akis">
-        <li>Keşif (Reconnaissance)</li>
-        <li>Altyapı Kurulumu (Infrastructure setup)</li>
-        <li>Silahlandırma (Weaponization)</li>
-        <li>İletim (Delivery)</li>
-        <li>İstismar (Exploitation)</li>
-        <li>Kimlik Bilgisi Hasadı (Credential harvesting)</li>
-        <li>Veri Sızdırma (Data exfiltration)</li>
-      </ol>
-      <figcaption>Kimlik Avı Saldırı Yaşam Döngüsü</figcaption>
+    <figure class="gorsel acik">
+      <img src="../assets/yazilar/paradigma-yasam-dongusu.webp" width="1065" height="210" loading="lazy" alt="Soldan sağa yedi aşama: Keşif, Altyapı kurulumu, Silahlandırma, İletim, İstismar, Kimlik bilgisi hasadı, Veri sızdırma.">
+      <figcaption>Kimlik Avı Saldırı Yaşam Döngüsü. Kaynak: Google AI</figcaption>
     </figure>
     <p>Yukarıdaki diyagramda görülen yaşam döngüsünün ilk dört aşaması, geleneksel yöntemlerde saldırganların günlerce manuel mesai harcamasını gerektiriyordu. Yapay zekâ, bu aşamaları saniyeler mertebesine indirerek saldırıların hem kalitesini hem de ölçeğini katlamıştır:</p>
 

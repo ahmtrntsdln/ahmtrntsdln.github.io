@@ -103,13 +103,11 @@ body.subpage { margin: 0; color: var(--text); background: var(--bg); font: 16px/
 .subpage .note-links span { display: block; color: var(--muted); font-size: .92rem; }
 .subpage .note-list p { margin: .3rem 0 0; color: var(--muted); }
 .subpage .refs li { font-size: .9rem; }
-/* Yazılar: numaralı akış şeması (ör. saldırı yaşam döngüsü); dar ekranda kutular alt satıra geçer, sıra numarası korunur. */
-.subpage .akis-sekil { margin: 1.5rem 0; }
-.subpage .akis { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; counter-reset: akis; }
-.subpage .akis li { counter-increment: akis; flex: 1 1 8.5rem; margin: 0; padding: .7rem .8rem; color: var(--text); border: 1px solid var(--line-2); border-radius: 8px; background: var(--panel); font-size: .9rem; line-height: 1.35; }
-.subpage .akis li::before { content: counter(akis) " →"; display: block; margin-bottom: .2rem; color: var(--accent); font-size: .78rem; font-weight: 700; }
-.subpage .akis li:last-child::before { content: counter(akis); }
-.subpage .akis-sekil figcaption { margin-top: .6rem; color: var(--faint); font-size: .85rem; text-align: center; }
+/* Yazılar: yazının içindeki görseller; açık zeminli görsel (ör. beyaz diyagram) koyu sayfada kenarlıkla ayrılır. */
+.subpage .prose .gorsel { margin: 1.5rem 0; }
+.subpage .prose .gorsel img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.subpage .prose .gorsel.acik img { border: 1px solid var(--line-2); background: #fff; }
+.subpage .prose .gorsel figcaption { margin-top: .6rem; color: var(--faint); font-size: .85rem; text-align: center; }
 
 @media (max-width: 700px) {
     .subpage .nav { align-items: flex-start; flex-direction: column; }
