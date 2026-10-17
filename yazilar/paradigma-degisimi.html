@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Siber Güvenlikte Paradigma Değişimi: Modern Savunma Mimarileri | Turan Tech</title>
+  <meta name="description" content="Yapay zekâ kimlik avını nasıl dönüştürdü ve buna karşı hangi katmanlı savunmalar işe yarıyor: FIDO2, DMARC, bant dışı doğrulama ve Arup deepfake vakası.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/yazilar/paradigma-degisimi.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/yazilar/paradigma-degisimi.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/yazilar/paradigma-degisimi.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="Siber Güvenlikte Paradigma Değişimi: Modern Savunma Mimarileri">
+  <meta property="og:description" content="Yapay zekâ kimlik avını nasıl dönüştürdü ve buna karşı hangi katmanlı savunmalar işe yarıyor: FIDO2, DMARC, bant dışı doğrulama ve Arup deepfake vakası.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/yazilar/paradigma-degisimi.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-yazi-paradigma.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Standart kimlik avı e-postasında %12, yapay zekâ ile kişiselleştirilmiş e-postada %54 tıklanma">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">İçeriğe atla</a>
+  <header><div class="wrap nav"><a class="brand" href="../"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../">← Ana sayfa</a><a class="nav-link" href="../notes/">Notlar</a><a class="nav-link" href="../yazilar/">Yazılar</a><a class="lang" href="../en/writing/" lang="en" hreflang="en">EN</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Yazı · 17 Ekim 2026</span>
+    <h1>Siber Güvenlikte Paradigma Değişimi: Modern Savunma Mimarileri</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 17 Ekim 2026 · yaklaşık 11 dakika</p>
+
+    <h2>Giriş</h2>
+    <p>En güçlü şifreleme yöntemlerinin, en pahalı güvenlik duvarlarının tabiri caizse en zayıf tarafı veya en kısa yolu insan olmuştur. Bir sistemde teknik bir açık aramak, çoğu zaman sistemin içindeki bir insana ulaşmak ve onda bir zaaf aramaktan çok daha zor ve maliyetli olmuştur. Bu gerek zaman gerekse maliyet bakımından bir mühendislik çalışması gerektirdiğinden böyledir. Kimlik avı (phishing) bir çalışanı ikna ederek veya kandırarak şifresini ya da elde etmek istediğimiz mimariye/siteye dair önemli bir bilgiye ulaştıracak bir kaynağın eldesi sağlanır. Bu saldırı yöntemi yıllardır siber güvenlik saldırılarının giriş noktasını oluşturmaktadır. (Initial Access vector). Phishing yazımda bundan sonrası için Türkçe karşılığı olan “Kimlik avı” olarak adlandırılacak. Geçmişte kimlik avı saldırıları bozuk gramer yapılarıyla, imla ve söz dizimi hatalarıyla dolu “Hesabınız kapatılacak, hemen buraya tıklayın” gibi kaba ve herkese aynı anda gönderilen (spam) mesajlardan oluşuyordu. Bu diğer yöntemlere göre görece ucuz ve basit bir yöntemdi. Gerek insanların bu konudaki bilincinin artması gerekse AI’ın yükselişi (LLM ve Üretken yapay zekanın (Generative AI) gelişimi) ve hayatımızda önemli bir yer edinişiyle tablo tamamen değişmiştir. Artık karşımızda hedefini tanıyan, kurumsal yazışma diline hakim; dolayısıyla kusursuz biçimde taklit edebilen, hatta yöneticilerin sesini ve görüntüsünü kopyalayabilen otonom bir tehdit mekanizması bulunmaktadır. Bu yazımda AI’ın kimlik saldırılarını teknik ve psikolojik olarak nasıl dönüştüğünü somut senaryo ve örneklerle inceleyecek ve yeni tehdide karşı alınması gereken çok katmanlı savunma önlemlerine değineceğim. (Kaynak : Verizon, 2025)</p>
+
+    <h2>2. Yapay Zeka Kimlik Avı Saldırılarını Nasıl Dönüştürdü</h2>
+    <p>Bir kimlik avı saldırısı temel olarak yedi aşamalı bir yaşam döngüsünden oluşur: Keşif (Reconnaissance), Altyapı Kurulumu (Infrastructure setup), Silahlandırma (Weaponization), İletim (Delivery), İstismar (Exploitation), Kimlik Bilgisi Hasadı (Credential harvesting) ve Veri Sızdırma (Data exfiltration).</p>
+    <figure class="akis-sekil">
+      <ol class="akis">
+        <li>Keşif (Reconnaissance)</li>
+        <li>Altyapı Kurulumu (Infrastructure setup)</li>
+        <li>Silahlandırma (Weaponization)</li>
+        <li>İletim (Delivery)</li>
+        <li>İstismar (Exploitation)</li>
+        <li>Kimlik Bilgisi Hasadı (Credential harvesting)</li>
+        <li>Veri Sızdırma (Data exfiltration)</li>
+      </ol>
+      <figcaption>Kimlik Avı Saldırı Yaşam Döngüsü</figcaption>
+    </figure>
+    <p>Yukarıdaki diyagramda görülen yaşam döngüsünün ilk dört aşaması, geleneksel yöntemlerde saldırganların günlerce manuel mesai harcamasını gerektiriyordu. Yapay zekâ, bu aşamaları saniyeler mertebesine indirerek saldırıların hem kalitesini hem de ölçeğini katlamıştır:</p>
+
+    <h3>2.1. Kusursuz Dilbilgisi ve Psikolojik Manipülasyon</h3>
+    <p>Geleneksel oltalama saldırılarındaki en büyük savunma kalkanımız, saldırganların yaptığı çeviri ve yazım hatalarıydı. Ancak günümüzde saldırganlar; gerek ticari modelleri güvenlik sınırlarını aşarak (jailbreaking), gerekse karanlık ağda (Dark Web) satılan WormGPT ve FraudGPT gibi etik kısıtlaması olmayan modelleri kullanarak kusursuz metinler üretebilmektedir (Roy vd., 2024). Yapay zekâ sadece dilbilgisini düzeltmekle kalmaz; insan psikolojisindeki aciliyet, korku, otoriteye itaat ve merak duygularını en üst düzeyde tetikleyecek kelime dizilimlerini seçer.</p>
+
+    <h3>2.2. Otonom Keşif (OSINT) ve Ölçeklenebilir “Spear Phishing”</h3>
+    <p>Hedefli kimlik avı (Spear Phishing), belirli bir kişiyi veya kurumu araştırarak ona özel tuzak hazırlamaktır. Eskiden bir saldırganın hedefin LinkedIn profilini, X paylaşımlarını ve şirket haberlerini okuyup analiz etmesi saatler sürerdi.</p>
+    <ul>
+      <li><strong>YZ Etkisi:</strong> Otonom yapay zekâ ajanları (AI Agents), açık kaynak istihbaratını (OSINT) saniyeler içinde tarar. Hedef kişinin hangi üniversiteden mezun olduğunu, geçen hafta hangi siber güvenlik etkinliğine katıldığını ve hangi projede çalıştığını birleştirerek, sanki o etkinlikte tanıştığı bir meslektaşından geliyormuş gibi son derece ikna edici bir mesaj yazar (Hazell, 2023).</li>
+      <li><strong>Sonuç:</strong> Araştırmalar, standart bir kimlik avı e-postasına tıklanma oranı %12 civarındayken, yapay zekâ ile kişiselleştirilmiş mesajlarda bu oranın %54'e çıktığını göstermektedir (Heiding vd., 2024).</li>
+    </ul>
+
+    <h3>2.3. Polimorfik Saldırılarla Güvenlik Duvarlarını Aşma</h3>
+    <p>Kurumların kullandığı geleneksel E-posta Güvenlik Ağ Geçitleri (SEG), gelen kutusuna düşen e-postaları bilinen “zararlı şablonlarla” (imza tabanlı) karşılaştırır. Eğer aynı metin 1.000 kişiye gönderilmişse sistem bunu spam olarak yakalar.</p>
+    <ul>
+      <li><strong>YZ Etkisi:</strong> Yapay zekâ polimorfik (çok biçimli) saldırılar üretir. Aynı şirketteki 500 çalışana gönderilen sahte “şifre sıfırlama” e-postasının her biri; farklı bir cümle yapısı, farklı eş anlamlı kelimeler ve tamamen farklı HTML kod bloklarıyla anlık olarak yeniden yazılır. İmza tabanlı filtreler her e-postayı “benzersiz ve normal bir yazışma” olarak algıladığı için saldırı doğrudan gelen kutusuna düşer. Bu adımı da rahatça geçebiliyor, dolayısıyla saldırgan önemli iki duvarı AI yardımıyla kolayca aşabilmektedir.</li>
+    </ul>
+
+    <h3>2.4 Hız, hacim ve düşük maliyet</h3>
+    <p>FBI, üretken yapay zekânın dolandırıcıların hedefi kandırmak için harcaması gereken zaman ve emeği azalttığını, böylece dolandırıcılığın daha büyük ölçekte ve daha inandırıcı yapılabildiğini resmî bir kamu duyurusuyla uyarmıştır (FBI IC3, PSA I-120324). Sektör raporlarında da benzer bir eğilim görülmektedir: KnowBe4'ün Mart 2025 raporunda incelenen kimlik avı e-postalarının %82,6'sında yapay zekâ kullanımına dair iz bulunmuş; IBM’in 2025 veri ihlali raporuna göre ihlallerin %16'sında saldırganlar yapay zekâ kullanmıştır (DuoCircle derlemesi). Not: Bu sektör rakamları üretici raporlarından derlenmiştir; akademik çalışmalar kadar bağımsız değildir.</p>
+
+    <h3>2.5 Ses klonlama (vishing) ve deepfake video</h3>
+    <p>Yapay zekâ yalnızca metni değil, sesi ve görüntüyü de taklit edebilmektedir. FBI duyurusuna göre suçlular:</p>
+    <ul>
+      <li>Tanıdık birinin sesini klonlayarak acil para isteyen telefon aramaları yapmakta veya sesle kimlik doğrulama kullanan banka hesaplarına erişmeye çalışmaktadır.</li>
+      <li>Şirket yöneticisi, polis veya başka bir otorite gibi görünen kişilerle gerçek zamanlı görüntülü görüşmeler düzenlemektedir.</li>
+      <li>Sahte sosyal medya profilleri için gerçekçi fotoğraflar ve sahte kimlik belgeleri üretmektedir (FBI IC3, PSA I-120324).</li>
+    </ul>
+    <p>FBI San Francisco ofisi de saldırganların aile üyesi, iş arkadaşı veya iş ortağı gibi güvenilen kişileri ses ve video klonlamayla taklit ettiği konusunda ayrıca uyarı yayımlamıştır (FBI San Francisco).</p>
+
+    <h2>3. Gerçek Dünya Vakası: Arup Deepfake Dolandırıcılığı (2024)</h2>
+    <p>Yapay zekâ destekli kimlik avının en çarpıcı örneklerinden biri, Sidney Opera Binası gibi yapıların mühendislik firması olan İngiliz şirketi Arup’un Hong Kong ofisinde yaşanmıştır (CNN, Mayıs 2024).</p>
+    <p><strong>Olayın akışı:</strong></p>
+    <ul>
+      <li>Ocak 2024'te finans biriminde çalışan bir personel, şirketin İngiltere ofisinden geliyormuş gibi görünen ve gizli bir işlem isteyen bir e-posta aldı; çalışan ilk başta bunun bir kimlik avı olabileceğinden şüphelendi (Discus, CNN’e atıfla).</li>
+      <li>Ardından çalışan, şirketin finans direktörü (CFO) ve diğer tanıdık meslektaşlarıyla olduğunu sandığı çok kişilik bir görüntülü toplantıya davet edildi. Toplantıdaki kurban dışındaki herkes, kamuya açık video ve ses kayıtlarından üretilmiş deepfake kopyalardı (Business Insider).</li>
+      <li>Katılımcılar tanıdığı kişiler gibi göründüğü ve konuştuğu için çalışan şüphelerini bir kenara bıraktı ve 15 ayrı işlemle beş Hong Kong banka hesabına toplam 200 milyon Hong Kong doları (yaklaşık 25,6 milyon ABD doları) gönderdi (AI Incident Database).</li>
+      <li>Hong Kong polisi olayı Şubat 2024'te kamuoyuna duyurdu; Arup ise mağdur olduğunu Mayıs 2024'te doğruladı ve olayda sahte ses ve görüntülerin kullanıldığını açıkladı (CNN).</li>
+    </ul>
+    <p><strong>Vakadan çıkan dersler:</strong> Saldırı klasik bir kimlik avı e-postasıyla başlamış, ancak çalışanın haklı şüphesi deepfake görüntülü görüşmeyle bastırılmıştır. Arup’un açıklamasına göre şirketin iç sistemlerine sızılmamıştır; yani bu bir teknik hack değil, tamamen insan güvenini hedef alan bir sosyal mühendislik saldırısıdır. Bu durum, e-posta veya görüntülü görüşmenin tek başına kimlik doğrulaması için artık yeterli olmadığını göstermektedir.</p>
+
+    <h2>Örnek Senaryo: Bir Üniversite Öğrencisini Hedef Alan Saldırı (Kurgusal)</h2>
+    <p>Aşağıdaki senaryo kurgusaldır. Amaç, 2. bölümde anlatılan tekniklerin günlük hayatta nasıl bir araya gelebileceğini göstermektir.</p>
+    <ol>
+      <li><strong>Keşif:</strong> Saldırgan, bir yapay zekâ aracına öğrencinin herkese açık Instagram ve LinkedIn hesaplarını taratır. Araç öğrencinin bölümünü, yeni yatay geçiş yaptığını ve bir öğrenci topluluğuna üye olduğunu kısa sürede çıkarır.</li>
+      <li><strong>Kişiye özel e-posta:</strong> Yapay zekâ, öğrenci işlerinden geliyormuş gibi görünen kusursuz Türkçe bir e-posta yazar. E-postada yatay geçiş belgelerinde eksik olduğu ve 24 saat içinde öğrenci bilgi sistemine giriş yapılmazsa kaydın askıya alınacağı söylenir. Öğrencinin adı, bölümü ve geçiş tarihi doğru yazıldığı için e-posta inandırıcı görünür.</li>
+      <li><strong>Sahte sayfa:</strong> Bağlantı, üniversitenin giriş sayfasının birebir kopyasına gider. Alan adındaki tek harflik fark ilk bakışta fark edilmez.</li>
+      <li><strong>Ses ile baskı:</strong> Öğrenci tereddüt ederse, topluluk başkanının videolarından klonlanmış sesle bir sesli mesaj gelir: “Hocam herkese bu maili attı, sen de hallet.”</li>
+      <li><strong>Sonuç:</strong> Öğrenci parolasını ve SMS ile gelen doğrulama kodunu sahte sayfaya girer. Saldırgan bu bilgileri gerçek sistemde anında kullanarak hesabı ele geçirir.</li>
+    </ol>
+    <p><strong>Bu saldırı nerede durdurulabilirdi?</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Aşama</th><th>Önlem</th></tr></thead><tbody><tr><td>Keşif</td><td>Sosyal medya hesaplarını gizli tutmak, paylaşılan kişisel bilgiyi azaltmak</td></tr><tr><td>E-posta</td><td>“24 saat içinde” gibi aciliyet baskısını uyarı işareti saymak; e-posta filtresi ve DMARC</td></tr><tr><td>Sahte sayfa</td><td>Bağlantıya tıklamak yerine adresi kendisi yazmak; alan adını kontrol etmek</td></tr><tr><td>Sesli mesaj</td><td>Topluluk başkanını bilinen numarasından arayıp doğrulamak (bant dışı doğrulama)</td></tr><tr><td>Parola girişi</td><td>Passkey veya FIDO2 anahtarı: sahte sitede çalışmadığı için kod çalınsa bile giriş yapılamaz</td></tr></tbody></table></div>
+    <p>Senaryo, tek bir önlemin yeterli olmadığını, buna karşılık her aşamadaki küçük bir önlemin saldırı zincirini kırabileceğini göstermektedir. Dolayısıyla yeteri kadar bilinçli olmak, gerekli eğitimi önceden almak bu noktada bu tür saldırılara karşı alınabilecek en önemli önlemlerden birisidir.</p>
+
+    <h2>4. Alınabilecek Önlemler</h2>
+    <p>Yapay zekâ “dil hatası var mı?” gibi içerik ipuçlarını işe yaramaz hâle getirdiği için savunmanın ağırlığı, içerik ne kadar inandırıcı olursa olsun saldırıyı başarısız kılan teknik kontrollere ve doğrulama süreçlerine kaymalıdır. Önlemler üç düzeyde ele alınabilir.</p>
+
+    <h3>4.1 Teknik önlemler</h3>
+    <p><strong>a) Kimlik avına dayanıklı çok faktörlü kimlik doğrulama (FIDO2 / Passkey):</strong> SMS kodu veya tek kullanımlık şifreler sahte bir siteye kullanıcı tarafından girilebildiği için çalınabilir. ABD Siber Güvenlik ve Altyapı Güvenliği Ajansı (CISA), kimlik avına dayanıklı MFA’yı en güvenli MFA türü olarak tanımlar ve yaygın erişilebilen tek kimlik avına dayanıklı yöntemin FIDO/WebAuthn olduğunu belirtir (CISA Bilgi Notu). Bu yöntemde açık anahtar kriptografisi kullanılır ve giriş işlemi kriptografik olarak gerçek alan adına bağlıdır; bu yüzden kullanıcı sahte siteye kansa bile anahtar o siteye çalışmaz. CISA ayrıca geçişin aşamalı yapılmasını ve öncelikle yöneticiler gibi yüksek yetkili hesaplardan başlanmasını önerir (Cybersecurity Dive).</p>
+    <p><strong>b) E-posta kimlik doğrulama protokolleri (SPF, DKIM, DMARC):</strong> Bu üç protokol, saldırganların bir kurumun alan adını taklit ederek e-posta göndermesini zorlaştırır (Red Sift)</p>
+    <p>DMARC politikasının sürekli yalnızca izleme (p=none) modunda bırakılması gerçek koruma sağlamaz; karantina veya ret politikasına geçilmelidir. Bu protokoller yapay zekânın yazdığı metni değil, gönderenin kimliğini kontrol ettiği için yapay zekâ çağında da etkilidir.</p>
+    <p><strong>c) Yapay zekâ tabanlı tespit:</strong> Yapay zekâ savunmada da kullanılabilir. Heiding vd. çalışmasında bir dil modeli (Claude 3.5 Sonnet), 381 e-postalık veri setinde kimlik avı e-postalarını %97,25 doğrulukla ve yanlış alarm vermeden tespit etmiş; insanların fark edemediği bazı e-postaları da yakalamıştır (Schneier.com). Ancak aynı çalışmada başka bir modelin zararsız e-postaların %11'ini hatalı biçimde zararlı işaretlediği raporlanmıştır (Gigazine); yani bu araçlar tek başına değil, diğer katmanlarla birlikte kullanılmalıdır.</p>
+    <p><strong>d) Hasarı sınırlama:</strong> BIFOLD araştırmacıları, bazı hesapların kişiselleştirilmiş kimlik avıyla er ya da geç ele geçirileceği varsayımıyla, mevcut sınırlama (containment) önlemlerinin daha sıkı uygulanmasını önermektedir (BIFOLD). En az yetki ilkesi, ağ bölümleme ve anormal oturum açma uyarıları bu kapsamdadır.</p>
+
+    <h3>4.2 Kurumsal (süreç) önlemleri</h3>
+    <ul>
+      <li><strong>Bant dışı doğrulama:</strong> Para transferi, ödeme bilgisi değişikliği veya gizli işlem talepleri, talebin geldiği kanaldan değil, önceden bilinen ayrı bir kanaldan (ör. şirket rehberindeki numarayı arayarak) doğrulanmalıdır. FBI da finansal taleplerin güvenilir kanallardan doğrulanmasını önermektedir (FBI IC3). Arup vakasında bu adım saldırıyı durdurabilirdi.</li>
+      <li><strong>Çift onay (dört göz) ilkesi:</strong> Belirli bir tutarın üzerindeki ödemeler tek bir kişinin onayıyla yapılamamalıdır.</li>
+      <li><strong>Güncel farkındalık eğitimi:</strong> Eğitimler artık yalnızca “yazım hatalarına dikkat” mesajı vermemeli; saldırıların kişisel ve hedefli görünebileceğini, ses ve videonun taklit edilebileceğini anlatmalıdır (BIFOLD).</li>
+      <li><strong>Kolay raporlama kültürü:</strong> Şüpheli bir iletiyi bildirmek hızlı ve cezasız olmalıdır; erken bildirim saldırının diğer çalışanlara yayılmasını önler.</li>
+    </ul>
+
+    <h3>4.3 Bireysel önlemler</h3>
+    <ul>
+      <li><strong>Aciliyet ve gizlilik talebine şüpheyle yaklaşın:</strong> “Hemen yap”, “kimseye söyleme” gibi baskılar klasik sosyal mühendislik işaretidir.</li>
+      <li><strong>Aile içi gizli parola belirleyin:</strong> FBI, ses klonlamaya karşı aile üyeleriyle yalnızca sizin bildiğiniz bir gizli kelime veya ifade belirlenmesini önermektedir (FBI IC3).</li>
+      <li><strong>Çevrim içi ayak izinizi azaltın:</strong> Sosyal medya hesaplarını gizli yapmak, ses ve görüntü paylaşımını sınırlamak saldırganın kişiselleştirme ve klonlama için kullanabileceği malzemeyi azaltır (FBI IC3; BIFOLD).</li>
+      <li><strong>Bağlantı yerine kendiniz gidin:</strong> E-postadaki bağlantıya tıklamak yerine siteye adresi kendiniz yazarak veya kayıtlı uygulamadan girin; alan adını dikkatle kontrol edin.</li>
+      <li><strong>Passkey ve MFA kullanın:</strong> Destekleyen hesaplarda (e-posta, bankacılık) passkey veya donanım güvenlik anahtarı tercih edin.</li>
+      <li><strong>Görüntülü/sesli görüşmede de doğrulayın:</strong> Şüpheli bir aramayı kapatıp kişiyi bildiğiniz numaradan geri arayın; FBI ses tonu ve kelime seçimine dikkat edilmesini de önerir (FBI IC3).</li>
+    </ul>
+
+    <h2>5. Kişisel Bağlantı: Şef Projesi</h2>
+    <p>Bu konuyla ilgilenmemin kişisel bir nedeni de var. “Şef” adını verdiğim, yapay zekâ destekli bir siber güvenlik motoru geliştiriyorum (GitHub: <a href="https://github.com/ahmtrntsdln/Chief-Sef" target="_blank" rel="noopener noreferrer">Chief-Sef</a>). Bu ödevde incelenen gelişmeler, projeyi neden geliştirdiğimin de bir özeti niteliğinde.</p>
+    <p><strong>Kimlik avıyla bağlantısı:</strong> Kimlik avı saldırılarının bir kısmı yalnızca parola çalmayı değil, e-postaya eklenen ya da bağlantıyla indirilen zararlı bir dosya aracılığıyla bilgisayara sızmayı hedefler. Yapay zekâ e-postanın kendisini insan gözüyle ayırt edilemez hâle getirdikçe, dosyanın açılmadan önce incelenmesi önemli bir savunma hattına dönüşür. Şef tam olarak bu noktada, eylem aşamasında devreye girer.</p>
+    <p><strong>Nasıl çalışıyor (Faz 1 — “Gümrük Memuru”):</strong> Şef, bir dosyayı çalıştırılmadan önce statik olarak analiz eder:</p>
+    <ul>
+      <li>Dosyanın gerçek türünü baş baytlarından (magic byte) kontrol eder. Böylece resim gibi görünen ama aslında çalıştırılabilir olan dosyalar (uzantı sahteciliği) yakalanabilir.</li>
+      <li>Dosyanın bölümlerindeki entropiyi ölçer. Yüksek entropi, paketlenmiş veya şifrelenmiş zararlı kodun işareti olabilir.</li>
+      <li>Dosyanın kullandığı sistem API’lerini inceler. Örneğin başka bir sürecin belleğine yazmaya yarayan çağrılar şüpheli kabul edilir.</li>
+      <li>Bu özelliklerle eğitilmiş bir makine öğrenmesi modeli (Random Forest) ile dosyayı temiz ya da şüpheli olarak sınıflandırır.</li>
+    </ul>
+    <p>Bu yaklaşım, 4. bölümdeki temel ilkeyle örtüşür: Yapay zekâ bir e-postanın dilini kusursuzlaştırabilir, ancak ekteki dosyanın teknik özellikleri metnin ne kadar ikna edici olduğundan bağımsızdır. Saldırganın tespitten kaçmak için dosyanın yapısını da değiştirmesi gerekir. Bu örnekte de yapay zekâ hem saldırganın hem de savunucunun aracıdır.</p>
+    <p><strong>Sınırları:</strong> Şef hâlâ geliştirme aşamasındadır ve .NET tabanlı zararlıların tespiti gibi çözülmesi gereken sorunları vardır. Ayrıca deepfake aramalar veya parola çalan sahte sayfalar gibi dosya içermeyen saldırılara karşı tek başına koruma sağlamaz. Bu nedenle 4. bölümdeki önlemlerin yerine değil, yanında kullanılacak ek bir katman olarak düşünülmelidir. Yol haritasındaki sonraki aşamalar ise dosyanın çalıştıktan sonraki davranışını da izlemeyi hedeflemektedir: Linux çekirdeğinde eBPF ile sistem çağrısı izleme ve donanımsal izolasyon.</p>
+
+    <h2>6. Sonuç</h2>
+    <p>Yapay zekâ, kimlik avının en pahalı ve en etkili türü olan hedefli saldırıyı ucuz ve seri üretilebilir hâle getirmiştir. Akademik çalışmalar, tamamen otomatik yapay zekâ e-postalarının insan uzmanlar kadar başarılı olduğunu ve e-posta başına birkaç sentlik maliyetle binlerce kişiye ulaşabildiğini göstermektedir. Ses klonlama ve deepfake video ise saldırıyı e-postanın ötesine, telefon ve görüntülü görüşmelere taşımıştır; Arup vakası bunun milyonlarca dolarlık sonuçlarını ortaya koymuştur.</p>
+    <p>Bu nedenle “sahte e-postayı gözle tanıma” yaklaşımı tek başına yeterli değildir. Etkili savunma; içerik ne kadar ikna edici olursa olsun çalışan teknik kontrolleri (FIDO2/passkey, DMARC), hassas işlemlerde bant dışı doğrulama gibi süreçleri, yapay zekâ destekli tespit araçlarını ve güncellenmiş farkındalık eğitimini bir arada kullanan katmanlı bir yaklaşım gerektirir. Yapay zekâ hem saldırganın hem de savunucunun aracıdır; belirleyici olan, kurumların ve bireylerin bu değişime ne kadar hızlı uyum sağladığıdır.</p>
+
+    <h2>Bölüm–Kaynak Eşleşmesi</h2>
+    <p>Köşeli parantezdeki numaralar aşağıdaki Kaynakça listesindeki sıra numaralarıdır.</p>
+    <div class="table-wrap"><table><thead><tr><th>Bölüm</th><th>Konu</th><th>Kaynak</th></tr></thead><tbody><tr><td>Giriş</td><td>Kimlik avı ve insan unsuru</td><td><a href="#kaynak-16">[16]</a></td></tr><tr><td>2.1</td><td>Kusursuz dilbilgisi, kötüye kullanılan dil modelleri</td><td><a href="#kaynak-17">[17]</a>, <a href="#kaynak-12">[12]</a></td></tr><tr><td>2.2</td><td>Otonom keşif ve hedefli kimlik avı (%12 → %54)</td><td><a href="#kaynak-1">[1]</a>, <a href="#kaynak-18">[18]</a></td></tr><tr><td>2.3</td><td>Polimorfik saldırılar, imza tabanlı filtreler</td><td><a href="#kaynak-13">[13]</a></td></tr><tr><td>2.4</td><td>Hız, hacim, maliyet; KnowBe4 ve IBM rakamları</td><td><a href="#kaynak-4">[4]</a>, <a href="#kaynak-13">[13]</a></td></tr><tr><td>2.5</td><td>Ses klonlama ve deepfake video</td><td><a href="#kaynak-4">[4]</a>, <a href="#kaynak-5">[5]</a>, <a href="#kaynak-12">[12]</a></td></tr><tr><td>3. Arup vakası</td><td>Olayın akışı, tutar, tarihler</td><td><a href="#kaynak-8">[8]</a>, <a href="#kaynak-9">[9]</a>, <a href="#kaynak-10">[10]</a>, <a href="#kaynak-11">[11]</a></td></tr><tr><td>4.1 a</td><td>FIDO2 / passkey, kimlik avına dayanıklı MFA</td><td><a href="#kaynak-6">[6]</a>, <a href="#kaynak-7">[7]</a></td></tr><tr><td>4.1 b</td><td>SPF, DKIM, DMARC</td><td><a href="#kaynak-15">[15]</a></td></tr><tr><td>4.1 c</td><td>Yapay zekâ tabanlı tespit (%97,25 doğruluk, %11 yanlış alarm)</td><td><a href="#kaynak-2">[2]</a>, <a href="#kaynak-14">[14]</a></td></tr><tr><td>4.1 d</td><td>Hasarı sınırlama</td><td><a href="#kaynak-3">[3]</a></td></tr><tr><td>4.2</td><td>Bant dışı doğrulama, eğitim, süreçler</td><td><a href="#kaynak-3">[3]</a>, <a href="#kaynak-4">[4]</a></td></tr><tr><td>4.3</td><td>Bireysel önlemler (gizli parola, ayak izi, MFA)</td><td><a href="#kaynak-3">[3]</a>, <a href="#kaynak-4">[4]</a></td></tr><tr><td>6. Sonuç</td><td>Önceki bölümlerin sentezi</td><td><a href="#kaynak-1">[1]</a>, <a href="#kaynak-3">[3]</a>, <a href="#kaynak-8">[8]</a></td></tr></tbody></table></div>
+
+    <h2>Kaynakça</h2>
+    <ol class="refs">
+      <li id="kaynak-1">Heiding, F., Lermen, S., Kao, A., Schneier, B., &amp; Vishwanath, A. (2024). Evaluating Large Language Models’ Capability to Launch Fully Automated Spear Phishing Campaigns: Validated on Human Subjects. arXiv:2412.00586. <a href="https://arxiv.org/abs/2412.00586" target="_blank" rel="noopener noreferrer">arxiv.org/abs/2412.00586</a></li>
+      <li id="kaynak-2">Heiding, F., Lermen, S., Kao, A., Verdun, C. M., Schneier, B., &amp; Vishwanath, A. (2026). Evaluating Large Language Models’ Ability to Automate Spear Phishing. <em>Expert Systems with Applications</em>, 314, 131546. <a href="https://www.schneier.com/academic/archives/2026/06/evaluating-large-language-models-ability-to-automate-spear-phishing.html" target="_blank" rel="noopener noreferrer">Schneier.com özeti</a></li>
+      <li id="kaynak-3">Czybik, S., Kouam, A. J., Heubl, P., Nold, J. M., &amp; Rieck, K. (2026). A Large-Scale Study of Personalized Phishing using Large Language Models. USENIX Security Symposium 2026. <a href="https://www.usenix.org/conference/usenixsecurity26/presentation/czybik" target="_blank" rel="noopener noreferrer">USENIX</a> · <a href="https://www.bifold.berlin/news-events/news/view/news-detail/ai-goes-phishing" target="_blank" rel="noopener noreferrer">Haber: BIFOLD — AI Goes Phishing</a></li>
+      <li id="kaynak-4">FBI Internet Crime Complaint Center (2024). Criminals Use Generative Artificial Intelligence to Facilitate Financial Fraud (PSA I-120324). <a href="https://www.ic3.gov/PSA/2024/PSA241203" target="_blank" rel="noopener noreferrer">ic3.gov/PSA/2024/PSA241203</a></li>
+      <li id="kaynak-5">FBI San Francisco. FBI Warns of Increasing Threat of Cyber Criminals Utilizing Artificial Intelligence. <a href="https://www.fbi.gov/contact-us/field-offices/sanfrancisco/news/fbi-warns-of-increasing-threat-of-cyber-criminals-utilizing-artificial-intelligence" target="_blank" rel="noopener noreferrer">fbi.gov</a></li>
+      <li id="kaynak-6">CISA (2022). Implementing Phishing-Resistant MFA (Fact Sheet). <a href="https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf" target="_blank" rel="noopener noreferrer">cisa.gov</a></li>
+      <li id="kaynak-7">Cybersecurity Dive (2022). CISA phishing-resistant MFA rehberi haberi. <a href="https://www.cybersecuritydive.com/news/cisa-phishing-resistant-mfa/635763/" target="_blank" rel="noopener noreferrer">cybersecuritydive.com</a></li>
+      <li id="kaynak-8">Magramo, K. (2024, 16 Mayıs). British engineering giant Arup revealed as $25 million deepfake scam victim. CNN. <a href="https://www.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk" target="_blank" rel="noopener noreferrer">Erişim bağlantısı</a></li>
+      <li id="kaynak-9">Business Insider (2024). Arup deepfake dolandırıcılığı haberi. <a href="https://businessinsider.nl/an-engineering-giant-behind-apples-hq-and-the-sydney-opera-house-lost-25-million-when-scammers-tricked-an-employee-with-a-deepfake-of-a-senior-exec/" target="_blank" rel="noopener noreferrer">businessinsider.nl</a></li>
+      <li id="kaynak-10">AI Incident Database. Report 3630 — Alleged Deepfake CFO Scam (Arup). <a href="https://incidentdatabase.ai/reports/3630/" target="_blank" rel="noopener noreferrer">incidentdatabase.ai</a></li>
+      <li id="kaynak-11">Discus (2024). Arup deepfake vakası ve önceki deepfake örnekleri. <a href="https://discus.co.uk/2024/05/29/tech-news-uk-company-scammed-25-million-via-deepfakes/" target="_blank" rel="noopener noreferrer">discus.co.uk</a></li>
+      <li id="kaynak-12">Fadilpašić, S. (2025). AI-powered phishing attacks are on the rise and getting smarter. TechRadar (Kaspersky verileri). <a href="https://tech.yahoo.com/cybersecurity/articles/ai-powered-phishing-attacks-rise-162700894.html" target="_blank" rel="noopener noreferrer">Yahoo Tech</a></li>
+      <li id="kaynak-13">DuoCircle. AI-Generated Phishing Eliminates Typos (KnowBe4, IBM ve Microsoft rapor verilerinin derlemesi). <a href="https://www.duocircle.com/blog/ai-generated-phishing-eliminates-typos-making-traditional-email-filters-ineffective/" target="_blank" rel="noopener noreferrer">duocircle.com</a></li>
+      <li id="kaynak-14">Gigazine (2025). More than half of people click on phishing emails created by AI. <a href="https://gigazine.net/gsc_news/en/20250106-ai-phishing-campaign" target="_blank" rel="noopener noreferrer">gigazine.net</a></li>
+      <li id="kaynak-15">Red Sift. DMARC vs SPF vs DKIM: What’s the difference and why it matters. <a href="https://redsift.com/guides/dmarc-spf-dkim-key-differences" target="_blank" rel="noopener noreferrer">redsift.com</a></li>
+      <li id="kaynak-16">Verizon (2025). 2025 Data Breach Investigations Report (DBIR). <a href="https://www.verizon.com/business/resources/reports/2025-dbir-data-breach-investigations-report.pdf" target="_blank" rel="noopener noreferrer">verizon.com (PDF)</a></li>
+      <li id="kaynak-17">Roy, S. S., Thota, P., Naragam, K. V., &amp; Nilizadeh, S. (2024). From Chatbots to PhishBots? Preventing Phishing scams created using ChatGPT, Google Bard and Claude. arXiv:2310.19181 (v2, Mart 2024). <a href="https://arxiv.org/abs/2310.19181" target="_blank" rel="noopener noreferrer">arxiv.org/abs/2310.19181</a></li>
+      <li id="kaynak-18">Hazell, J. (2023). Spear Phishing With Large Language Models. arXiv:2305.06972. <a href="https://arxiv.org/abs/2305.06972" target="_blank" rel="noopener noreferrer">arxiv.org/abs/2305.06972</a></li>
+    </ol>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.8.0 · 17 Ekim 2026</small></div></footer>
+</body>
+</html>
