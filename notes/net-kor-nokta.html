@@ -20,10 +20,10 @@
   <meta property="og:title" content="%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu">
   <meta property="og:description" content="Genel skor bir alt grubun çöküşünü gizleyebilir: .NET kör noktası, uzman model ve “DLL ise zararsız” kestirmesi.">
   <meta property="og:url" content="https://ahmtrntsdln.dev/notes/net-kor-nokta.html">
-  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-tr.png">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-tr-v2.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Güncel .NET zararlılarında kaçan oranı %92,8, uzman modelde %3,8">
+  <meta property="og:image:alt" content="Güncel .NET zararlılarında kaçan oranı: Faz 1 modelinde %92,8, uzman model M2'de (kestirmeli) %3,8">
   <meta property="og:locale" content="tr_TR">
   <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -34,6 +34,7 @@
     <span class="kicker">Araştırma notu · 9 Ekim 2026</span>
     <h1>%90 doğruluklu model, güncel .NET zararlılarının %93'ünü kaçırıyordu</h1>
     <p class="meta">Ahmet Turan Taşdelen · 9 Ekim 2026 · yaklaşık 7 dakika · Proje: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>Güncelleme (26 Ekim 2026):</strong> Bu nottaki "mevcut model" (M0) Faz 1 modelidir (EMBER 2018, 5 özellik); bugünkü model EMBER2024 ile eğitilen native model. %3,8, uzman model M2'nin (kestirmeli) kaçan zararlı oranıdır, yanlış alarm değil: M2'nin genel yanlış alarmı %4,2, EXE'lerde ~%26 (aşağıda). Native modelin .NET ölçümü: <a href="https://github.com/ahmtrntsdln/Chief-Sef/blob/main/README.tr.md#native-model-ember2024-ekim-2026" target="_blank" rel="noopener noreferrer">README, "Native model"</a>. Aşağıdaki metin 9 Ekim'deki haliyle duruyor.</p>
     <p class="summary"><strong>Kısaca:</strong> Chief-Sef'in ilk modeli genel olarak iyi görünüyordu. Ama 2024'ün son aylarından 120.000 .NET dosyasında doğruluğu %53'e düştü ve zararlıların %92,8'ini kaçırdı. Genel skor bu çöküşü gizliyordu. Uzman bir model kurdum; onun da kendi kestirmesi çıktı: "DLL ise zararsız".</p>
 
     <h2>İlk ipucu: genel skorun içindeki alt grup</h2>

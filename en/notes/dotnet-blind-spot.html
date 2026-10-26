@@ -20,10 +20,10 @@
   <meta property="og:title" content="A 90%-accurate model missed 93% of recent .NET malware">
   <meta property="og:description" content="An overall score can hide a subgroup collapsing: the .NET blind spot, a specialist model, and the “DLL means benign” shortcut.">
   <meta property="og:url" content="https://ahmtrntsdln.dev/en/notes/dotnet-blind-spot.html">
-  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-en.png">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-net-en-v2.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Miss rate on recent .NET malware: 92.8%, 3.8% with a specialist model">
+  <meta property="og:image:alt" content="Miss rate on recent .NET malware: 92.8% for the Phase 1 model, 3.8% for specialist model M2 (with the shortcut)">
   <meta property="og:locale" content="en_GB">
   <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -34,6 +34,7 @@
     <span class="kicker">Research note · 9 October 2026</span>
     <h1>A 90%-accurate model missed 93% of recent .NET malware</h1>
     <p class="meta">Ahmet Turan Taşdelen · 9 October 2026 · about 7 minutes · Project: <a href="../projects/chief-sef.html">Şef (Chief-Sef)</a></p>
+    <p class="summary"><strong>Update (26 October 2026):</strong> The "existing model" (M0) in this note is the Phase 1 model (EMBER 2018, 5 features); today's model is the native model trained on EMBER2024. 3.8% is the missed-malware rate of the specialist model M2 (with the shortcut), not a false-alarm rate: M2's overall false-alarm rate was 4.2%, ~26% on EXEs (see below). The native model's .NET measurement: <a href="https://github.com/ahmtrntsdln/Chief-Sef/blob/main/README.md#native-model-ember2024-october-2026" target="_blank" rel="noopener noreferrer">README, "Native model"</a>. The text below is unchanged from 9 October.</p>
     <p class="summary"><strong>In short:</strong> The first Chief-Sef model looked good overall. But on 120,000 .NET files from the last months of 2024, its accuracy fell to 53% and it missed 92.8% of the malware. The overall score was hiding the collapse. I built a specialist model, and it found a shortcut of its own: “a DLL means benign”.</p>
 
     <h2>The first hint: a subgroup inside the overall score</h2>
