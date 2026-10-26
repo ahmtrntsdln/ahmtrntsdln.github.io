@@ -1023,19 +1023,21 @@
                 <h4>Mevcut ilerleme</h4>
                 <ul>
                     <li>Gerçek EMBER verisiyle Random Forest modeli ve ölçüm tutarlılığı tamamlandı.</li>
-                    <li>Faz 1 zamansal test doğruluğu: %83,8; aynı dönem test doğruluğu: %90,1.</li>
-                    <li>Bağımsız gerçek makine doğrulamasında yanlış alarm oranı: %3,5.</li>
+                    <li>Faz 1 modeli (EMBER 2018, 5 özellik): zamansal test doğruluğu %83,8; aynı dönem test doğruluğu %90,1.</li>
+                    <li>Faz 1 modeli: bağımsız gerçek makine doğrulamasında yanlış alarm oranı %3,5.</li>
+                    <li>Native model (EMBER2024, 86 özellik; test haftaları sabit eşiklerle bir kez ölçüldü): kaçan zararlı EXE’de %17,7, DLL’de %19,5; EMBER2024 zararsızlarında yanlış alarm EXE’de %0,83, DLL’de %1,43. DLL’de %1 hedefi aşıldı.</li>
+                    <li>Native model testinde dosyaların %50’si zararlı: %0,83 alarmların ne kadarının yanlış olduğu değildir; zararlının çok daha nadir olduğu gerçek kullanımda alarmların yanlış olan payı daha yüksektir.</li>
                 </ul>
             </div>
             <div class="chief-section">
                 <h4>Beklenen performans ve sınırlar</h4>
-                <p>Bu değerler prototipin README’sindeki deney sonuçlarıdır; üretim garantisi değildir. Sonraki hedefler eBPF ile sistem çağrısı izleme ve NPU/TEE tabanlı donanımsal izolasyondur. Güncel .NET tehditlerinde modelin zayıf kaldığı özellikle belirtilmiştir.</p>
+                <p>Bu değerler prototipin README’sindeki deney sonuçlarıdır; üretim garantisi değildir. Sonraki hedefler eBPF ile sistem çağrısı izleme ve NPU/TEE tabanlı donanımsal izolasyondur. Faz 1 modelinin güncel .NET tehditlerinde zayıf kaldığı ve native modele .NET uzman modelinin henüz bağlanmadığı özellikle belirtilmiştir.</p>
             </div>
             <div class="chief-section">
                 <h4>Fizibilite raporu</h4>
                 <p><strong>Benim kısa değerlendirmem:</strong> Bu proje araştırma ve ön eleme katmanı olarak uygulanabilir; ama şu an tek başına “güvenli” kararı verecek noktada değil. Faz 1’de ölçüm sonuçlarını görmek iyi bir başlangıç, fakat modelin farklı dönemlerde ve yeni dosya türlerinde aynı şekilde davranacağını ayrıca denemem gerekiyor.</p>
-                <p>Beni en çok düşündüren konular verinin zamanla değişmesi, güncel .NET tehditlerini kaçırma ihtimali ve Python prototipinin gerçek kullanımda ne kadar hızlı çalışacağı. Bu yüzden önce modeli güncel verilerle (EMBER2024) yeniden kurup sınamayı, ardından Linux üzerinde küçük, ölçülebilir bir eBPF denemesi yapmayı; donanım izolasyonu fikrini ise tehdit modeli, kullanılacak cihaz ve gecikme maliyeti netleşince ele almayı planlıyorum.</p>
-                <p><strong>Benim sıram:</strong> modeli yeni verilerle (EMBER2024) yeniden kurup sınamak → eBPF olaylarını ve kaynak tüketimini ölçmek → NPU/TEE seçimini gerçek bir kullanım senaryosuyla karşılaştırmak. Bu yaklaşım, yalnızca tek bir doğruluk skoruna güvenmememi sağlıyor.</p>
+                <p>Beni en çok düşündüren konular verinin zamanla değişmesi, güncel .NET tehditlerini kaçırma ihtimali ve Python prototipinin gerçek kullanımda ne kadar hızlı çalışacağı. Bu yüzden modeli önce güncel verilerle (EMBER2024) yeniden kurup sınadım (Ekim 2026); sırada Linux üzerinde küçük, ölçülebilir bir eBPF denemesi yapmak var. Donanım izolasyonu fikrini ise tehdit modeli, kullanılacak cihaz ve gecikme maliyeti netleşince ele almayı planlıyorum.</p>
+                <p><strong>Benim sıram:</strong> modeli yeni verilerle (EMBER2024) yeniden kurup sınamak (yapıldı, Ekim 2026) → eBPF olaylarını ve kaynak tüketimini ölçmek → NPU/TEE seçimini gerçek bir kullanım senaryosuyla karşılaştırmak. Bu yaklaşım, yalnızca tek bir doğruluk skoruna güvenmememi sağlıyor.</p>
             </div>
             <div class="chief-section">
                 <h4>Araştırma notları</h4>

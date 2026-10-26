@@ -1023,19 +1023,21 @@
                 <h4>Current progress</h4>
                 <ul>
                     <li>Random Forest model on real EMBER data, with consistent measurement on both sides: completed.</li>
-                    <li>Phase 1 temporal test accuracy: 83.8%; same-period test accuracy: 90.1%.</li>
-                    <li>False-alarm rate in independent validation on a real machine: 3.5%.</li>
+                    <li>Phase 1 model (EMBER 2018, 5 features): temporal test accuracy 83.8%; same-period test accuracy 90.1%.</li>
+                    <li>Phase 1 model: false-alarm rate in independent validation on a real machine 3.5%.</li>
+                    <li>Native model (EMBER2024, 86 features; test weeks measured once with fixed thresholds): missed malware 17.7% (EXE) and 19.5% (DLL); false alarms on EMBER2024 benign files 0.83% (EXE) and 1.43% (DLL). The 1% target was exceeded for DLLs.</li>
+                    <li>In the native model's test, 50% of the files are malicious: 0.83% is not the share of alarms that are false; in real use, where malware is far rarer, the share of alarms that are false is higher.</li>
                 </ul>
             </div>
             <div class="chief-section">
                 <h4>Expected performance and limits</h4>
-                <p>These figures are experimental results from the prototype's README, not a production guarantee. The next goals are system-call monitoring with eBPF and NPU/TEE-based hardware isolation. The model's weakness against recent .NET threats is stated explicitly.</p>
+                <p>These figures are experimental results from the prototype's README, not a production guarantee. The next goals are system-call monitoring with eBPF and NPU/TEE-based hardware isolation. The Phase 1 model's weakness against recent .NET threats, and the fact that the .NET specialist model is not yet connected to the native model, are stated explicitly.</p>
             </div>
             <div class="chief-section">
                 <h4>Feasibility report</h4>
                 <p><strong>My short assessment:</strong> This project is viable as a research and pre-screening layer, but it is not yet at the point of making a “safe” decision on its own. Seeing the measurement results in Phase 1 is a good start, but I still need to test separately whether the model behaves the same way across different time periods and new file types.</p>
-                <p>What concerns me most is how the data drifts over time, the risk of missing recent .NET threats, and how fast the Python prototype will run in real use. So I plan to first rebuild and test the model on recent data (EMBER2024), then run a small, measurable eBPF experiment on Linux, and to take up hardware isolation once the threat model, the target device and the latency cost are clear.</p>
-                <p><strong>My order:</strong> rebuild and re-test the model on new data (EMBER2024) → measure eBPF events and resource usage → compare NPU/TEE options against a real use case. This approach keeps me from relying on a single accuracy score.</p>
+                <p>What concerns me most is how the data drifts over time, the risk of missing recent .NET threats, and how fast the Python prototype will run in real use. So I first rebuilt and tested the model on recent data (EMBER2024, October 2026); next comes a small, measurable eBPF experiment on Linux, and I plan to take up hardware isolation once the threat model, the target device and the latency cost are clear.</p>
+                <p><strong>My order:</strong> rebuild and re-test the model on new data (EMBER2024; done, October 2026) → measure eBPF events and resource usage → compare NPU/TEE options against a real use case. This approach keeps me from relying on a single accuracy score.</p>
             </div>
             <div class="chief-section">
                 <h4>Research notes</h4>
