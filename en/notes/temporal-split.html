@@ -47,6 +47,11 @@
     <h2>How I measured it</h2>
     <p>I tested the same model with the same five features in three different ways:</p>
     <div class="table-wrap"><table><thead><tr><th>Evaluation</th><th class="num">Accuracy</th><th class="num">AUC</th></tr></thead><tbody><tr><td>Same period: 80% / 20% split within November 2018</td><td class="num">90.1%</td><td class="num">—</td></tr><tr><td>Same model, rest of the same file (188,600 records, Nov–Dec)</td><td class="num">87.4%</td><td class="num">0.947</td></tr><tr><td>Temporal split: train on Jan–Oct, test on Nov–Dec</td><td class="num">83.8%</td><td class="num">0.920</td></tr></tbody></table></div>
+    <figure class="sema" aria-labelledby="fig-temporal">
+      <ul class="cubuklar"><li class="" title="Same period: 90.1%"><span class="ad">Same period<small>80% / 20% split within November 2018</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="90.1" height="10"/></svg><span class="deger">90.1%</span></li><li class="" title="Rest of the same file: 87.4%"><span class="ad">Rest of the same file<small>188,600 records, November–December</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="87.4" height="10"/></svg><span class="deger">87.4%</span></li><li class="vurgu" title="Temporal split: 83.8%"><span class="ad">Temporal split<small>train on January–October, test on November–December</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="83.8" height="10"/></svg><span class="deger">83.8%</span></li></ul>
+      <div class="eksen" aria-hidden="true"><span></span><span><span>0</span><span>50</span><span>100</span></span><span>accuracy %</span></div>
+      <figcaption id="fig-temporal">Figure 1. The same model, three evaluations. As the test data moves further in time from the training data, accuracy drops; the realistic number to report is the highlighted one. Bars start at 0.</figcaption>
+    </figure>
     <p>As the window widens and the test data moves further in time from the training data, the number drops. The realistic number to report is the last one. A separate question, how many false alarms the model raises on legitimate files on a real computer (3.5% on 5,700 files never seen in training), is not affected by this finding.</p>
 
     <h2>Why it matters</h2>
@@ -77,6 +82,6 @@
       <li>L. Yang et al. <a href="https://whyisyoung.github.io/BODMAS/">BODMAS: An Open Dataset for Learning based Temporal Analysis of PE Malware</a>, 2021.</li>
     </ul>
   </main>
-  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.10.0 · 19 November 2026</small></div></footer>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.11.0 · 19 November 2026</small></div></footer>
 </body>
 </html>

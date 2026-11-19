@@ -47,6 +47,11 @@
     <h2>Nasıl ölçtüm?</h2>
     <p>Aynı modeli ve aynı beş özelliği üç farklı değerlendirmeyle sınadım:</p>
     <div class="table-wrap"><table><thead><tr><th>Değerlendirme</th><th class="num">Doğruluk</th><th class="num">AUC</th></tr></thead><tbody><tr><td>Aynı dönem: Kasım 2018 içinde %80 / %20 bölme</td><td class="num">%90,1</td><td class="num">—</td></tr><tr><td>Aynı model, aynı dosyanın geri kalanı (188.600 kayıt, Kasım–Aralık)</td><td class="num">%87,4</td><td class="num">0,947</td></tr><tr><td>Zamansal bölme: Ocak–Ekim ile eğit, Kasım–Aralık ile sına</td><td class="num">%83,8</td><td class="num">0,920</td></tr></tbody></table></div>
+    <figure class="sema" aria-labelledby="sekil-zaman">
+      <ul class="cubuklar"><li class="" title="Aynı dönem: %90,1"><span class="ad">Aynı dönem<small>Kasım 2018 içinde %80 / %20 bölme</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="90.1" height="10"/></svg><span class="deger">%90,1</span></li><li class="" title="Aynı dosyanın geri kalanı: %87,4"><span class="ad">Aynı dosyanın geri kalanı<small>188.600 kayıt, Kasım–Aralık</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="87.4" height="10"/></svg><span class="deger">%87,4</span></li><li class="vurgu" title="Zamansal bölme: %83,8"><span class="ad">Zamansal bölme<small>Ocak–Ekim ile eğit, Kasım–Aralık ile sına</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="83.8" height="10"/></svg><span class="deger">%83,8</span></li></ul>
+      <div class="eksen" aria-hidden="true"><span></span><span><span>0</span><span>50</span><span>100</span></span><span>doğruluk %</span></div>
+      <figcaption id="sekil-zaman">Şekil 1. Aynı model, üç değerlendirme. Test verisi eğitimden zamanca uzaklaştıkça doğruluk düşüyor; raporlanması gereken gerçekçi sayı vurgulu olan. Çubuklar 0'dan başlar.</figcaption>
+    </figure>
     <p>Pencere genişledikçe ve test verisi eğitimden zamanca uzaklaştıkça sayı düşüyor. Raporlanması gereken gerçekçi sayı en alttaki. Ayrı bir soru olan "gerçek bir bilgisayardaki meşru dosyalarda ne kadar yanlış alarm veriyor?" ölçümü (eğitimde hiç görülmemiş 5.700 dosyada %3,5) bu bulgudan etkilenmiyor.</p>
 
     <h2>Bu neden önemli?</h2>
@@ -77,6 +82,6 @@
       <li>L. Yang ve diğerleri. <a href="https://whyisyoung.github.io/BODMAS/">BODMAS: An Open Dataset for Learning based Temporal Analysis of PE Malware</a>, 2021.</li>
     </ul>
   </main>
-  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.10.0 · 19 Kasım 2026</small></div></footer>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.11.0 · 19 Kasım 2026</small></div></footer>
 </body>
 </html>

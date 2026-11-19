@@ -39,6 +39,11 @@
 
     <h2>The first hint: a subgroup inside the overall score</h2>
     <p>The model scored about 90% accuracy on EMBER 2018 data. Splitting the results by file type changed the picture: in cross-validation, <strong>52%</strong> of .NET malware slipped through, against 11.5% for non-.NET files. Because .NET files are a small part of the data, the collapse was almost invisible in the overall average.</p>
+    <figure class="sema" aria-labelledby="fig-net1">
+      <ul class="cubuklar"><li class="vurgu" title=".NET malware: 52%"><span class="ad">.NET malware<small>EMBER 2018, cross-validation</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="52" height="10"/></svg><span class="deger">52%</span></li><li class="" title="Non-.NET malware: 11.5%"><span class="ad">Non-.NET malware<small>EMBER 2018, cross-validation</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="11.5" height="10"/></svg><span class="deger">11.5%</span></li></ul>
+      <div class="eksen" aria-hidden="true"><span></span><span><span>0</span><span>50</span><span>100</span></span><span>missed %</span></div>
+      <figcaption id="fig-net1">Figure 1. Share of malware missed, by file type (lower is better). Because .NET files were a small part of the data, this gap was almost invisible in the overall average.</figcaption>
+    </figure>
 
     <h2>On recent data: a coin toss</h2>
     <p>I asked a harder question: what does the model do with .NET malware that appeared six years after its training data? I used the .NET test set of the EMBER2024 dataset (September–December 2024, never seen in training). A side note: the documentation said this set held 60 thousand files; when I counted, it held 120,000. Not trusting a documented number is part of the job.</p>
@@ -51,6 +56,11 @@
     <h2>A specialist model: most of the gain comes from data</h2>
     <p>I tried a separate model for .NET files. I trained it on a 100-thousand-file sample from the first 52 weeks of EMBER2024's .NET training set and tested it on the last 12 weeks (a temporal split). Step by step:</p>
     <div class="table-wrap"><table><thead><tr><th>Model</th><th class="num">Missed malware</th><th class="num">AUC</th></tr></thead><tbody><tr><td>M0: existing model</td><td class="num">92.8%</td><td class="num">0.63</td></tr><tr><td>M1: new data, same five features</td><td class="num">12.3%</td><td class="num">0.94</td></tr><tr><td>M2: + string features</td><td class="num">3.8%</td><td class="num">0.993</td></tr></tbody></table></div>
+    <figure class="sema" aria-labelledby="fig-net2">
+      <ul class="cubuklar"><li class="" title="M0: current model: 92.8%"><span class="ad">M0: current model<small>EMBER 2018, 5 features</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="92.8" height="10"/></svg><span class="deger">92.8%</span></li><li class="" title="M1: new data: 12.3%"><span class="ad">M1: new data<small>same five features</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="12.3" height="10"/></svg><span class="deger">12.3%</span></li><li class="vurgu" title="M2: + string features: 3.8%"><span class="ad">M2: + string features<small>specialist model</small></span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="3.8" height="10"/></svg><span class="deger">3.8%</span></li></ul>
+      <div class="eksen" aria-hidden="true"><span></span><span><span>0</span><span>50</span><span>100</span></span><span>missed %</span></div>
+      <figcaption id="fig-net2">Figure 2. Share of malware missed on the EMBER2024 .NET test (lower is better). Most of the gain comes from new data (M1); string features add another step (M2).</figcaption>
+    </figure>
     <p>Most of the gain came from the new data; string features (counts of patterns such as URLs, base64 and cryptography terms in the readable text of a file) added another layer. M2's overall false-alarm rate was 4.2%. It looked too good.</p>
 
     <h2>The shortcut: “a DLL means benign”</h2>
@@ -64,6 +74,11 @@
 
     <h2>On real files</h2>
     <p>I also tested both models on real, benign .NET files from my own computer (500 EXEs, 500 DLLs). On EXEs, false alarms were <strong>15.6%</strong> for M2 (95% confidence interval 12.7–19.0) and <strong>1.6%</strong> for M2d (0.8–3.1); on DLLs both had 0 false alarms out of 500. The shortcut existed in the real world too, and M2d removes it. A caveat: this sample is not random (the first 500 in folder order) and contains many files from the same packages, so the real uncertainty is wider than the interval.</p>
+    <figure class="sema" aria-labelledby="fig-net3">
+      <ul class="lejant" aria-label="Models"><li><svg viewBox="0 0 10 10" aria-hidden="true"><rect class="f-gri" width="10" height="10"/></svg>M2</li><li><svg viewBox="0 0 10 10" aria-hidden="true"><rect class="f-vurgu" width="10" height="10"/></svg>M2d</li></ul>
+      <ul class="cubuklar"><li class="ciftli" title="EXE false alarms, test set: M2 26.5%, M2d 7.3%"><span class="ad">EXE false alarms, test set<small>EMBER2024 .NET</small></span><span class="cift"><span><span class="seri">M2</span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="26.5" height="10"/></svg><span class="deger">26.5%</span></span><span><span class="seri">M2d</span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="7.3" height="10"/></svg><span class="deger">7.3%</span></span></span></li><li class="ciftli" title="EXE false alarms, real files: M2 15.6%, M2d 1.6%"><span class="ad">EXE false alarms, real files<small>500 benign EXEs from my own computer</small></span><span class="cift"><span><span class="seri">M2</span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-gri" width="15.6" height="10"/></svg><span class="deger">15.6%</span></span><span><span class="seri">M2d</span><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="f-iz" width="100" height="10"/><rect class="f-vurgu" width="1.6" height="10"/></svg><span class="deger">1.6%</span></span></span></li></ul>
+      <figcaption id="fig-net3">Figure 3. The cost of the “DLL means benign” shortcut and the effect of balancing within each type (M2d); false alarms, lower is better. The real-file sample is not random; uncertainty may be wider than the interval in the text.</figcaption>
+    </figure>
 
     <h2>The cost</h2>
     <p>With the shortcut gone, the miss rate rose for some families: agenttesla from 7.0% to 11.1%, formbook from 2.8% to 6.2%, remcos from 3.2% to 6.9%. I am tracking these and will measure agenttesla separately when designing thresholds. M2d is still experimental and has not been merged into the main model.</p>
@@ -85,6 +100,6 @@
       <li>H. S. Anderson, P. Roth. <a href="https://arxiv.org/abs/1804.04637">EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models</a>, 2018.</li>
     </ul>
   </main>
-  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.10.0 · 19 November 2026</small></div></footer>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../../en/privacy.html">Privacy and security</a><br><small>Site version v1.11.0 · 19 November 2026</small></div></footer>
 </body>
 </html>

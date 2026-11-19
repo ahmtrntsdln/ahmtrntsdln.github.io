@@ -189,3 +189,25 @@
         }
     });
 })();
+
+// Müzik paneli: Spotify oynatıcısı yalnızca ziyaretçi "Oynatıcıyı yükle"ye basınca eklenir.
+// Basılmadan sayfa Spotify'a hiçbir istek göndermez (gizlilik sayfasındaki "üçüncü taraf yok" sözü korunur).
+(() => {
+    const holder = document.getElementById('music-player');
+    const button = document.getElementById('music-load');
+    if (!holder || !button) return;
+    const english = document.documentElement.lang === 'en';
+    button.addEventListener('click', () => {
+        const frame = document.createElement('iframe');
+        frame.src = holder.dataset.src;
+        frame.title = english ? 'Lost Anatolia on Spotify' : "Spotify'da Lost Anatolia";
+        frame.width = '100%';
+        frame.height = '352';
+        frame.loading = 'lazy';
+        frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.className = 'music-frame';
+        holder.replaceChildren(frame);
+        frame.focus();
+    }, { once: true });
+})();

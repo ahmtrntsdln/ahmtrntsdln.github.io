@@ -173,3 +173,39 @@ body.subpage { margin: 0; color: var(--text); background: var(--bg); font: 16px/
     .subpage .olcu .dolu { background: CanvasText; }
     .subpage .sema .sonuc.iyi, .subpage .sema .sonuc.kotu { border-color: CanvasText; }
 }
+
+/* ---------- Çubuk grafik (notlar) ----------
+   Değer, SVG <rect width> özniteliğiyle verilir (satır içi stil değil; CSP'ye takılmaz). Ölçek hep 0–100:
+   çubuklar sıfırdan başlar. Vurgulanan çubuk mavi, bağlam gri; değer her zaman yazıyla da yanında. */
+.subpage .cubuklar { display: flex; flex-direction: column; gap: .75rem; margin: 0; padding: 0; list-style: none; }
+.subpage .cubuklar > li { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr) 5.5rem; gap: .9rem; align-items: center; }
+.subpage .cubuklar .ad { color: var(--text); font-size: .86rem; line-height: 1.35; }
+.subpage .cubuklar .ad small { display: block; color: var(--faint); font-size: .76rem; }
+.subpage .cubuklar svg { display: block; width: 100%; height: .85rem; border-radius: 3px; overflow: hidden; }
+.subpage .cubuklar .deger { color: var(--text); font: 600 .88rem ui-monospace, monospace; text-align: right; white-space: nowrap; }
+.subpage .cubuklar .vurgu .deger, .subpage .cubuklar .vurgu .ad { color: var(--white); font-weight: 700; }
+.subpage .f-iz { fill: var(--line); }
+.subpage .f-gri { fill: #64748b; }
+.subpage .f-vurgu { fill: var(--accent); }
+/* çift çubuk: bir ölçü için önce / sonra */
+.subpage .cubuklar .cift { display: flex; flex-direction: column; gap: .3rem; }
+.subpage .cubuklar .cift > span { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) 4.2rem; gap: .5rem; align-items: center; }
+.subpage .cubuklar .cift .seri { color: var(--faint); font: 600 .76rem ui-monospace, monospace; }
+.subpage .cubuklar .cift .deger { font-size: .84rem; }
+.subpage .cubuklar > li.ciftli { grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); }
+.subpage .lejant { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0 0 .9rem; padding: 0; list-style: none; color: var(--muted); font-size: .8rem; }
+.subpage .lejant li { display: flex; align-items: center; gap: .4rem; }
+.subpage .lejant svg { width: .8rem; height: .8rem; border-radius: 2px; }
+.subpage .eksen { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr) 5.5rem; gap: .9rem; margin-top: .3rem; color: var(--faint); font: .72rem ui-monospace, monospace; }
+.subpage .eksen > span:nth-child(2) { display: flex; justify-content: space-between; }
+@media (max-width: 640px) {
+    .subpage .cubuklar > li, .subpage .cubuklar > li.ciftli { grid-template-columns: 1fr auto; gap: .3rem .8rem; }
+    .subpage .cubuklar > li > svg { grid-column: 1 / -1; grid-row: 2; }
+    .subpage .cubuklar > li.ciftli .cift { grid-column: 1 / -1; }
+    .subpage .eksen { grid-template-columns: 1fr; }
+    .subpage .eksen > span:first-child, .subpage .eksen > span:last-child { display: none; }
+}
+@media (forced-colors: active) {
+    .subpage .f-gri, .subpage .f-vurgu { fill: CanvasText; }
+    .subpage .f-iz { fill: Canvas; }
+}

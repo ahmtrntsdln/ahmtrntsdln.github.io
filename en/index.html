@@ -6,7 +6,7 @@
     <!-- İçerik güvenlik politikası: betik yalnızca bu siteden (ve aşağıdaki tek satırın özetiyle), stil/yazı tipi/görsel
          yalnızca bu siteden; ağ isteği yalnızca GitHub API'ye (Chief durumu), form yalnızca formsubmit.co'ya.
          Baştaki tek satırlık betik değişirse sha256 özeti yeniden hesaplanmalı, yoksa tarayıcı onu çalıştırmaz. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.github.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.github.com; frame-src https://open.spotify.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Turan Tech: Think. Build. Secure.</title>
     <meta name="description" content="Turan Tech is an independent research lab founded by Ahmet Turan Taşdelen: AI, cybersecurity and secure technology projects.">
@@ -833,6 +833,17 @@
                 transition: none;
             }
         }
+
+        /* Müzik paneli: oynatıcı yalnızca düğmeye basınca yüklenir (site.js) */
+        .music-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 2rem; align-items: start; }
+        .music-card h3 { font-size: 1.9rem; }
+        .music-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+        .music-links a { text-decoration: none; }
+        .music-player { display: grid; place-items: center; align-content: center; gap: 0.9rem; min-height: 352px; padding: 1.5rem; border: 1px solid #334155; border-radius: 12px; background: radial-gradient(circle at 25% 20%, #1f3a2d, #0d151b 65%); text-align: center; }
+        .music-player p { margin: 0; max-width: 32rem; color: #94a3b8; font-size: 0.85rem; }
+        .music-frame { display: block; width: 100%; height: 352px; border: 0; border-radius: 12px; }
+        .music-player:has(.music-frame) { padding: 0; border: 0; background: none; min-height: 0; }
+        @media (max-width: 860px) { .music-card { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -849,6 +860,7 @@
             <a href="writing/">Writing</a>
             <a href="#about">Purpose</a>
             <a href="#identity">About me</a>
+            <a href="#music">Music</a>
             <a href="#contact">Contact</a>
             <a href="../" class="lang-switch" lang="tr" hreflang="tr" aria-label="Türkçe sürüm">TR</a>
         </div>
@@ -998,6 +1010,25 @@
         </div>
     </div>
 
+    <section id="music">
+        <h2 class="section-title">Music</h2>
+        <div class="card music-card">
+            <div>
+                <span class="note-kicker">Artist</span>
+                <h3>Lost Anatolia</h3>
+                <p>You can listen to Lost Anatolia's songs here. The player lists the artist's tracks on Spotify; tap a song to play it.</p>
+                <div class="music-links">
+                    <a class="project-button" href="https://open.spotify.com/artist/6NZeSMc0er81YNyTxuLRzf" target="_blank" rel="noopener noreferrer">Open in Spotify</a>
+                    <a class="project-button" href="https://www.youtube.com/results?search_query=Lost+Anatolia" target="_blank" rel="noopener noreferrer">Listen on YouTube</a>
+                </div>
+            </div>
+            <div class="music-player" id="music-player" data-src="https://open.spotify.com/embed/artist/6NZeSMc0er81YNyTxuLRzf?utm_source=generator">
+                <button type="button" class="play-button" id="music-load">▶ Load the player</button>
+                <p>The player loads from Spotify; until you press the button, this page does not connect to Spotify. If you are not signed in to Spotify, 30-second previews play.</p>
+            </div>
+        </div>
+    </section>
+
     <section id="contact">
         <h2 class="section-title">Contact</h2>
         <div class="about-text">
@@ -1106,7 +1137,7 @@
         <span class="tech-transition-label">Think · Build · Secure</span>
         <p class="tech-transition-copyright">© 2026 Turan Tech. All rights reserved.</p>
         <a class="tech-transition-privacy" href="privacy.html">Privacy and security</a>
-        <p class="tech-transition-version">Site version v1.10.0 · 19 November 2026</p>
+        <p class="tech-transition-version">Site version v1.11.0 · 19 November 2026</p>
     </footer>
 
     <script src="../assets/site.js"></script>
