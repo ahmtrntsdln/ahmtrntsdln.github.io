@@ -190,24 +190,44 @@
     });
 })();
 
-// Müzik paneli: Spotify oynatıcısı yalnızca ziyaretçi "Oynatıcıyı yükle"ye basınca eklenir.
-// Basılmadan sayfa Spotify'a hiçbir istek göndermez (gizlilik sayfasındaki "üçüncü taraf yok" sözü korunur).
+// Müzik paneli: oynatıcılar (YouTube tam şarkı, Spotify liste) yalnızca ziyaretçi bir düğmeye basınca eklenir.
+// Basılmadan sayfa YouTube'a ya da Spotify'a hiçbir istek göndermez (gizlilik sayfasındaki söz korunur).
 (() => {
     const holder = document.getElementById('music-player');
-    const button = document.getElementById('music-load');
-    if (!holder || !button) return;
-    const english = document.documentElement.lang === 'en';
-    button.addEventListener('click', () => {
+    if (!holder) return;
+    const specs = [...holder.querySelectorAll('.music-load')].map((b) => ({
+        kind: b.dataset.kind, src: b.dataset.src, title: b.dataset.title, label: b.dataset.switch
+    }));
+    if (!specs.length) return;
+    const load = (kind) => {
+        const spec = specs.find((s) => s.kind === kind);
+        if (!spec) return;
         const frame = document.createElement('iframe');
-        frame.src = holder.dataset.src;
-        frame.title = english ? 'Lost Anatolia on Spotify' : "Spotify'da Lost Anatolia";
+        frame.src = spec.src;
+        frame.title = spec.title;
         frame.width = '100%';
-        frame.height = '352';
+        if (kind === 'spotify') frame.height = '352';
         frame.loading = 'lazy';
         frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        frame.allowFullscreen = true;
         frame.referrerPolicy = 'strict-origin-when-cross-origin';
-        frame.className = 'music-frame';
-        holder.replaceChildren(frame);
+        frame.className = 'music-frame ' + kind;
+        const row = document.createElement('div');
+        row.className = 'music-switch';
+        specs.filter((s) => s.kind !== kind).forEach((s) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'project-button music-load';
+            b.dataset.kind = s.kind;
+            b.textContent = s.label;
+            row.appendChild(b);
+        });
+        holder.classList.add('is-loaded');
+        holder.replaceChildren(frame, row);
         frame.focus();
-    }, { once: true });
+    };
+    holder.addEventListener('click', (event) => {
+        const button = event.target.closest('.music-load');
+        if (button) load(button.dataset.kind);
+    });
 })();

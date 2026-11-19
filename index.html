@@ -6,7 +6,7 @@
     <!-- İçerik güvenlik politikası: betik yalnızca bu siteden (ve aşağıdaki tek satırın özetiyle), stil/yazı tipi/görsel
          yalnızca bu siteden; ağ isteği yalnızca GitHub API'ye (Chief durumu), form yalnızca formsubmit.co'ya.
          Baştaki tek satırlık betik değişirse sha256 özeti yeniden hesaplanmalı, yoksa tarayıcı onu çalıştırmaz. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.github.com; frame-src https://open.spotify.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.github.com; frame-src https://open.spotify.com https://www.youtube-nocookie.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Turan Tech: Think. Build. Secure.</title>
     <meta name="description" content="Turan Tech, Ahmet Turan Taşdelen'in kurduğu bağımsız bir araştırma laboratuvarıdır: yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
@@ -842,7 +842,10 @@
         .music-player { display: grid; place-items: center; align-content: center; gap: 0.9rem; min-height: 352px; padding: 1.5rem; border: 1px solid #334155; border-radius: 12px; background: radial-gradient(circle at 25% 20%, #1f3a2d, #0d151b 65%); text-align: center; }
         .music-player p { margin: 0; max-width: 32rem; color: #94a3b8; font-size: 0.85rem; }
         .music-frame { display: block; width: 100%; height: 352px; border: 0; border-radius: 12px; }
-        .music-player:has(.music-frame) { padding: 0; border: 0; background: none; min-height: 0; }
+        .music-choice { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; align-items: center; }
+        .music-frame.youtube { height: auto; aspect-ratio: 16 / 9; }
+        .music-player.is-loaded { display: flex; flex-direction: column; align-items: stretch; gap: 0.75rem; padding: 0; border: 0; background: none; min-height: 0; }
+        .music-switch { display: flex; justify-content: flex-end; }
         @media (max-width: 860px) { .music-card { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -1016,15 +1019,18 @@
             <div>
                 <span class="note-kicker">Müzik grubum</span>
                 <h3>Lost Anatolia</h3>
-                <p>Anadolu'nun bağrından çıkan, yapay zekâ destekli müzik grubum. Şarkılarımızı buradan dinleyebilirsin: oynatıcı Spotify'daki parçalarımızı listeler, bir şarkıya dokunarak çalabilirsin.</p>
+                <p>Anadolu'nun bağrından çıkan, yapay zekâ destekli müzik grubum. Şarkılarımızı buradan dinleyebilirsin: “Gurbet Ufkunda”nın tamamı YouTube'dan çalar, tüm parçalarımız Spotify listesinde.</p>
                 <div class="music-links">
                     <a class="project-button" href="https://open.spotify.com/artist/6NZeSMc0er81YNyTxuLRzf" target="_blank" rel="noopener noreferrer">Spotify'da aç</a>
-                    <a class="project-button" href="https://www.youtube.com/results?search_query=Lost+Anatolia" target="_blank" rel="noopener noreferrer">YouTube'da dinle</a>
+                    <a class="project-button" href="https://www.youtube.com/watch?v=Wsu49FXrDLw" target="_blank" rel="noopener noreferrer">YouTube'da dinle</a>
                 </div>
             </div>
-            <div class="music-player" id="music-player" data-src="https://open.spotify.com/embed/artist/6NZeSMc0er81YNyTxuLRzf?utm_source=generator">
-                <button type="button" class="play-button" id="music-load">▶ Oynatıcıyı yükle</button>
-                <p>Oynatıcı Spotify'dan yüklenir; düğmeye basana kadar bu sayfa Spotify'a bağlanmaz. Spotify'da oturum açık değilse şarkıların 30 saniyelik önizlemeleri çalar.</p>
+            <div class="music-player" id="music-player">
+                <div class="music-choice">
+                    <button type="button" class="play-button music-load" data-kind="youtube" data-src="https://www.youtube-nocookie.com/embed/Wsu49FXrDLw?rel=0&amp;autoplay=1" data-title="Gurbet Ufkunda · Lost Anatolia (YouTube)" data-switch="YouTube'da tam şarkı">▶ Gurbet Ufkunda'yı dinle</button>
+                    <button type="button" class="project-button music-load" data-kind="spotify" data-src="https://open.spotify.com/embed/artist/6NZeSMc0er81YNyTxuLRzf?utm_source=generator" data-title="Lost Anatolia (Spotify)" data-switch="Spotify'daki tüm şarkılar">Tüm şarkılar (Spotify)</button>
+                </div>
+                <p>Oynatıcılar yalnızca düğmeye basınca yüklenir; o zamana kadar bu sayfa YouTube'a ya da Spotify'a bağlanmaz. YouTube şarkının tamamını çalar; Spotify'da oturum açık değilse 30 saniyelik önizlemeler çalar.</p>
             </div>
         </div>
     </section>
