@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>İki cihaz, tek takvim: senkronun üç tuzağı | Turan Tech</title>
+  <meta name="description" content="Takvim uygulamamı telefonla bilgisayar arasında eşitlerken karşılaştığım üç tuzak: bütün veriyi tek belgeye yazmak, silinenler ve boş önbellek. Nasıl kurdum, nasıl test ettim.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <!-- Bu sayfada betik ve satır içi stil yok: içerik güvenlik politikası ikisine de izin vermez; her şey bu siteden yüklenir. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/notes/takvim-senkron.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/takvim-senkron.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="İki cihaz, tek takvim: senkronun üç tuzağı">
+  <meta property="og:description" content="Takvim uygulamamı telefonla bilgisayar arasında eşitlerken karşılaştığım üç tuzak: bütün veriyi tek belgeye yazmak, silinenler ve boş önbellek.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/notes/takvim-senkron.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-senkron-tr.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="İki telefon ekranı arasında eşitleme simgesi: Bugün ve Takvim ekranları">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">İçeriğe atla</a>
+  <header><div class="wrap nav"><a class="brand" href="../"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../">← Ana sayfa</a><a class="nav-link" href="../notes/">Notlar</a><a class="nav-link" href="../yazilar/">Yazılar</a><a class="lang" href="../en/notes/calendar-sync.html" lang="en" hreflang="en">EN</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Araştırma notu · 19 Kasım 2026</span>
+    <h1>İki cihaz, tek takvim: senkronun üç tuzağı</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 19 Kasım 2026 · yaklaşık 5 dakika · Proje: <a href="../projects/takvim-uygulamam.html">Takvim Uygulamam</a></p>
+    <p class="summary"><strong>Kısaca:</strong> Takvimimi iPhone'la Linux bilgisayarım arasında eşitlemek istedim. “Bütün takvimi buluta yaz, en yenisi kazansın” fikri ilk bakışta yeterli görünüyor, ama internetsiz yapılan değişiklikleri sessizce siliyor. Her etkinliği ayrı bir kayıt yapmak, silinenleri iz kaydıyla tutmak ve yeni bir cihazda buluttan gerçek yanıt gelmeden hiçbir şey yazmamak gerekti. Hepsini bilgisayarda iki ayrı “cihazla” test ettim.</p>
+
+    <h2>Bağlam</h2>
+    <p>Takvim Uygulamam tek bir web uygulaması: iPhone'da ana ekrana kurulan bir PWA olarak, Linux'ta da Electron ile masaüstü uygulaması olarak çalışıyor. Veriler önce cihazın kendi depolamasında duruyor. Telefonla bilgisayarın aynı takvimi görmesi için Google'ın Firebase hizmetini (Firestore veritabanı ve e-posta/şifre girişi) ekledim. Firestore internetsizken yazmaları kuyruğa alıp bağlantı gelince gönderebiliyor; asıl soru, iki cihazın değişikliklerinin nasıl birleşeceğiydi.</p>
+
+    <h2>Tuzak 1: Bütün takvimi tek belgeye yazmak</h2>
+    <p>Uygulamanın ilk sürümü, bütün takvimi tek bir belge olarak saklayıp üzerine bir “son güncelleme zamanı” yazıyordu; iki kopya karşılaşınca zamanı daha yeni olan kazanıyordu. Bu, tek cihazda sorunsuz. İki cihazda ise şu olur: telefon internetsizken bir etkinlik eklerim, bu arada bilgisayarda başka bir etkinlik eklerim. Telefon bağlandığında iki kopyadan biri “daha yeni” sayılır ve öbürünü <strong>bütünüyle</strong> ezer. Bir etkinlik, hiçbir uyarı olmadan kaybolur.</p>
+    <p>Çözüm, birleştirme birimini küçültmek oldu. Her etkinlik ve her etkinlik türü artık ayrı bir belge (<code>users/{uid}/events/{id}</code>), her belge kendi değişim zamanını taşıyor. Kural öğe bazında “son değişiklik kazanır”: iki cihaz farklı etkinlikleri değiştirirse ikisi de korunuyor; aynı etkinliği değiştirirlerse en son yapılan geçerli oluyor. Etkinlik türlerinin sırası bile ayrı bir alan olarak tutuluyor ki o da eşitlenebilsin.</p>
+
+    <h2>Tuzak 2: Silinenler geri geliyor</h2>
+    <p>Bir etkinliği silince buluttaki belgesini de silmek akla yatkın. Ama öbür cihaz o sırada internetsizse, döndüğünde şunu görür: “bende bu etkinlik var, bulutta yok; demek ki yeni, yükleyeyim.” Silinen etkinlik geri gelir.</p>
+    <p>Bunu iki şeyle çözdüm. Silinen öğenin belgesi kalıyor ama yalnızca “silindi” bilgisini ve zamanını taşıyor (iz kaydı). Her cihaz da buluttaki hâlin son bildiği kopyasını kendi içinde saklıyor. Böylece “bulutta olup bende olmayan” bir öğenin yeni mi geldiğini, yoksa benim tarafımdan mı silindiğini ayırt edebiliyor.</p>
+
+    <h2>Tuzak 3: Boş önbellek “bulut boş” sanılıyor</h2>
+    <p>Bu, tasarlarken fark ettiğim en sinsi durumdu. Firestore, bir listeyi dinlemeye başladığında önce elindeki yerel önbellekten yanıt verir, sunucunun yanıtı sonra gelir. Hiç eşitlenmemiş yeni bir cihazda önbellek boştur. O ilk yanıtı “bulutta hiçbir şey yok” diye yorumlarsam, yeni cihaz kendi varsayılan etkinlik türlerini “yerel değişiklik” sayıp hesaptaki türlerin üstüne yazar.</p>
+    <p>Kural şu oldu: daha önce hiç eşitlenmemiş bir cihaz, <strong>sunucudan gerçek yanıt gelmeden</strong> tek bir şey yazmıyor. Daha önce eşitlenmiş bir cihaz ise internetsiz açıldığında da çalışmaya devam ediyor, çünkü buluttaki hâli zaten biliyor.</p>
+
+    <h2>Nasıl test ettim?</h2>
+    <p>Firebase'in bilgisayarda çalışan test sunucusunu (Emulator Suite) kullandım ve uygulamayı birbirinden tamamen ayrı depolamaya sahip iki pencerede açtım: biri “telefon”, biri “bilgisayar”. Sınadığım durumlar:</p>
+    <div class="table-wrap"><table><thead><tr><th>Durum</th><th class="num">Sonuç</th></tr></thead><tbody><tr><td>Hesap açma, giriş, ekleme, düzenleme, tamamlama, silme, aynı anda iki ekleme, tür değişikliği, yeniden açma (11 kontrol)</td><td class="num">11 / 11</td></tr><tr><td>Telefon internetsizken: yeni etkinlik, bir etkinliği tamamlama, “Market” etkinliğinin adını değiştirme. Bilgisayar bu arada: yeni etkinlik ve aynı “Market”i <em>daha sonra</em> yeniden adlandırma</td><td class="num">Hepsi birleşti; “Market” için bilgisayarın sürümü kaldı</td></tr><tr><td>Başka bir kullanıcının verisini okuma / yazma, girişsiz okuma, izin verilmeyen bir listeye yazma (4 deneme)</td><td class="num">4 / 4 reddedildi (403)</td></tr></tbody></table></div>
+    <p>Test her 250 milisaniyede bir kontrol ediyordu; değişiklikler öbür “cihazda” bu aralığın içinde ya da hemen ardından görünüyordu. Bu sayı yerel bir test sunucusuna ait; gerçek internet üzerinden gecikme daha fazla olacaktır. Bir de küçük bir ders: Electron'un “ağı kes” özelliği yerel test sunucusuyla bağlantıyı kesmediği için ilk internetsiz denemem geçersiz çıktı. Kesintiyi Firestore'un kendi “ağı kapat” işleviyle canlandırınca test anlamlı hâle geldi.</p>
+
+    <h2>Bilinen sınırlar</h2>
+    <ul>
+      <li><strong>Birim, alan değil öğe:</strong> Aynı etkinliğin başlığını telefonda, saatini bilgisayarda değiştirirsem, son kaydedilen etkinlik bütünüyle kazanır; öbür değişiklik kaybolur. Alan bazında birleştirme yok.</li>
+      <li><strong>Saat:</strong> “Son değişiklik” cihazların kendi saatine göre belirleniyor. Saati yanlış bir cihaz haksız yere kazanabilir.</li>
+      <li><strong>Geç gelen eski yazma:</strong> Uzun süre internetsiz kalan bir cihazın kuyruktaki eski yazması bulutta kısa süreliğine yeni sürümün üstüne geçebiliyor. Daha yeni sürümü taşıyan cihaz açılınca onu yeniden yüklüyor ve iki taraf yine aynı hâle geliyor.</li>
+      <li><strong>İz kayıtları birikiyor:</strong> Silinen öğelerin iz kayıtları şimdilik temizlenmiyor. Kişisel bir takvim için önemsiz, ama büyüyen bir sistemde temizlenmesi gerekir.</li>
+    </ul>
+
+    <h2>Kendi uygulaman için üç soru</h2>
+    <ul>
+      <li>İki cihaz internetsizken farklı şeyleri değiştirirse, birleştirme birimin ikisini de koruyacak kadar küçük mü?</li>
+      <li>Silinen bir öğe, o sırada çevrimdışı olan bir cihazdan geri yüklenebilir mi?</li>
+      <li>Yeni bir cihazda ilk gelen “boş” yanıt önbellekten mi, sunucudan mı? Hangisi olduğuna bakmadan yazmaya başlıyor musun?</li>
+    </ul>
+
+    <h2>Şeffaflık</h2>
+    <p>Bu uygulamanın kodunu yapay zekâ ile, Claude Code kullanarak yazıyorum. Hangi yolun seçileceği, neyin test edileceği ve neyin yayımlanacağı kararı benim. Buradaki sonuçların hepsi bilgisayarımda, Firebase'in test sunucusunda alındı; gerçek internet üzerindeki ölçüm değiller. Eşitleme kodu <a href="https://github.com/ahmtrntsdln/zaman-planlayici">zaman-planlayici deposunda</a>: <code>src/sync.js</code>, güvenlik kuralları için <code>firestore.rules</code>; test senaryoları ve çıktıları <code>docs/senkron-testleri.md</code> içinde.</p>
+
+    <h2>Kaynaklar</h2>
+    <ul class="refs">
+      <li>M. Kleppmann, A. Wiggins, P. van Hardenberg, M. McGranaghan. <a href="https://www.inkandswitch.com/local-first/">Local-first software: You own your data, in spite of the cloud</a>, Onward! 2019.</li>
+      <li>Firebase belgeleri. <a href="https://firebase.google.com/docs/firestore/manage-data/enable-offline">Access data offline (Cloud Firestore)</a>.</li>
+      <li>Firebase belgeleri. <a href="https://firebase.google.com/docs/emulator-suite">Firebase Local Emulator Suite</a>.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Gizlilik ve güvenlik</a><br><small>Site sürümü v1.10.0 · 19 Kasım 2026</small></div></footer>
+</body>
+</html>

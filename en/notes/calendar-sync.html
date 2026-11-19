@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two devices, one calendar: three sync traps | Turan Tech</title>
+  <meta name="description" content="Three traps I met while syncing my calendar app between phone and computer: writing everything as one document, deletions, and an empty cache. How I built it and how I tested it.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <!-- No scripts or inline styles on this page: the Content Security Policy allows neither; everything loads from this site. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="../../assets/fonts/inter.css">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <link rel="canonical" href="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <link rel="alternate" hreflang="tr" href="https://ahmtrntsdln.dev/notes/takvim-senkron.html">
+  <link rel="alternate" hreflang="en" href="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <link rel="alternate" hreflang="x-default" href="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Turan Tech">
+  <meta property="og:title" content="Two devices, one calendar: three sync traps">
+  <meta property="og:description" content="Three traps I met while syncing my calendar app between phone and computer: writing everything as one document, deletions, and an empty cache.">
+  <meta property="og:url" content="https://ahmtrntsdln.dev/en/notes/calendar-sync.html">
+  <meta property="og:image" content="https://ahmtrntsdln.dev/og-not-senkron-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A sync symbol between two phone screens: the Today and Calendar screens">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="subpage">
+  <a class="skip-link" href="#icerik">Skip to content</a>
+  <header><div class="wrap nav"><a class="brand" href="../../en/"><img src="../../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="../../en/">← Home</a><a class="nav-link" href="../../en/notes/">Notes</a><a class="nav-link" href="../../en/writing/">Writing</a><a class="lang" href="../../notes/takvim-senkron.html" lang="tr" hreflang="tr">TR</a></span></div></header>
+  <main class="wrap narrow prose" id="icerik">
+    <span class="kicker">Research note · 19 November 2026</span>
+    <h1>Two devices, one calendar: three sync traps</h1>
+    <p class="meta">Ahmet Turan Taşdelen · 19 November 2026 · about 5 minutes · Project: <a href="../projects/takvim-uygulamam.html">My Calendar App</a></p>
+    <p class="summary"><strong>In short:</strong> I wanted my calendar to sync between my iPhone and my Linux computer. “Write the whole calendar to the cloud and let the newest copy win” looks good enough at first, but it silently deletes changes made offline. I had to make every event its own record, keep deletions as markers, and stop a new device from writing anything before the cloud had really answered. I tested all of it on my computer with two separate “devices”.</p>
+
+    <h2>Context</h2>
+    <p>My Calendar App is a single web app: it runs as a PWA installed on the iPhone home screen and as a desktop app on Linux with Electron. Data lives first in the device's own storage. To let the phone and the computer see the same calendar, I added Google's Firebase (the Firestore database and email/password sign-in). Firestore can queue writes while offline and send them once the connection is back; the real question was how two devices' changes should be merged.</p>
+
+    <h2>Trap 1: Writing the whole calendar as one document</h2>
+    <p>The app's first version stored the whole calendar as a single document with a “last updated” time; when two copies met, the newer one won. On one device that is fine. On two devices this happens: I add an event on the phone while it is offline, and meanwhile I add another event on the computer. When the phone reconnects, one copy counts as “newer” and overwrites the other <strong>entirely</strong>. An event disappears without any warning.</p>
+    <p>The fix was to make the unit of merging smaller. Every event and every event type is now its own document (<code>users/{uid}/events/{id}</code>), each carrying its own change time. The rule is “last change wins” per item: if two devices change different events, both are kept; if they change the same event, the latest change applies. Even the order of event types is stored as its own field so that it can sync too.</p>
+
+    <h2>Trap 2: Deleted items come back</h2>
+    <p>When you delete an event, deleting its cloud document as well seems natural. But if the other device is offline at that moment, when it returns it sees: “I have this event and the cloud doesn't; it must be new, let me upload it.” The deleted event comes back.</p>
+    <p>I solved this with two things. A deleted item's document stays, but only carries a “deleted” flag and a time (a tombstone). And every device keeps its own copy of the last cloud state it knew. That way it can tell whether an item that “is in the cloud but not here” is new, or was deleted by me.</p>
+
+    <h2>Trap 3: An empty cache looks like an empty cloud</h2>
+    <p>This was the sneakiest case I noticed while designing. When Firestore starts listening to a list, it first answers from its local cache; the server's answer comes later. On a new device that has never synced, the cache is empty. If I read that first answer as “there is nothing in the cloud”, the new device treats its default event types as “local changes” and writes them over the types in the account.</p>
+    <p>The rule became: a device that has never synced writes nothing until <strong>a real answer from the server</strong> has arrived. A device that has synced before keeps working when it opens offline, because it already knows the cloud state.</p>
+
+    <h2>How did I test it?</h2>
+    <p>I used Firebase's test server that runs on the computer (the Emulator Suite) and opened the app in two windows with completely separate storage: one “phone” and one “computer”. The cases I checked:</p>
+    <div class="table-wrap"><table><thead><tr><th>Case</th><th class="num">Result</th></tr></thead><tbody><tr><td>Sign-up, sign-in, add, edit, complete, delete, two simultaneous adds, type change, reopening (11 checks)</td><td class="num">11 / 11</td></tr><tr><td>Phone offline: a new event, completing an event, renaming the “Market” event. Meanwhile on the computer: a new event and renaming the same “Market” <em>later</em></td><td class="num">All merged; the computer's “Market” version won</td></tr><tr><td>Reading / writing another user's data, reading while signed out, writing to a list that is not allowed (4 attempts)</td><td class="num">4 / 4 rejected (403)</td></tr></tbody></table></div>
+    <p>The test checked every 250 milliseconds; changes appeared on the other “device” within that interval or right after it. That number belongs to a local test server; over the real internet the delay will be longer. One small lesson too: my first offline test was invalid, because Electron's “go offline” switch did not cut the connection to the local test server. Simulating the outage with Firestore's own “disable network” call made the test meaningful.</p>
+
+    <h2>Known limits</h2>
+    <ul>
+      <li><strong>The unit is the item, not the field:</strong> if I change an event's title on the phone and its time on the computer, the last saved event wins as a whole and the other change is lost. There is no field-level merge.</li>
+      <li><strong>Clocks:</strong> “last change” is decided by each device's own clock. A device with a wrong clock can win unfairly.</li>
+      <li><strong>A late, older write:</strong> a device that stayed offline for a long time can, for a short while, put its queued older write over a newer version in the cloud. When the device holding the newer version opens, it uploads it again and both sides match once more.</li>
+      <li><strong>Tombstones pile up:</strong> markers for deleted items are not cleaned up for now. For a personal calendar that does not matter, but a growing system would need to clean them.</li>
+    </ul>
+
+    <h2>Three questions for your own app</h2>
+    <ul>
+      <li>If two devices change different things while offline, is your unit of merging small enough to keep both?</li>
+      <li>Can a deleted item be uploaded again by a device that was offline at the time?</li>
+      <li>On a new device, does the first “empty” answer come from the cache or the server? Do you start writing without checking which?</li>
+    </ul>
+
+    <h2>Transparency</h2>
+    <p>I write the code for this app with AI, using Claude Code. Which approach to take, what to test and what to publish are my decisions. All results here were taken on my computer, on Firebase's test server; they are not measurements over the real internet. The sync code is in the <a href="https://github.com/ahmtrntsdln/zaman-planlayici">zaman-planlayici repository</a>: <code>src/sync.js</code>, <code>firestore.rules</code> for the security rules, and the test cases with their output in <code>docs/senkron-testleri.md</code> (in Turkish).</p>
+
+    <h2>References</h2>
+    <ul class="refs">
+      <li>M. Kleppmann, A. Wiggins, P. van Hardenberg, M. McGranaghan. <a href="https://www.inkandswitch.com/local-first/">Local-first software: You own your data, in spite of the cloud</a>, Onward! 2019.</li>
+      <li>Firebase documentation. <a href="https://firebase.google.com/docs/firestore/manage-data/enable-offline">Access data offline (Cloud Firestore)</a>.</li>
+      <li>Firebase documentation. <a href="https://firebase.google.com/docs/emulator-suite">Firebase Local Emulator Suite</a>.</li>
+    </ul>
+  </main>
+  <footer><div class="wrap">© 2026 Turan Tech · <a href="../privacy.html">Privacy and security</a><br><small>Site version v1.10.0 · 19 November 2026</small></div></footer>
+</body>
+</html>
