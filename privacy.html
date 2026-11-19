@@ -31,9 +31,9 @@
   <a class="skip-link" href="#icerik">İçeriğe atla</a>
   <header><div class="wrap nav"><a class="brand" href="index.html"><img src="assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="index.html">← Ana sayfaya dön</a><a class="nav-link" href="notes/">Notlar</a><a class="nav-link" href="yazilar/">Yazılar</a><a class="lang" href="en/privacy.html" lang="en" hreflang="en">EN</a></span></div></header>
   <main class="wrap narrow prose" id="icerik">
-    <span class="kicker">Son güncelleme · 7 Ekim 2026</span>
+    <span class="kicker">Son güncelleme · 19 Kasım 2026</span>
     <h1>Gizlilik ve güvenlik</h1>
-    <p class="summary"><strong>Kısaca:</strong> Bu sitede çerez, reklam ya da ziyaretçi izleme kodu yok. Kişisel veri yalnızca iletişim formuna kendi yazdıklarından ibaret ve yalnızca sana yanıt vermek için kullanılıyor.</p>
+    <p class="summary"><strong>Kısaca:</strong> Bu sitede çerez, reklam ya da ziyaretçi izleme kodu yok. Kişisel veri, iletişim formuna kendi yazdıkların ve Takvim Uygulamam'da hesap açarsan e-postan ile takvim verilerinden ibaret.</p>
 
     <h2>Siteyi kim işletiyor?</h2>
     <p>Turan Tech, Ahmet Turan Taşdelen'in kurduğu bağımsız bir araştırma laboratuvarıdır. Bu siteyi ve aşağıda anlatılan verileri ben yönetiyorum. Bana iletişim formundan ulaşabilirsin.</p>
@@ -47,13 +47,20 @@
     <ul>
       <li><strong>Barındırma:</strong> Site GitHub Pages üzerinde çalışıyor. GitHub, hizmeti işletmek ve güvenliği için ziyaretçi IP adreslerini kaydedebilir; bu kayıtlar bana gelmez.</li>
       <li><strong>Chief durum penceresi:</strong> Ana sayfada "İlerleme ve teknik özet" penceresini açtığında tarayıcın, projenin son güncelleme tarihini almak için GitHub'ın herkese açık API'sine (api.github.com) istek gönderir. Pencereyi açmazsan bu istek gitmez.</li>
+      <li><strong>Takvim Uygulamam:</strong> Uygulamada hesap açtığında ya da giriş yaptığında tarayıcın, verilerini eşitlemek için Google'ın Firebase sunucularına bağlanır. Ayrıntılar aşağıda.</li>
     </ul>
 
     <h2>Sivas 5-8 oyunu</h2>
     <p>Oyunun kaydı ve ses tercihin yalnızca kendi tarayıcının yerel depolamasında (localStorage) tutulur; hiçbir sunucuya gönderilmez. Oyundaki "Yeni oyun" düğmesi kaydı siler; tarayıcının site verilerini temizlemek de hepsini siler.</p>
 
+    <h2>Takvim Uygulamam</h2>
+    <p>Hesap açmadan kullanırsan etkinliklerin ve kategorilerin yalnızca kendi cihazında (tarayıcının yerel depolamasında) tutulur; hiçbir sunucuya gönderilmez.</p>
+    <p>Telefonunla bilgisayarın arasında eşitlemek için hesap açarsan <strong>e-posta adresin</strong> ve <strong>takvim verilerin</strong> (etkinlik başlıkları, tarih, saat, süre, hatırlatma, notlar ve kategoriler) <strong>Google Firebase</strong>'te saklanır. Şifren Firebase tarafından tek yönlü şifrelenmiş olarak tutulur; ben göremem. Güvenlik kuralları sayesinde verilerine uygulamada yalnızca kendi hesabınla erişebilirsin. Firebase projesini ben yönettiğim için verilere konsoldan teknik olarak erişebilirim; bunları yalnızca hizmeti çalıştırmak için kullanırım, kimseyle paylaşmam ve satmam.</p>
+    <p>Uygulamanın Linux masaüstü sürümü, yeni sürüm olup olmadığını öğrenmek için GitHub'a (api.github.com, raw.githubusercontent.com) istek gönderir; bu isteklerde senin takvim verin yer almaz.</p>
+    <p>Hesabının ve buluttaki verilerinin silinmesini istersen iletişim formundan yazman yeterli. Cihazındaki kopyayı silmek için tarayıcının site verilerini temizleyebilirsin.</p>
+
     <h2>Hakların</h2>
-    <p>KVKK (6698 sayılı Kanun, madde 11) ve Avrupa'daysan GDPR kapsamında, hakkında tuttuğum veriyi öğrenme, düzeltilmesini ya da silinmesini isteme hakkın var. Bunun için iletişim formundan yazman yeterli; elimdeki tek veri, bana gönderdiğin mesajlardır.</p>
+    <p>KVKK (6698 sayılı Kanun, madde 11) ve Avrupa'daysan GDPR kapsamında, hakkında tuttuğum veriyi öğrenme, düzeltilmesini ya da silinmesini isteme hakkın var. Bunun için iletişim formundan yazman yeterli; elimdeki veri, bana gönderdiğin mesajlar ve Takvim Uygulamam'da hesap açtıysan hesabın ile takvim verilerindir.</p>
 
     <h2 id="guvenlik-bildirimi">Güvenlik açığı bildirimi</h2>
     <p>Bu sitede ya da GitHub'daki herkese açık projelerimde (ör. <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef</a>) bir güvenlik açığı bulduysan, lütfen önce bana haber ver:</p>

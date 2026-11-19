@@ -31,9 +31,9 @@
   <a class="skip-link" href="#icerik">Skip to content</a>
   <header><div class="wrap nav"><a class="brand" href="index.html"><img src="../assets/ttech-logo.png" alt="TTech">Turan Tech</a><span class="nav-right"><a class="back" href="index.html">← Back to the home page</a><a class="nav-link" href="notes/">Notes</a><a class="nav-link" href="writing/">Writing</a><a class="lang" href="../privacy.html" lang="tr" hreflang="tr">TR</a></span></div></header>
   <main class="wrap narrow prose" id="icerik">
-    <span class="kicker">Last updated · 7 October 2026</span>
+    <span class="kicker">Last updated · 19 November 2026</span>
     <h1>Privacy and security</h1>
-    <p class="summary"><strong>In short:</strong> this site has no cookies, ads or visitor tracking code. The only personal data is what you write in the contact form, and it is used only to reply to you.</p>
+    <p class="summary"><strong>In short:</strong> this site has no cookies, ads or visitor tracking code. The only personal data is what you write in the contact form and, if you create an account in My Calendar App, your email address and calendar data.</p>
 
     <h2>Who runs this site?</h2>
     <p>Turan Tech is an independent research lab founded by Ahmet Turan Taşdelen. I run this site and handle the data described below. You can reach me through the contact form.</p>
@@ -47,13 +47,20 @@
     <ul>
       <li><strong>Hosting:</strong> the site runs on GitHub Pages. GitHub may log visitor IP addresses to operate and secure the service; these logs do not reach me.</li>
       <li><strong>Chief status panel:</strong> when you open the "Progress and technical summary" panel on the home page, your browser sends a request to GitHub's public API (api.github.com) to fetch the project's last update date. If you don't open the panel, no request is sent.</li>
+      <li><strong>My Calendar App:</strong> when you create an account or sign in to the app, your browser connects to Google's Firebase servers to sync your data. Details below.</li>
     </ul>
 
     <h2>The Sivas 5-8 game</h2>
     <p>Your saved game and sound preference are kept only in your own browser's local storage (localStorage) and are never sent to a server. The game's "Yeni oyun" (New game) button deletes the save; clearing your browser's site data deletes everything.</p>
 
+    <h2>My Calendar App</h2>
+    <p>If you use the app without an account, your events and categories are kept only on your own device (in your browser's local storage) and are never sent to a server.</p>
+    <p>If you create an account to sync between your phone and computer, your <strong>email address</strong> and <strong>calendar data</strong> (event titles, dates, times, durations, reminders, notes and categories) are stored in <strong>Google Firebase</strong>. Your password is stored by Firebase in one-way encrypted form; I cannot see it. Security rules mean that, in the app, only your own account can access your data. Because I administer the Firebase project, I can technically access the data from its console; I use it only to run the service and do not share or sell it.</p>
+    <p>The app's Linux desktop version contacts GitHub (api.github.com, raw.githubusercontent.com) to check for new versions; these requests contain none of your calendar data.</p>
+    <p>If you want your account and cloud data deleted, just write to me through the contact form. To delete the copy on your device, clear your browser's site data.</p>
+
     <h2>Your rights</h2>
-    <p>Under Turkey's data protection law (KVKK, Law No. 6698, Article 11) and, if you are in Europe, the GDPR, you have the right to know what data I hold about you and to ask for it to be corrected or deleted. Just write to me through the contact form; the only data I hold is the messages you have sent me.</p>
+    <p>Under Turkey's data protection law (KVKK, Law No. 6698, Article 11) and, if you are in Europe, the GDPR, you have the right to know what data I hold about you and to ask for it to be corrected or deleted. Just write to me through the contact form; the data I hold is the messages you have sent me and, if you created an account in My Calendar App, your account and calendar data.</p>
 
     <h2 id="guvenlik-bildirimi">Reporting a security vulnerability</h2>
     <p>If you have found a security vulnerability on this site or in my public projects on GitHub (e.g. <a href="https://github.com/ahmtrntsdln/Chief-Sef">Chief-Sef</a>), please tell me first:</p>
