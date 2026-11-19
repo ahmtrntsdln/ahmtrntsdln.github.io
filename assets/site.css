@@ -114,3 +114,62 @@ body.subpage { margin: 0; color: var(--text); background: var(--bg); font: 16px/
     .subpage .grid { grid-template-columns: 1fr; }
     .subpage main { padding-top: 3rem; }
 }
+
+/* ---------- Şemalar ve sade grafikler (notlar ve proje sayfaları) ----------
+   Betik ve satır içi stil olmadan, yalnızca HTML + bu sınıflarla çizilir; dar ekranda alt alta dizilir.
+   Durum renkleri (--ok / --bad) hiçbir yerde tek başına anlam taşımaz: her zaman ✓ / ✗ ve yazıyla birlikte. */
+.subpage { --ok: #4ade80; --bad: #f87171; }
+.subpage .sema { margin: 1.6rem 0; padding: 1.1rem; border: 1px solid var(--line-2); border-radius: 10px; background: var(--panel); }
+.subpage .sema figcaption { margin-top: .9rem; }
+.subpage .sema .node { display: flex; flex-direction: column; gap: .15rem; padding: .75rem .9rem; border: 1px solid var(--line-2); border-radius: 8px; background: var(--bg); }
+.subpage .sema .node b { color: var(--white); font-size: .95rem; }
+.subpage .sema .node span { color: var(--muted); font-size: .85rem; line-height: 1.45; }
+.subpage .sema .node .mono { font: .8rem/1.5 ui-monospace, monospace; color: var(--text); }
+.subpage .sema .node.vurgu { border-color: var(--accent); }
+.subpage .sema .node .kural { margin-top: .35rem; padding-top: .35rem; border-top: 1px dashed var(--line-2); }
+.subpage .sema .ok-baglanti { display: flex; align-items: center; justify-content: center; gap: .5rem; padding: .45rem 0; color: var(--faint); font-size: .82rem; }
+.subpage .sema .ok-baglanti::before, .subpage .sema .ok-baglanti::after { content: ""; flex: 1; max-width: 5rem; border-top: 1px dashed var(--line-2); }
+.subpage .sema .iki { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.subpage .sema .uc { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+.subpage .sema .sutun-baslik { margin: 0 0 .5rem; color: var(--white); font-size: .92rem; font-weight: 700; }
+.subpage .sema ol.adimlar { margin: 0; padding: 0; list-style: none; counter-reset: adim; display: flex; flex-direction: column; gap: .4rem; }
+.subpage .sema ol.adimlar li { counter-increment: adim; display: flex; gap: .55rem; align-items: baseline; color: var(--muted); font-size: .86rem; line-height: 1.45; }
+.subpage .sema ol.adimlar li::before { content: counter(adim); flex: none; width: 1.35rem; height: 1.35rem; border-radius: 50%; border: 1px solid var(--line-2); color: var(--text); font-size: .72rem; display: inline-grid; place-items: center; }
+.subpage .sema .sonuc { margin-top: .7rem; padding: .55rem .7rem; border-radius: 6px; font-size: .86rem; line-height: 1.45; color: var(--text); border: 1px solid var(--line-2); }
+.subpage .sema .sonuc .durum { font-weight: 700; margin-right: .3rem; }
+.subpage .sema .sonuc.iyi { border-color: var(--ok); }
+.subpage .sema .sonuc.iyi .durum { color: var(--ok); }
+.subpage .sema .sonuc.kotu { border-color: var(--bad); border-style: dashed; }
+.subpage .sema .sonuc.kotu .durum { color: var(--bad); }
+/* zaman çizgisi */
+.subpage .sema .cizgi { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: 0 0 .9rem; padding: 0; list-style: none; position: relative; }
+.subpage .sema .cizgi li { position: relative; padding-top: 1.4rem; color: var(--muted); font-size: .84rem; line-height: 1.4; }
+.subpage .sema .cizgi li b { display: block; color: var(--text); font-size: .88rem; }
+.subpage .sema .cizgi li::before { content: ""; position: absolute; top: .45rem; left: 0; width: .7rem; height: .7rem; border-radius: 50%; background: var(--bg); border: 2px solid var(--faint); }
+.subpage .sema .cizgi li::after { content: ""; position: absolute; top: .78rem; left: .9rem; right: -.4rem; border-top: 2px solid var(--line-2); }
+.subpage .sema .cizgi li:last-child::after { display: none; }
+.subpage .sema .cizgi li.anahtar::before { border-color: var(--accent); background: var(--accent); }
+/* ölçü çubukları: her satırda ad, çubuk, sayı */
+.subpage .olcu { display: flex; flex-direction: column; gap: .8rem; margin: 0; padding: 0; list-style: none; }
+/* Değer sütunu sabit genişlikte: çubuklar aynı yerden başlayıp aynı yerde bitsin, eşit değerler eşit uzunlukta görünsün. */
+.subpage .olcu li { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) 13rem; gap: .9rem; align-items: center; }
+.subpage .olcu .ad { color: var(--text); font-size: .88rem; line-height: 1.35; }
+.subpage .olcu .ad small { display: block; color: var(--faint); font-size: .78rem; }
+.subpage .olcu .iz { height: .7rem; border-radius: 99px; background: var(--line); overflow: hidden; }
+.subpage .olcu .dolu { display: block; height: 100%; border-radius: 99px; background: var(--ok); }
+.subpage .olcu .dolu.tam { width: 100%; }
+.subpage .olcu .deger { color: var(--text); font: 600 .88rem ui-monospace, monospace; white-space: nowrap; }
+.subpage .olcu .deger .durum { color: var(--ok); margin-right: .25rem; }
+@media (max-width: 640px) {
+    .subpage .sema .iki, .subpage .sema .uc { grid-template-columns: 1fr; }
+    .subpage .sema .cizgi { grid-template-columns: 1fr; gap: .2rem; }
+    .subpage .sema .cizgi li { padding: 0 0 .7rem 1.4rem; }
+    .subpage .sema .cizgi li::before { top: .3rem; }
+    .subpage .sema .cizgi li::after { top: 1.1rem; left: .32rem; right: auto; bottom: 0; border-top: 0; border-left: 2px solid var(--line-2); }
+    .subpage .olcu li { grid-template-columns: 1fr auto; gap: .35rem .8rem; }
+    .subpage .olcu .iz { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (forced-colors: active) {
+    .subpage .olcu .dolu { background: CanvasText; }
+    .subpage .sema .sonuc.iyi, .subpage .sema .sonuc.kotu { border-color: CanvasText; }
+}

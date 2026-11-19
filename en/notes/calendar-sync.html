@@ -38,21 +38,80 @@
 
     <h2>Context</h2>
     <p>My Calendar App is a single web app: it runs as a PWA installed on the iPhone home screen and as a desktop app on Linux with Electron. Data lives first in the device's own storage. To let the phone and the computer see the same calendar, I added Google's Firebase (the Firestore database and email/password sign-in). Firestore can queue writes while offline and send them once the connection is back; the real question was how two devices' changes should be merged.</p>
+    <figure class="sema" aria-labelledby="fig1">
+      <div class="iki">
+        <div class="node"><b>iPhone</b><span>Web app installed on the home screen (PWA)</span><span>Local copy and an offline write queue</span></div>
+        <div class="node"><b>Linux computer</b><span>Desktop app (Electron)</span><span>Local copy and an offline write queue</span></div>
+      </div>
+      <div class="ok-baglanti" aria-hidden="true">⇅ syncs while connected</div>
+      <div class="node vurgu"><b>Google Firebase</b><span>Sign-in: email and password</span><span class="mono">users/{uid}/events/{id}<br>users/{uid}/categories/{id}</span><span class="kural">Security rule: each user can read and write only their own data.</span></div>
+      <figcaption id="fig1">Figure 1. Both devices work from their own local copy first; while connected, changes pass to the other device through Firebase. Every event and type is a separate document in the cloud.</figcaption>
+    </figure>
 
     <h2>Trap 1: Writing the whole calendar as one document</h2>
     <p>The app's first version stored the whole calendar as a single document with a “last updated” time; when two copies met, the newer one won. On one device that is fine. On two devices this happens: I add an event on the phone while it is offline, and meanwhile I add another event on the computer. When the phone reconnects, one copy counts as “newer” and overwrites the other <strong>entirely</strong>. An event disappears without any warning.</p>
+    <figure class="sema" aria-labelledby="fig2">
+      <div class="iki">
+        <div>
+          <p class="sutun-baslik">First version: the whole calendar as one document</p>
+          <ol class="adimlar"><li>Phone offline: adds event A.</li><li>Computer: adds event B and writes it to the cloud.</li><li>The phone reconnects; one copy counts as “newer”.</li></ol>
+          <p class="sonuc kotu"><span class="durum">✗ Lost:</span>One copy overwrites the other entirely; A or B disappears without warning.</p>
+        </div>
+        <div>
+          <p class="sutun-baslik">Now: every event its own document</p>
+          <ol class="adimlar"><li>Phone offline: adds event A.</li><li>Computer: adds event B and writes it to the cloud.</li><li>The phone reconnects; A and B are separate documents.</li></ol>
+          <p class="sonuc iyi"><span class="durum">✓ Kept:</span>Both A and B stay. Only if the same event changes in two places does the latest change apply.</p>
+        </div>
+      </div>
+      <figcaption id="fig2">Figure 2. The same events with two different units of merging.</figcaption>
+    </figure>
     <p>The fix was to make the unit of merging smaller. Every event and every event type is now its own document (<code>users/{uid}/events/{id}</code>), each carrying its own change time. The rule is “last change wins” per item: if two devices change different events, both are kept; if they change the same event, the latest change applies. Even the order of event types is stored as its own field so that it can sync too.</p>
 
     <h2>Trap 2: Deleted items come back</h2>
     <p>When you delete an event, deleting its cloud document as well seems natural. But if the other device is offline at that moment, when it returns it sees: “I have this event and the cloud doesn't; it must be new, let me upload it.” The deleted event comes back.</p>
+    <figure class="sema" aria-labelledby="fig3">
+      <div class="iki">
+        <div>
+          <p class="sutun-baslik">Deleting the document entirely</p>
+          <ol class="adimlar"><li>The computer deletes event C; its cloud document is deleted too.</li><li>The phone is offline at the time and still has C.</li><li>The phone reconnects: “I have C, the cloud doesn't.”</li></ol>
+          <p class="sonuc kotu"><span class="durum">✗ Comes back:</span>The phone takes C for new and uploads it again.</p>
+        </div>
+        <div>
+          <p class="sutun-baslik">Leaving a tombstone</p>
+          <ol class="adimlar"><li>The computer deletes event C; only “deleted” and its time stay in the cloud.</li><li>The phone is offline at the time and still has C.</li><li>The phone reconnects and sees the tombstone.</li></ol>
+          <p class="sonuc iyi"><span class="durum">✓ Deleted:</span>The phone deletes C as well. If C was changed on the phone after the deletion, that change wins.</p>
+        </div>
+      </div>
+      <figcaption id="fig3">Figure 3. A deleted event coming back from a device that was offline, and a tombstone preventing it.</figcaption>
+    </figure>
     <p>I solved this with two things. A deleted item's document stays, but only carries a “deleted” flag and a time (a tombstone). And every device keeps its own copy of the last cloud state it knew. That way it can tell whether an item that “is in the cloud but not here” is new, or was deleted by me.</p>
 
     <h2>Trap 3: An empty cache looks like an empty cloud</h2>
     <p>This was the sneakiest case I noticed while designing. When Firestore starts listening to a list, it first answers from its local cache; the server's answer comes later. On a new device that has never synced, the cache is empty. If I read that first answer as “there is nothing in the cloud”, the new device treats its default event types as “local changes” and writes them over the types in the account.</p>
     <p>The rule became: a device that has never synced writes nothing until <strong>a real answer from the server</strong> has arrived. A device that has synced before keeps working when it opens offline, because it already knows the cloud state.</p>
+    <figure class="sema" aria-labelledby="fig4">
+      <ol class="cizgi">
+        <li><b>1. Listening starts</b>A new device has signed in.</li>
+        <li><b>2. Cache answer</b>Empty. A device that never synced has nothing cached.</li>
+        <li class="anahtar"><b>3. Server answer</b>The account's real events and types.</li>
+      </ol>
+      <div class="iki">
+        <p class="sonuc kotu"><span class="durum">✗ Writing at 2:</span>The empty answer looks like “the cloud is empty”; the device's default types are written over the account's.</p>
+        <p class="sonuc iyi"><span class="durum">✓ Waiting for 3:</span>The account's data comes first; then only what really changed is written.</p>
+      </div>
+      <figcaption id="fig4">Figure 4. Firestore's two answers on a new device, and after which one it is safe to write.</figcaption>
+    </figure>
 
     <h2>How did I test it?</h2>
     <p>I used Firebase's test server that runs on the computer (the Emulator Suite) and opened the app in two windows with completely separate storage: one “phone” and one “computer”. The cases I checked:</p>
+    <figure class="sema" aria-labelledby="fig5">
+      <ul class="olcu">
+        <li title="Basic scenario: 11 of 11 checks passed"><span class="ad">Basic scenario<small>sign-in, add, edit, delete, reopen</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>11 / 11 passed</span></li>
+        <li title="Offline merge: all 5 changes ended as expected; 4 were kept, 1 older change on the same event gave way to the newer one"><span class="ad">Offline merge<small>5 changes: 4 kept, the older one on the same event gave way to the newer</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>5 / 5 as expected</span></li>
+        <li title="Security rules: 4 of 4 unauthorised attempts rejected"><span class="ad">Security rules<small>unauthorised read and write attempts</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>4 / 4 rejected</span></li>
+      </ul>
+      <figcaption id="fig5">Figure 5. Test results on the local Firebase test server. Each bar shows the share of attempts with the expected result; details in the table below.</figcaption>
+    </figure>
     <div class="table-wrap"><table><thead><tr><th>Case</th><th class="num">Result</th></tr></thead><tbody><tr><td>Sign-up, sign-in, add, edit, complete, delete, two simultaneous adds, type change, reopening (11 checks)</td><td class="num">11 / 11</td></tr><tr><td>Phone offline: a new event, completing an event, renaming the “Market” event. Meanwhile on the computer: a new event and renaming the same “Market” <em>later</em></td><td class="num">All merged; the computer's “Market” version won</td></tr><tr><td>Reading / writing another user's data, reading while signed out, writing to a list that is not allowed (4 attempts)</td><td class="num">4 / 4 rejected (403)</td></tr></tbody></table></div>
     <p>The test checked every 250 milliseconds; changes appeared on the other “device” within that interval or right after it. That number belongs to a local test server; over the real internet the delay will be longer. One small lesson too: my first offline test was invalid, because Electron's “go offline” switch did not cut the connection to the local test server. Simulating the outage with Firestore's own “disable network” call made the test meaningful.</p>
 

@@ -38,21 +38,80 @@
 
     <h2>Bağlam</h2>
     <p>Takvim Uygulamam tek bir web uygulaması: iPhone'da ana ekrana kurulan bir PWA olarak, Linux'ta da Electron ile masaüstü uygulaması olarak çalışıyor. Veriler önce cihazın kendi depolamasında duruyor. Telefonla bilgisayarın aynı takvimi görmesi için Google'ın Firebase hizmetini (Firestore veritabanı ve e-posta/şifre girişi) ekledim. Firestore internetsizken yazmaları kuyruğa alıp bağlantı gelince gönderebiliyor; asıl soru, iki cihazın değişikliklerinin nasıl birleşeceğiydi.</p>
+    <figure class="sema" aria-labelledby="sekil1">
+      <div class="iki">
+        <div class="node"><b>iPhone</b><span>Ana ekrana kurulan web uygulaması (PWA)</span><span>Yerel kopya ve internetsizken yazma kuyruğu</span></div>
+        <div class="node"><b>Linux bilgisayar</b><span>Masaüstü uygulaması (Electron)</span><span>Yerel kopya ve internetsizken yazma kuyruğu</span></div>
+      </div>
+      <div class="ok-baglanti" aria-hidden="true">⇅ bağlantı varken eşitleme</div>
+      <div class="node vurgu"><b>Google Firebase</b><span>Giriş: e-posta ve şifre</span><span class="mono">users/{uid}/events/{id}<br>users/{uid}/categories/{id}</span><span class="kural">Güvenlik kuralı: her kullanıcı yalnızca kendi verisini okuyup yazabilir.</span></div>
+      <figcaption id="sekil1">Şekil 1. İki cihaz da önce kendi yerel kopyasıyla çalışır; bağlantı varken değişiklikler Firebase üzerinden öbür cihaza geçer. Her etkinlik ve tür buluttaki ayrı bir belgedir.</figcaption>
+    </figure>
 
     <h2>Tuzak 1: Bütün takvimi tek belgeye yazmak</h2>
     <p>Uygulamanın ilk sürümü, bütün takvimi tek bir belge olarak saklayıp üzerine bir “son güncelleme zamanı” yazıyordu; iki kopya karşılaşınca zamanı daha yeni olan kazanıyordu. Bu, tek cihazda sorunsuz. İki cihazda ise şu olur: telefon internetsizken bir etkinlik eklerim, bu arada bilgisayarda başka bir etkinlik eklerim. Telefon bağlandığında iki kopyadan biri “daha yeni” sayılır ve öbürünü <strong>bütünüyle</strong> ezer. Bir etkinlik, hiçbir uyarı olmadan kaybolur.</p>
+    <figure class="sema" aria-labelledby="sekil2">
+      <div class="iki">
+        <div>
+          <p class="sutun-baslik">İlk sürüm: bütün takvim tek belge</p>
+          <ol class="adimlar"><li>Telefon internetsiz: A etkinliğini ekler.</li><li>Bilgisayar: B etkinliğini ekler ve buluta yazar.</li><li>Telefon bağlanır; iki kopyadan biri “daha yeni” sayılır.</li></ol>
+          <p class="sonuc kotu"><span class="durum">✗ Kayıp:</span>Bir kopya öbürünü bütünüyle ezer; A ya da B uyarısız kaybolur.</p>
+        </div>
+        <div>
+          <p class="sutun-baslik">Şimdiki: her etkinlik ayrı belge</p>
+          <ol class="adimlar"><li>Telefon internetsiz: A etkinliğini ekler.</li><li>Bilgisayar: B etkinliğini ekler ve buluta yazar.</li><li>Telefon bağlanır; A ile B ayrı belgeler.</li></ol>
+          <p class="sonuc iyi"><span class="durum">✓ Korunur:</span>A da B de kalır. Yalnızca aynı etkinlik iki yerde değişirse son değişiklik geçerli olur.</p>
+        </div>
+      </div>
+      <figcaption id="sekil2">Şekil 2. Aynı olaylar, iki farklı birleştirme birimiyle.</figcaption>
+    </figure>
     <p>Çözüm, birleştirme birimini küçültmek oldu. Her etkinlik ve her etkinlik türü artık ayrı bir belge (<code>users/{uid}/events/{id}</code>), her belge kendi değişim zamanını taşıyor. Kural öğe bazında “son değişiklik kazanır”: iki cihaz farklı etkinlikleri değiştirirse ikisi de korunuyor; aynı etkinliği değiştirirlerse en son yapılan geçerli oluyor. Etkinlik türlerinin sırası bile ayrı bir alan olarak tutuluyor ki o da eşitlenebilsin.</p>
 
     <h2>Tuzak 2: Silinenler geri geliyor</h2>
     <p>Bir etkinliği silince buluttaki belgesini de silmek akla yatkın. Ama öbür cihaz o sırada internetsizse, döndüğünde şunu görür: “bende bu etkinlik var, bulutta yok; demek ki yeni, yükleyeyim.” Silinen etkinlik geri gelir.</p>
+    <figure class="sema" aria-labelledby="sekil3">
+      <div class="iki">
+        <div>
+          <p class="sutun-baslik">Belgeyi tamamen silmek</p>
+          <ol class="adimlar"><li>Bilgisayar C etkinliğini siler; buluttaki belgesi de silinir.</li><li>Telefon o sırada internetsiz; elinde C var.</li><li>Telefon bağlanır: “C bende var, bulutta yok.”</li></ol>
+          <p class="sonuc kotu"><span class="durum">✗ Geri gelir:</span>Telefon C'yi yeni sanıp yeniden yükler.</p>
+        </div>
+        <div>
+          <p class="sutun-baslik">İz kaydı bırakmak</p>
+          <ol class="adimlar"><li>Bilgisayar C etkinliğini siler; bulutta yalnızca “silindi” ve zamanı kalır.</li><li>Telefon o sırada internetsiz; elinde C var.</li><li>Telefon bağlanır ve iz kaydını görür.</li></ol>
+          <p class="sonuc iyi"><span class="durum">✓ Silinir:</span>Telefon da C'yi siler. Telefondaki C silinmeden sonra değiştirildiyse değişiklik kazanır.</p>
+        </div>
+      </div>
+      <figcaption id="sekil3">Şekil 3. Silinen bir etkinliğin, o sırada çevrimdışı olan cihazdan geri gelmesi ve iz kaydıyla önlenmesi.</figcaption>
+    </figure>
     <p>Bunu iki şeyle çözdüm. Silinen öğenin belgesi kalıyor ama yalnızca “silindi” bilgisini ve zamanını taşıyor (iz kaydı). Her cihaz da buluttaki hâlin son bildiği kopyasını kendi içinde saklıyor. Böylece “bulutta olup bende olmayan” bir öğenin yeni mi geldiğini, yoksa benim tarafımdan mı silindiğini ayırt edebiliyor.</p>
 
     <h2>Tuzak 3: Boş önbellek “bulut boş” sanılıyor</h2>
     <p>Bu, tasarlarken fark ettiğim en sinsi durumdu. Firestore, bir listeyi dinlemeye başladığında önce elindeki yerel önbellekten yanıt verir, sunucunun yanıtı sonra gelir. Hiç eşitlenmemiş yeni bir cihazda önbellek boştur. O ilk yanıtı “bulutta hiçbir şey yok” diye yorumlarsam, yeni cihaz kendi varsayılan etkinlik türlerini “yerel değişiklik” sayıp hesaptaki türlerin üstüne yazar.</p>
     <p>Kural şu oldu: daha önce hiç eşitlenmemiş bir cihaz, <strong>sunucudan gerçek yanıt gelmeden</strong> tek bir şey yazmıyor. Daha önce eşitlenmiş bir cihaz ise internetsiz açıldığında da çalışmaya devam ediyor, çünkü buluttaki hâli zaten biliyor.</p>
+    <figure class="sema" aria-labelledby="sekil4">
+      <ol class="cizgi">
+        <li><b>1. Dinleme başlar</b>Yeni cihaz hesaba giriş yaptı.</li>
+        <li><b>2. Önbellek yanıtı</b>Boş. Hiç eşitlenmemiş cihazda önbellekte bir şey yok.</li>
+        <li class="anahtar"><b>3. Sunucu yanıtı</b>Hesaptaki gerçek etkinlikler ve türler.</li>
+      </ol>
+      <div class="iki">
+        <p class="sonuc kotu"><span class="durum">✗ 2'de yazmak:</span>Boş yanıt “bulut boş” sanılır; cihazın varsayılan türleri hesaptakilerin üstüne yazılır.</p>
+        <p class="sonuc iyi"><span class="durum">✓ 3'ü beklemek:</span>Önce hesaptaki veriler alınır, sonra yalnızca gerçekten değişen şey yazılır.</p>
+      </div>
+      <figcaption id="sekil4">Şekil 4. Yeni bir cihazda Firestore'un iki yanıtı ve hangisinden sonra yazmanın güvenli olduğu.</figcaption>
+    </figure>
 
     <h2>Nasıl test ettim?</h2>
     <p>Firebase'in bilgisayarda çalışan test sunucusunu (Emulator Suite) kullandım ve uygulamayı birbirinden tamamen ayrı depolamaya sahip iki pencerede açtım: biri “telefon”, biri “bilgisayar”. Sınadığım durumlar:</p>
+    <figure class="sema" aria-labelledby="sekil5">
+      <ul class="olcu">
+        <li title="Temel senaryo: 11 kontrolün 11'i geçti"><span class="ad">Temel senaryo<small>giriş, ekleme, düzenleme, silme, yeniden açma</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>11 / 11 geçti</span></li>
+        <li title="Çevrimdışı birleştirme: 5 değişikliğin 5'i beklendiği gibi sonuçlandı; 4'ü korundu, aynı etkinlikteki daha eski 1 değişiklik yerini yenisine bıraktı"><span class="ad">Çevrimdışı birleştirme<small>5 değişiklik: 4'ü korundu, aynı etkinlikteki eski olanı yenisine yer verdi</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>5 / 5 beklendiği gibi</span></li>
+        <li title="Güvenlik kuralları: 4 izinsiz denemenin 4'ü reddedildi"><span class="ad">Güvenlik kuralları<small>izinsiz okuma ve yazma denemeleri</small></span><span class="iz" aria-hidden="true"><span class="dolu tam"></span></span><span class="deger"><span class="durum">✓</span>4 / 4 reddedildi</span></li>
+      </ul>
+      <figcaption id="sekil5">Şekil 5. Test sonuçları, yerel Firebase test sunucusunda. Çubuk, beklenen sonucun alındığı denemelerin oranını gösterir; ayrıntılar aşağıdaki tabloda.</figcaption>
+    </figure>
     <div class="table-wrap"><table><thead><tr><th>Durum</th><th class="num">Sonuç</th></tr></thead><tbody><tr><td>Hesap açma, giriş, ekleme, düzenleme, tamamlama, silme, aynı anda iki ekleme, tür değişikliği, yeniden açma (11 kontrol)</td><td class="num">11 / 11</td></tr><tr><td>Telefon internetsizken: yeni etkinlik, bir etkinliği tamamlama, “Market” etkinliğinin adını değiştirme. Bilgisayar bu arada: yeni etkinlik ve aynı “Market”i <em>daha sonra</em> yeniden adlandırma</td><td class="num">Hepsi birleşti; “Market” için bilgisayarın sürümü kaldı</td></tr><tr><td>Başka bir kullanıcının verisini okuma / yazma, girişsiz okuma, izin verilmeyen bir listeye yazma (4 deneme)</td><td class="num">4 / 4 reddedildi (403)</td></tr></tbody></table></div>
     <p>Test her 250 milisaniyede bir kontrol ediyordu; değişiklikler öbür “cihazda” bu aralığın içinde ya da hemen ardından görünüyordu. Bu sayı yerel bir test sunucusuna ait; gerçek internet üzerinden gecikme daha fazla olacaktır. Bir de küçük bir ders: Electron'un “ağı kes” özelliği yerel test sunucusuyla bağlantıyı kesmediği için ilk internetsiz denemem geçersiz çıktı. Kesintiyi Firestore'un kendi “ağı kapat” işleviyle canlandırınca test anlamlı hâle geldi.</p>
 
