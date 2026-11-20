@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- İçerik güvenlik politikası: betik yalnızca bu siteden (ve aşağıdaki tek satırın özetiyle), stil/yazı tipi/görsel
-         yalnızca bu siteden; ağ isteği yalnızca GitHub API'ye (Chief durumu), form yalnızca formsubmit.co'ya.
+         yalnızca bu siteden; ağ isteği yalnızca bu siteye (yetkinlik listesi) ve GitHub API'ye (Chief durumu, yönetici paneli), form yalnızca formsubmit.co'ya.
          Baştaki tek satırlık betik değişirse sha256 özeti yeniden hesaplanmalı, yoksa tarayıcı onu çalıştırmaz. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.github.com; frame-src https://open.spotify.com https://www.youtube-nocookie.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com; frame-src https://open.spotify.com https://www.youtube-nocookie.com; form-action https://formsubmit.co; base-uri 'self'; object-src 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Turan Tech: Think. Build. Secure.</title>
     <meta name="description" content="Turan Tech, Ahmet Turan Taşdelen'in kurduğu bağımsız bir araştırma laboratuvarıdır: yapay zeka, siber güvenlik ve güvenli teknoloji projeleri.">
@@ -79,6 +79,7 @@
     </script>
     <link href="assets/fonts/inter.css" rel="stylesheet">
     <link href="assets/site.css?v=20261119-2" rel="stylesheet">
+    <link href="assets/yetkinlikler.css?v=20261120-1" rel="stylesheet">
     <!-- Kaydırınca beliren bölümler yalnızca JavaScript çalışıyorsa gizli başlar; çalışmazsa içerik hep görünür. -->
     <script>document.documentElement.classList.add('js');</script>
     <style>
@@ -864,6 +865,7 @@
             <a href="#about">Amaç</a>
             <a href="#identity">Ben Kimim</a>
             <a href="#music">Müzik</a>
+            <a href="#yetkinlikler">Yetkinlikler</a>
             <a href="#contact">İletişim</a>
             <a href="en/" class="lang-switch" lang="en" hreflang="en" aria-label="English version">EN</a>
         </div>
@@ -1035,6 +1037,61 @@
         </div>
     </section>
 
+    <section id="yetkinlikler" data-root="">
+        <h2 class="section-title">Yetkinlikler</h2>
+        <p class="yk-intro">Sertifikalar, kurslar ve belgeyle gösterilebilen yetkinliklerim.</p>
+        <div class="yk-admin-bar" id="yk-admin-bar" hidden>
+            <span class="yk-admin-label">Yönetici modu</span>
+            <span class="yk-admin-status" id="yk-admin-status" role="status"></span>
+            <button type="button" class="project-button" id="yk-add">+ Yetkinlik ekle</button>
+            <button type="button" class="project-button" id="yk-logout">Çıkış yap</button>
+        </div>
+        <div class="projects-grid" id="yk-list"></div>
+        <p class="yk-empty" id="yk-empty">Henüz eklenmiş bir yetkinlik yok. Sertifika ve belgeler aldıkça burada yer alacak.</p>
+    </section>
+
+    <div class="contact-modal" id="yk-login-modal" role="dialog" aria-modal="true" aria-labelledby="yk-login-title">
+        <div class="contact-card">
+            <button type="button" class="modal-close" aria-label="Pencereyi kapat">&times;</button>
+            <h3 id="yk-login-title">Yönetici girişi</h3>
+            <form class="contact-form" id="yk-login-form" autocomplete="off">
+                <label for="yk-token">Erişim anahtarı</label>
+                <input id="yk-token" type="password" autocomplete="off" spellcheck="false" required>
+                <label class="yk-check"><input id="yk-remember" type="checkbox"> Bu cihazda beni hatırla</label>
+                <p class="yk-error" id="yk-login-error" role="alert"></p>
+                <button type="submit" class="btn btn-primary">Giriş yap</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="contact-modal" id="yk-edit-modal" role="dialog" aria-modal="true" aria-labelledby="yk-edit-title">
+        <div class="contact-card yk-edit-card">
+            <button type="button" class="modal-close" aria-label="Pencereyi kapat">&times;</button>
+            <h3 id="yk-edit-title">Yetkinlik ekle</h3>
+            <form class="contact-form" id="yk-edit-form">
+                <label for="yk-f-baslik">Başlık *</label>
+                <input id="yk-f-baslik" type="text" maxlength="120" required>
+                <label for="yk-f-kurum">Veren kurum</label>
+                <input id="yk-f-kurum" type="text" maxlength="120">
+                <label for="yk-f-tarih">Tarih</label>
+                <input id="yk-f-tarih" type="date">
+                <label for="yk-f-aciklama">Açıklama</label>
+                <textarea id="yk-f-aciklama" maxlength="1200"></textarea>
+                <label for="yk-f-dogrulama">Doğrulama bağlantısı (isteğe bağlı)</label>
+                <input id="yk-f-dogrulama" type="url" placeholder="https://">
+                <label for="yk-f-belge">Belge (PDF, PNG, JPG, WebP · en fazla 8 MB)</label>
+                <input id="yk-f-belge" type="file" accept="application/pdf,image/png,image/jpeg,image/webp">
+                <div class="yk-current-doc" id="yk-current-doc" hidden>
+                    Mevcut belge: <a id="yk-current-doc-link" target="_blank" rel="noopener noreferrer"></a>
+                    <label class="yk-check"><input id="yk-f-belge-kaldir" type="checkbox"> Mevcut belgeyi kaldır</label>
+                    <span class="yk-hint">Yeni dosya seçersen eskisinin yerine geçer.</span>
+                </div>
+                <p class="yk-error" id="yk-edit-error" role="alert"></p>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
     <section id="contact">
         <h2 class="section-title">İletişim</h2>
         <div class="about-text">
@@ -1140,12 +1197,13 @@
     <footer class="tech-transition" aria-label="Site alt bilgisi ve sistem mimarisi animasyonu">
         <canvas id="techTransition"></canvas>
         <img class="tech-transition-logo" src="assets/ttech-logo.png" alt="TT logo">
-        <span class="tech-transition-label">Think · Build · Secure</span>
+        <span class="tech-transition-label">Think · Build <button type="button" class="yk-secret" id="yk-secret" tabindex="-1" aria-hidden="true">·</button> Secure</span>
         <p class="tech-transition-copyright">© 2026 Turan Tech. Tüm hakları saklıdır.</p>
         <a class="tech-transition-privacy" href="privacy.html">Gizlilik ve güvenlik</a>
-        <p class="tech-transition-version">Site sürümü v1.11.0 · 19 Kasım 2026</p>
+        <p class="tech-transition-version">Site sürümü v1.12.0 · 20 Kasım 2026</p>
     </footer>
 
     <script src="assets/site.js?v=20261119-2"></script>
+    <script src="assets/yetkinlikler.js?v=20261120-1"></script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+/* "Yetkinlikler" bölümü ve yönetici paneli. Kartlar, düğmeler ve pencereler ana sayfadaki
+   .card / .project-button / .contact-modal stillerini kullanır; burada yalnızca ekler var. */
+.yk-intro { max-width: 760px; margin: -1.5rem 0 2rem; color: var(--muted); }
+.yk-empty {
+    padding: 1.5rem;
+    color: var(--muted);
+    border: 1px dashed var(--line-2);
+    border-radius: 8px;
+}
+.yk-card p { white-space: pre-line; }
+.yk-thumb {
+    display: block;
+    width: 100%;
+    max-height: 220px;
+    margin-bottom: 1.25rem;
+    object-fit: contain;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+.yk-admin-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: .9rem 1rem;
+    background: #0f1d2b;
+    border: 1px solid #1e4a66;
+    border-radius: 8px;
+}
+.yk-admin-bar[hidden], .yk-empty[hidden], .yk-current-doc[hidden] { display: none; }
+.yk-admin-label { color: var(--accent); font-size: .85rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.yk-admin-status { flex: 1 1 14rem; color: var(--muted); font-size: .9rem; }
+.yk-danger:hover, .yk-danger:focus-visible { color: #fecaca; border-color: #f87171; background: transparent; }
+.yk-edit-card { width: min(100%, 520px); max-height: calc(100vh - 3rem); overflow-y: auto; }
+.yk-hint { color: var(--muted); font-size: .85rem; }
+.yk-hint a { color: var(--accent); }
+.yk-check { display: flex; gap: .5rem; align-items: center; color: #cbd5e1; font-size: .85rem; }
+.contact-form .yk-check input { width: auto; }
+.yk-error { min-height: 1.2em; color: #fca5a5; font-size: .9rem; }
+.yk-current-doc { color: var(--muted); font-size: .85rem; }
+.yk-current-doc a { color: var(--accent); word-break: break-all; }
+.contact-form input[type="file"] { padding: .55rem; }
+.contact-form input[type="date"] { color-scheme: dark; }
+
+/* Alt bilgideki "Build · Secure" arasındaki nokta: yalnızca site sahibinin bildiği yönetici girişi. */
+.yk-secret {
+    padding: .2rem .35rem;
+    margin: -.2rem -.35rem;
+    color: inherit;
+    background: none;
+    border: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: default;
+    pointer-events: auto;
+}
